@@ -1,0 +1,35 @@
+GET http://localhost:5000/api/users
+
+###
+// get by id
+GET http://localhost:5000/api/users/cm4zvpg6c0000pwkvpr8xsy2k
+
+###
+// Create user
+POST http://localhost:5000/api/users
+content-type: application/json
+
+{
+    "username": "sample",
+    "email": "sample@email.com",
+    "pin" : "123434",
+    "confPin" : "123434",
+    "role" : "SUPERADMIN"
+}
+
+###
+PUT http://localhost:5000/api/users/cm41yuplc0000122u64xjykf7
+content-type: application/json
+
+{
+    "u": "sample123"
+}
+
+###
+POST http://localhost:5000/api/login
+content-type: application/json
+
+{
+    "email" : "sample@email.com",
+    "pin" : "123434"
+}

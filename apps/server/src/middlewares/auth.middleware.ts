@@ -1,0 +1,37 @@
+import { User } from "@prisma/client";
+import { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import { UnauthorizedException } from "@/exceptions";
+import prisma from "@/config/database";
+import env from "@/config/env";
+import ErrorCode from "@/constants/error-code";
+
+export interface AuthReq extends Request {
+    user: User;
+}
+
+const authMiddleware = async (req: AuthReq, _res: Response, next: NextFunction) => {
+    const userRoleSuperadmin = await prisma.user.findMany({
+        where: {
+            role: "SUPERADMIN",
+        },
+    });
+    if (userRoleSuperadmin.length === 0) {
+        return next();
+    }
+
+    const token = req.cookies.token;
+    if (!token) {
+        return next(new UnauthorizedException("Your session has expired. Please log in again", ErrorCode.UNAUTHORIZED));
+    }
+    const payload: any = jwt.verify(token, env.JWT_TOKEN);
+    const user = await prisma.user.findFirstOrThrow({
+        where: {
+            id: payload.id,
+        },
+    });
+    req.user = user;
+    next();
+};
+
+export default authMiddleware;

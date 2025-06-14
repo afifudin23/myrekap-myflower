@@ -1,0 +1,24 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "target": "ES2017",
+        "lib": ["ES2017", "ESNext.AsyncIterable"],
+        "typeRoots": ["node_modules/@types"],
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "node",
+        "module": "CommonJS",
+        "pretty": true,
+        "declaration": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    },
+    "include": ["./src/**/*"],
+    "exclude": ["node_modules"]
+}

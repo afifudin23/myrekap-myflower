@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// RULES
+// Menggunakan Snake Case
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  pin       String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  SUPERADMIN
+}
+
+model OrderSummary {
+  id                    String           @id @default(cuid())
+  invoiceNumber         String           @unique @map("invoice_number")
+  customerName          String           @map("customer_name")
+  flowerCategory        FlowerCategory   @map("flower_category")
+  quantity              Int              @map("quantity")
+  greetingMessage       String           @map("greeting_message")
+  orderDate             DateTime         @default(now()) @map("order_date")
+  deliveryDate          DateTime         @map("delivery_date")
+  deliveryAddress       String           @map("delivery_address")
+  customerCategory      CustomerCategory @map("customer_category")
+  price                 Int              @map("price")
+  shippingCost          Int              @map("shipping_cost")
+  isPaid                Boolean          @map("is_paid")
+  paymentMethod         PaymentMethod?   @map("payment_method")
+  previousPaymentStatus String?          @map("previous_payment_status")
+  paymentStatus         PaymentStatus    @map("payment_status")
+  orderStatus           OrderStatus      @default(IN_PROCESS) @map("order_status")
+  paymentProof          PaymentProof?
+  finishedProduct       FinishedProduct?
+
+  @@map("order_summaries")
+}
+
+model PaymentProof {
+  id             String       @id @default(cuid())
+  fileName       String       @map("file_name")
+  size           Int          @map("size")
+  publicId       String       @map("public_id")
+  secureUrl      String       @map("secure_url")
+  orderSummaryId String       @unique @map("order_summary_id")
+  orderSummary   OrderSummary @relation(fields: [orderSummaryId], references: [id], onDelete: Cascade)
+
+  @@map("payment_proofs")
+}
+
+model FinishedProduct {
+  id             String       @id @default(cuid())
+  fileName       String       @map("file_name")
+  size           Int          @map("size")
+  publicId       String       @map("public_id")
+  secureUrl      String       @map("secure_url")
+  orderSummaryId String       @unique @map("order_summary_id")
+  orderSummary   OrderSummary @relation(fields: [orderSummaryId], references: [id], onDelete: Cascade)
+
+  @@map("finished_products")
+}
+
+enum FlowerCategory {
+  TAFEL_BOUQUET @map("tafel_bouquet")
+  BOUQUET       @map("bouquet")
+  HANDS_BOUQUET @map("hands_bouquet")
+  KRANS         @map("krans")
+  TUTUP_PETI    @map("tutup_peti")
+  BUNGA_PAPAN   @map("bunga_papan")
+  PAPER_FLOWER  @map("paper_flower")
+  BUNGA_BALON   @map("bunga_balon")
+  BLOOMBOX      @map("bloombox")
+}
+
+enum CustomerCategory {
+  UMUM           @map("umum")
+  PEMDA          @map("pemda")
+  AKADEMIK       @map("akademik")
+  RUMAH_SAKIT    @map("rumah_sakit")
+  POLISI_MILITER @map("polisi_militer")
+  PERBANKAN      @map("perbankan")
+}
+
+enum PaymentMethod {
+  TRANSFER @map("transfer")
+  CASH     @map("cash")
+  PENDING  @map("pending")
+}
+
+enum OrderStatus {
+  TERKIRIM   @map("terkirim")
+  IN_PROCESS @map("in_process")
+  DIBATALKAN @map("dibatalkan")
+}
+
+enum PaymentStatus {
+  LUNAS       @map("lunas")
+  BELUM_LUNAS @map("belum_lunas")
+  BATAL       @map("batal")
+}
