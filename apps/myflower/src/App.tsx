@@ -1,14 +1,12 @@
-import AppRoutes from "./routes/AppRoutes"
-
+import AppProvider from "./providers/AppProvider";
+import AppRouter from "./routes/AppRouter";
 
 function App() {
-
-  return (
-    <>
-      <h1 className="text-3xl font-bold underline from-neutral-700">Halo</h1>
-      <AppRoutes />
-    </>
-  )
+    return (
+        <AppProvider>
+            <AppRouter />
+        </AppProvider>
+    );
 }
 
-export default App
+export default App;
