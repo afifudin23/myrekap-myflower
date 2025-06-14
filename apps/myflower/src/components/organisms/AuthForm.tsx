@@ -1,34 +1,45 @@
-function AuthForm({fields, errorMessage, }: {}) {
+import Button from "../atoms/Button";
+
+function AuthForm({
+    fields,
+    errorMessage,
+    onSubmit,
+    register,
+    errors,
+}: {
+    fields: any;
+    errorMessage: string;
+    onSubmit: () => void;
+    register: any;
+    errors: any;
+}) {
     return (
         <>
-        <p className="text-red-500 ml-4 mb-5 text-center text-sm 2xl:text-lg">{errorMessage}</p>
-                <form className="flex flex-col px-7 2xl:px-10 gap-5 2xl:gap-5 w-full" onSubmit={handleSubmit(onSubmit)}> */}
-                    <div className="flex flex-col gap-3">
-                        {fields.map((field) => (
-                            <>
-                                <input
-                                    key={field}
-                                    type={field === "PIN" ? "password" : "text"}
-                                    placeholder={`Input ${field}`}
-                                    className="border p-2 pl-4 rounded-2xl w-full font-medium text-sm 2xl:text-base"
-                                    autoComplete={field}
-                                    {...register(field.toLowerCase() as LoginKey)}
-                                />
-                                {errors[field.toLowerCase() as LoginKey] && (
-                                    <p className="ml-3 text-sm text-red-500">
-                                        *{errors[field.toLowerCase() as LoginKey]?.message}
-                                    </p>
-                                )}
-                            </>
-                        ))}
-                    </div>
-                    <p className="border border-slate-300"></p>
-                    {/* <Button type="submit" width="w-full p-1">
-                        Login
-                    </Button> */}
-</form>
-                        </>
-                    );
+            <p className="text-red-500 ml-4 mb-5 text-center text-sm 2xl:text-lg">{errorMessage}</p>
+            <form className="flex flex-col px-7 2xl:px-10 gap-5 2xl:gap-5 w-full" onSubmit={onSubmit}>
+                <div className="flex flex-col gap-3">
+                    {fields.map((field: any) => (
+                        <div key={field.name}>
+                            <input
+                                type={field.type}
+                                placeholder={field.placeholder}
+                                className="border p-2 pl-4 rounded-2xl w-full font-medium text-sm 2xl:text-base"
+                                autoComplete={field.name}
+                                {...register(field.name)}
+                            />
+                            {errors[field.name] && (
+                                <p className="ml-3 text-sm text-red-500">*{errors[field.name]?.message}</p>
+                            )}
+                        </div>
+                    ))}
+                </div>
+                <p className="border border-slate-300"></p>
+                <Button type="submit" width="w-full p-1">
+                    Login
+                </Button>
+            </form>
+        </>
+    );
 }
 
 export default AuthForm;

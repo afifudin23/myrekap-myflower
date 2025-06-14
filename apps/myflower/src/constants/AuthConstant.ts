@@ -1,14 +1,13 @@
+
 export const LOGIN_FIELDS = [
     {
         name: "username",
-        label: "Username",
-        placeholder: "Masukkan username",
-        type: "username",
+        placeholder: "Input Username",
+        type: "text",
     },
     {
-        name: "password",
-        label: "Password",
-        placeholder: "Masukkan password",
+        name: "pin",
+        placeholder: "Input PIN",
         type: "password",
     },
 ];
