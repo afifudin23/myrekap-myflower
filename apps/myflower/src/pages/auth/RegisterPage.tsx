@@ -1,12 +1,12 @@
 import { useState } from "react";
-import AuthForm from "../components/organisms/AuthForm";
-import AuthTemplate from "../components/templates/AuthTemplate";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerFormSchema, type RegisterFormType } from "../schemas/authSchema";
 import type { AxiosError } from "axios";
-import { REGISTER_FIELDS } from "../constants/authConstant";
 import { Link } from "react-router-dom";
+import { registerFormSchema, type RegisterFormType } from "@/schemas/authSchema";
+import AuthTemplate from "@/components/templates/AuthTemplate";
+import AuthForm from "@/components/organisms/AuthForm";
+import { REGISTER_FIELDS } from "@/constants/authConstant";
 
 function Register() {
     const [errorMessage, setErrorMessage] = useState<string>("");
@@ -45,6 +45,7 @@ function Register() {
                 onSubmit={handleSubmit(onSubmit)}
                 register={register}
                 errors={errors}
+                buttonName="Daftar"
                 link={
                     <p className="text-center">
                         Sudah terdaftar?{" "}

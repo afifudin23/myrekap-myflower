@@ -6,6 +6,7 @@ function AuthForm({
     onSubmit,
     register,
     errors,
+    buttonName,
     link,
 }: {
     fields: any;
@@ -13,6 +14,7 @@ function AuthForm({
     onSubmit: () => void;
     register: any;
     errors: any;
+    buttonName: string;
     link: React.ReactNode;
 }) {
     return (
@@ -26,7 +28,6 @@ function AuthForm({
                                 type={field.type}
                                 placeholder={field.placeholder}
                                 className="border p-2 pl-4 rounded-2xl w-full font-medium text-sm 2xl:text-base"
-                                autoComplete={field.name}
                                 {...register(field.name)}
                             />
                             {errors[field.name] && (
@@ -37,7 +38,7 @@ function AuthForm({
                 </div>
                 <p className="border border-slate-300"></p>
                 <Button type="submit" width="w-full p-1">
-                    Login
+                    {buttonName}
                 </Button>
                 {link}
             </form>

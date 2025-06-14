@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
-import AuthForm from "../components/organisms/AuthForm";
-import AuthTemplate from "../components/templates/AuthTemplate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import type { AxiosError } from "axios";
-import { LOGIN_FIELDS } from "../constants/authConstant";
-import { loginFormSchema, type LoginFormType } from "../schemas/authSchema";
 import { Link } from "react-router-dom";
+import { loginFormSchema, type LoginFormType } from "@/schemas/authSchema";
+import { LOGIN_FIELDS } from "@/constants/authConstant";
+import AuthForm from "@/components/organisms/AuthForm";
+import AuthTemplate from "@/components/templates/AuthTemplate";
 
 function Login() {
     const [errorMessage, setErrorMessage] = useState<string>("");
@@ -37,7 +37,7 @@ function Login() {
             }
         }
     };
-    console.log(errors)
+    console.log(errors);
     return (
         <AuthTemplate description="Masuk untuk memulai pemesanan bunga secara online">
             <AuthForm
@@ -46,6 +46,7 @@ function Login() {
                 register={register}
                 onSubmit={handleSubmit(onSubmit)}
                 errors={errors}
+                buttonName="Masuk"
                 link={
                     <p className="text-center">
                         Belum memiliki akun?{" "}
