@@ -1,9 +1,9 @@
 import { RiFlowerLine } from "react-icons/ri";
 
-function AuthTemplate({ children }: { children: React.ReactNode }) {
+function AuthTemplate({ description, children }: { description: string; children: React.ReactNode }) {
     return (
-        <div className="bg-gradient-to-t from-[#FFFFFF] to-[#8039de] h-screen flex">
-            <div className="border w-1/3 2xl:w-1/4 m-auto p-5 rounded-2xl bg-[#F5F1FB]">
+        <div className="bg-gradient-to-t from-[#FFFFFF] to-[#3059e1] h-screen flex">
+            <div className="border w-1/3 m-auto p-5 rounded-2xl bg-[#F5F1FB]">
                 <h1 className="text-base 2xl:text-xl font-poppins w-fit">
                     <b className="flex gap-1 items-center text-base 2xl:text-xl">
                         <RiFlowerLine />
@@ -15,7 +15,7 @@ function AuthTemplate({ children }: { children: React.ReactNode }) {
                     <div className="mb-3 2xl:mb-5 flex flex-col items-center">
                         <b className="text-4xl 2xl:text-4xl font-semibold">MyFlower</b>
                         <p className="text-sm 2xl:text-base text-slate-500 mt-1 text-center">
-                            Masuk untuk memulai pemesanan bunga secara online
+                            {description}
                         </p>
                     </div>
 

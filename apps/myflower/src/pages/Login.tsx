@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { AxiosError } from "axios";
 import { LOGIN_FIELDS } from "../constants/authConstant";
 import { loginFormSchema, type LoginFormType } from "../schemas/authSchema";
+import { Link } from "react-router-dom";
 
 function Login() {
     const [errorMessage, setErrorMessage] = useState<string>("");
@@ -19,7 +20,7 @@ function Login() {
     });
     const onSubmit = async (data: LoginFormType) => {
         try {
-            console.log(data)
+            console.log(data);
             // const response = await axiosInstance.post("auth/login", {
             //     username: data.username,
             //     pin: data.pin,
@@ -36,14 +37,23 @@ function Login() {
             }
         }
     };
+    console.log(errors)
     return (
-        <AuthTemplate>
+        <AuthTemplate description="Masuk untuk memulai pemesanan bunga secara online">
             <AuthForm
                 fields={LOGIN_FIELDS}
                 errorMessage={errorMessage}
                 register={register}
                 onSubmit={handleSubmit(onSubmit)}
                 errors={errors}
+                link={
+                    <p className="text-center">
+                        Belum memiliki akun?{" "}
+                        <Link to="/auth/register" className="font-bold text-[#355ee7]">
+                            Buat akun baru sekarang.
+                        </Link>
+                    </p>
+                }
             />
         </AuthTemplate>
     );

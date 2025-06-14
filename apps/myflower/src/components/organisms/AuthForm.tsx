@@ -6,12 +6,14 @@ function AuthForm({
     onSubmit,
     register,
     errors,
+    link,
 }: {
     fields: any;
     errorMessage: string;
     onSubmit: () => void;
     register: any;
     errors: any;
+    link: React.ReactNode;
 }) {
     return (
         <>
@@ -37,6 +39,7 @@ function AuthForm({
                 <Button type="submit" width="w-full p-1">
                     Login
                 </Button>
+                {link}
             </form>
         </>
     );
