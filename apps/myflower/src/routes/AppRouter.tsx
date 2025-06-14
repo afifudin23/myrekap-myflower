@@ -1,6 +1,8 @@
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
 import Login from "@/pages/auth/LoginPage";
 import Register from "@/pages/auth/RegisterPage";
+import ProductDetailPage from "@/pages/products/ProductDetailPage";
+import ProductPage from "@/pages/products/ProductPage";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 function AppRouter() {
@@ -13,6 +15,11 @@ function AppRouter() {
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
                     <Route path="forgot-password" element={<ForgotPasswordPage />} />
+                </Route>
+
+                <Route path="/products">
+                    <Route index element={<ProductPage />} />
+                    <Route path=":id" element={<ProductDetailPage />} />
                 </Route>
 
                 <Route path="*" element={<h1>Not Found</h1>} />

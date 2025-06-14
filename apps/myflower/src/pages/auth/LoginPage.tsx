@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import type { AxiosError } from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginFormSchema, type LoginFormType } from "@/schemas/authSchema";
 import { LOGIN_FIELDS } from "@/constants/authConstant";
 import AuthForm from "@/components/organisms/AuthForm";
@@ -10,6 +10,7 @@ import AuthTemplate from "@/components/templates/AuthTemplate";
 
 function Login() {
     const [errorMessage, setErrorMessage] = useState<string>("");
+    const navigate = useNavigate();
 
     const {
         register,
@@ -26,7 +27,7 @@ function Login() {
             //     pin: data.pin,
             // });
             // setUserCookies({ username: response.data.username, role: response.data.role });
-            // navigate("/beranda");
+            navigate("/products");
         } catch (error) {
             const axiosError = error as AxiosError;
             if (axiosError.code === "ERR_NETWORK") {

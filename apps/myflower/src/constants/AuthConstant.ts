@@ -5,8 +5,8 @@ export const LOGIN_FIELDS = [
         type: "text",
     },
     {
-        name: "pin",
-        placeholder: "Input PIN",
+        name: "password",
+        placeholder: "Input Password",
         type: "password",
     },
 ];
@@ -24,12 +24,12 @@ export const REGISTER_FIELDS = [
     },
     {
         name: "pin",
-        placeholder: "Input PIN",
+        placeholder: "Input Password",
         type: "password",
     },
     {
         name: "confPin",
-        placeholder: "Konfirmasi PIN",
+        placeholder: "Konfirmasi Password",
         type: "password",
     },
 ];
