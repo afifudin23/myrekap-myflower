@@ -38,7 +38,7 @@ function AuthForm({
                     ))}
                 </div>
                 <p className="border border-slate-300"></p>
-                <Button type="submit" width="w-full p-1" colors={COLORS}>
+                <Button type="submit" className="w-full p-1" colors={COLORS}>
                     {buttonName}
                 </Button>
                 {link}

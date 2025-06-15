@@ -9,7 +9,7 @@ function SmallButton({
     colors,
 }: {
     className?: string;
-    onClick?: () => void;
+    onClick?: (e?: React.MouseEvent) => void;
     type?: "submit" | "reset" | "button";
     bolder?: string;
     children?: React.ReactNode;
@@ -19,7 +19,7 @@ function SmallButton({
         <button
             type={type}
             onClick={onClick}
-            className={`flex items-center justify-center py-1 2xl:py-2 px-4 gap-1 rounded-lg text-white text-base 2xl:text-lg ${bolder} ${className}`}
+            className={`flex items-center justify-center py-1 2xl:py-2 px-3 gap-1 rounded-md text-white text-base 2xl:text-lg ${bolder} ${className}`}
             style={{ backgroundColor: colors.primary }}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = colors.hover)}
             onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = colors.primary)}

@@ -8,40 +8,65 @@ const dummyProducts = [
         name: "Karangan Bunga Mawar",
         image: "/assets/images/test.jpg",
         price: 150000,
+        stock: 45,
     },
     {
         id: "2",
         name: "Buket Ulang Tahun",
         image: "/assets/images/test.jpg",
         price: 200000,
+        stock: 30,
     },
     {
-        id: "2",
+        id: "3",
         name: "Buket Ulang Tahun",
         image: "/assets/images/test2.jpg",
         price: 200000,
+        stock: 30,
     },
     {
-        id: "2",
+        id: "4",
         name: "Buket Ulang Tahun",
         image: "/assets/images/test2.jpg",
         price: 200000,
+        stock: 30,
     },
     {
-        id: "2",
+        id: "5",
+        name: "Buket Ulang Tahun",
+        image: "/assets/images/test.jpg",
+        price: 200000,
+        stock: 30,
+    },
+    {
+        id: "6",
         name: "Buket Ulang Tahun",
         image: "/assets/images/test2.jpg",
         price: 200000,
+        stock: 30,
+    },
+    {
+        id: "7",
+        name: "Buket Ulang Tahun",
+        image: "/assets/images/test.jpg",
+        price: 200000,
+        stock: 30,
+    },
+    {
+        id: "8",
+        name: "Buket Ulang Tahun",
+        image: "/assets/images/test2.jpg",
+        price: 200000,
+        stock: 30,
     },
 ];
 
 function ProductPage() {
     return (
         <MainLayout>
-            <div className="flex flex-col gap-5">
-
-            <ProductSearch />
-            <ProductCard products={dummyProducts} />
+            <div className="flex flex-col gap-10">
+                <ProductSearch />
+                <ProductCard products={dummyProducts} />
             </div>
         </MainLayout>
     );

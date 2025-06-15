@@ -1,10 +1,11 @@
-import ProductCard from "@/components/molecules/ProductCard";
+import ProductCard from "@/components/molecules/products/ProductCard";
 
 interface Product {
     id: string;
     name: string;
     image: string;
     price: number;
+    stock: number;
 }
 
 interface ProductListProps {
@@ -12,9 +13,9 @@ interface ProductListProps {
 }
 function ProductList({ products }: ProductListProps) {
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                    <ProductCard key={product.id} product={product} />
             ))}
         </div>
     );
