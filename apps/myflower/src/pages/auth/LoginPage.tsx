@@ -51,7 +51,7 @@ function Login() {
                 link={
                     <p className="text-center">
                         Belum memiliki akun?{" "}
-                        <Link to="/auth/register" className="font-bold text-[#355ee7]">
+                        <Link to="/auth/register" className="font-bold text-[#8f40f6]">
                             Buat akun baru sekarang.
                         </Link>
                     </p>

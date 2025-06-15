@@ -16,7 +16,7 @@ const Navbar = memo(function () {
                 <div className="flex flex-col items-center">
                     <div className="text-lg font-nunito leading-none">zhanka</div>
                     <div
-                        className={`text-sm relative font-semibold capitalize tracking-wide px-3 rounded-lg bg-opacity-40 text-[#295f92] bg-[#1d99fe] `}
+                        className={`text-sm relative font-semibold capitalize tracking-wide px-3 rounded-lg bg-opacity-30  text-[#8a50db] bg-[#aa71ef] `}
                     >
                         CUSTOMER
                     </div>

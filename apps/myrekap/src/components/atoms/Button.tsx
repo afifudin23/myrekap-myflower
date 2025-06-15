@@ -14,7 +14,7 @@ export default function Button({
     return (
         <button
             type={type}
-            className={`bg-[#9f64ec] rounded-2xl font-poppins text-lg transition-colors duration-100 font-semibold text-white hover:bg-[#8a44e5] mx-auto ${width} ${className}`}
+            className={`bg-[#2a78d1] rounded-2xl font-poppins text-lg transition-colors duration-100 font-semibold text-white hover:bg-[#2465af] mx-auto ${width} ${className}`}
         >
             {children}
         </button>

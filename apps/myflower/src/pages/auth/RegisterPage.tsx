@@ -49,7 +49,7 @@ function Register() {
                 link={
                     <p className="text-center">
                         Sudah terdaftar?{" "}
-                        <Link to="/auth/login" className="font-bold text-[#355ee7]">
+                        <Link to="/auth/login" className="font-bold text-[#8f40f6]">
                             Masuk ke akun Anda.
                         </Link>
                     </p>

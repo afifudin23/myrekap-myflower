@@ -2,7 +2,7 @@ import { RiFlowerLine } from "react-icons/ri";
 
 function AuthTemplate({ description, children }: { description: string; children: React.ReactNode }) {
     return (
-        <div className="bg-gradient-to-t from-[#FFFFFF] to-[#3059e1] h-screen flex">
+        <div className="bg-gradient-to-t from-[#FFFFFF] to-[#8039de] h-screen flex">
             <div className="border w-1/3 m-auto p-5 rounded-2xl bg-[#F5F1FB]">
                 <h1 className="text-base 2xl:text-xl font-poppins w-fit">
                     <b className="flex gap-1 items-center text-base 2xl:text-xl">

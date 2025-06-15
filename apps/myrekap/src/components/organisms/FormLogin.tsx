@@ -59,7 +59,7 @@ function FormLogin() {
                     <b className="text-4xl 2xl:text-4xl font-semibold">MyRekap</b>
                     <p className="text-sm 2xl:text-base text-slate-500 mt-1 text-center">Login Untuk Masuk Admin Dashboard</p>
                 </div>
-                <p className="text-red-500 ml-4 mb-5 text-center text-sm 2xl:text-lg">{errorMessage}</p>
+                <p className="text-red-500 ml-4 mb-5 p-3 text-center text-sm 2xl:text-base">{errorMessage}</p>
                 <form className="flex flex-col px-7 2xl:px-10 gap-5 2xl:gap-5 w-full" onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex flex-col gap-3">
                         {items.map((item) => (
