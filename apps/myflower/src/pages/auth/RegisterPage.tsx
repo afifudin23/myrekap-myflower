@@ -5,8 +5,9 @@ import type { AxiosError } from "axios";
 import { Link } from "react-router-dom";
 import { registerFormSchema, type RegisterFormType } from "@/schemas/authSchema";
 import AuthTemplate from "@/components/templates/AuthTemplate";
-import AuthForm from "@/components/organisms/AuthForm";
 import { REGISTER_FIELDS } from "@/constants/authConstant";
+import { COLORS } from "@/constants/colorConstant";
+import AuthForm from "@/components/organisms/auth/AuthForm";
 
 function Register() {
     const [errorMessage, setErrorMessage] = useState<string>("");
@@ -49,7 +50,13 @@ function Register() {
                 link={
                     <p className="text-center">
                         Sudah terdaftar?{" "}
-                        <Link to="/auth/login" className="font-bold text-[#8f40f6]">
+                        <Link
+                            to="/auth/login"
+                            className={`font-bold`}
+                            style={{ color: COLORS.primary }}
+                            onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.hover)}
+                            onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.primary)}
+                        >
                             Masuk ke akun Anda.
                         </Link>
                     </p>

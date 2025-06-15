@@ -1,4 +1,5 @@
-import Button from "../atoms/Button";
+import Button from "@/components/atoms/Button";
+import { COLORS } from "@/constants/colorConstant";
 
 function AuthForm({
     fields,
@@ -37,7 +38,7 @@ function AuthForm({
                     ))}
                 </div>
                 <p className="border border-slate-300"></p>
-                <Button type="submit" width="w-full p-1">
+                <Button type="submit" width="w-full p-1" colors={COLORS}>
                     {buttonName}
                 </Button>
                 {link}

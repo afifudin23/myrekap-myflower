@@ -5,8 +5,9 @@ import type { AxiosError } from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { loginFormSchema, type LoginFormType } from "@/schemas/authSchema";
 import { LOGIN_FIELDS } from "@/constants/authConstant";
-import AuthForm from "@/components/organisms/AuthForm";
 import AuthTemplate from "@/components/templates/AuthTemplate";
+import AuthForm from "@/components/organisms/auth/AuthForm";
+import { COLORS } from "@/constants/colorConstant";
 
 function Login() {
     const [errorMessage, setErrorMessage] = useState<string>("");
@@ -51,7 +52,13 @@ function Login() {
                 link={
                     <p className="text-center">
                         Belum memiliki akun?{" "}
-                        <Link to="/auth/register" className="font-bold text-[#8f40f6]">
+                        <Link
+                            to="/auth/register"
+                            className={`font-bold`}
+                            style={{ color: COLORS.primary }}
+                            onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.hover)}
+                            onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.primary)}
+                        >
                             Buat akun baru sekarang.
                         </Link>
                     </p>
