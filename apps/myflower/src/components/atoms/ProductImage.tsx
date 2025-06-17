@@ -1,11 +1,12 @@
 interface ProductImageProps {
     src: string;
     alt: string;
+    className?: string;
 }
 
-const ProductImage = ({ src, alt }: ProductImageProps) => {
+const ProductImage = ({ src, alt, className = "max-w-sm" }: ProductImageProps) => {
     return (
-        <div className="max-w-sm overflow-hidden rounded-xl">
+        <div className={`overflow-hidden rounded-xl group ${className}`}>
             <img
                 src={src}
                 alt={alt}

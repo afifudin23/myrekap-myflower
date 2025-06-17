@@ -1,7 +1,7 @@
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
 import Login from "@/pages/auth/LoginPage";
 import Register from "@/pages/auth/RegisterPage";
-import CartPage from "@/pages/CartPage";
+import CartPage from "@/pages/carts/CartPage";
 import ProductDetailPage from "@/pages/products/ProductDetailPage";
 import ProductPage from "@/pages/products/ProductPage";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";

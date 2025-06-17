@@ -1,5 +1,5 @@
 import Button from "@/components/atoms/Button";
-import ProductImage from "@/components/atoms/products/ProductImage";
+import ProductImage from "@/components/atoms/ProductImage";
 import ProductInfo from "@/components/molecules/products/ProductInfo";
 import { PiShoppingCartSimpleBold } from "react-icons/pi";
 
