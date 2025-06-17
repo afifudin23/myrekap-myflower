@@ -7,14 +7,22 @@ import { InternalException } from "./exceptions";
 import ErrorCode from "./constants/error-code";
 import cookieParser from "cookie-parser";
 import path from "path";
+import env from "@/config/env";
 
 const app = express();
+const allowedOrigins = env.CLIENT_ORIGINS.split(",") || [];
 
 // middlewares
 app.use(helmet()); // for security
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
         credentials: true, // Allow cookies to be sent
         exposedHeaders: ["Content-Disposition"], // Expose Content-Disposition header for file downloads
     })

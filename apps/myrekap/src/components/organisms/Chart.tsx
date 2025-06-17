@@ -17,7 +17,6 @@ ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip,
 
 function Chart({ monthYear, orders }: { monthYear: Date, orders: OrderSummaryType[] }) {
     const { salesPerDay, revenuePerDay } = getSummaryPerDay(orders);
-    console.log(123)
 
     const data = {
         labels: Array.from({ length: daysInMonth(monthYear) }, (_, i) => i + 1), // tanggal 1-30

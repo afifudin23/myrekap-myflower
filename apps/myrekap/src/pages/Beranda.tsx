@@ -38,7 +38,6 @@ function Beranda() {
         const fetchOrders = async () => {
             const month = monthYear ? monthYear.getMonth() + 1 : new Date().getMonth() + 1; // getMonth() is zero-based
             const year = monthYear ? monthYear.getFullYear() : new Date().getFullYear();
-            console.log(month, year);
             const params = {
                 month: month.toString().padStart(2, "0"),
                 year: year.toString(),

@@ -37,10 +37,9 @@ const Pagination: React.FC<PaginationProps> = ({ filteredOrders, itemsPerPage })
 
     const startIdx = (currentPage - 1) * itemsPerPage;
     const currentData = filteredOrders.slice(startIdx, startIdx + itemsPerPage);
-    console.log(currentData)
 
     return (
-        <div>
+        <div className="">
             {/* List Data */}
             <Card filteredOrders={currentData} />
 

@@ -2,6 +2,7 @@ import { object, string } from "zod";
 
 const envSchema = object({
     PORT: string().transform((val) => parseInt(val, 10)),
+    CLIENT_ORIGINS: string(),
     DATABASE_URL: string(),
     SHADOW_DATABASE_URL: string(),
     JWT_TOKEN: string().min(20),
