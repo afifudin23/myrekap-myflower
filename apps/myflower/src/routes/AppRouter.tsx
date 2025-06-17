@@ -1,11 +1,13 @@
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
 import Login from "@/pages/auth/LoginPage";
 import Register from "@/pages/auth/RegisterPage";
+import CartPage from "@/pages/CartPage";
 import ProductDetailPage from "@/pages/products/ProductDetailPage";
 import ProductPage from "@/pages/products/ProductPage";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 function AppRouter() {
+
     return (
         <Router>
             <Routes>
@@ -21,6 +23,8 @@ function AppRouter() {
                     <Route index element={<ProductPage />} />
                     <Route path=":id" element={<ProductDetailPage />} />
                 </Route>
+
+                <Route path="/carts" element={<CartPage />} />
 
                 <Route path="*" element={<h1>Not Found</h1>} />
             </Routes>

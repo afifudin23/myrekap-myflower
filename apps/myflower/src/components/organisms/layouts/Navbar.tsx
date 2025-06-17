@@ -4,14 +4,16 @@ import { memo } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { PiShoppingCartSimpleBold } from "react-icons/pi";
 import { RiFlowerLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = memo(function () {
+    const navigate = useNavigate();
     const handleUserClick = () => {
         console.log("User is clicked");
     }
     const handleCartClick = (e?: React.MouseEvent) => {
         e?.stopPropagation();
-        console.log("Cart is clicked");
+        navigate("/carts");
     };
     return (
         <nav className="fixed top-0 left-0 h-20 z-20 shadow-md p-3 px-10 w-full flex justify-between bg-white items-center">

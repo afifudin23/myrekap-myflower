@@ -1,5 +1,5 @@
-function SectionTitle({ children }: { children: React.ReactNode }) {
-    return <h2 className="text-xl font-bold text-gray-800">{children}</h2>;
+function SectionTitle({ children, className = "text-xl font-bold" }: { children: React.ReactNode, className?: string }) {
+    return <h2 className={`text-gray-800 ${className}`}>{children}</h2>;
 }
 
 export default SectionTitle;
