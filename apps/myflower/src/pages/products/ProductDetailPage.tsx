@@ -4,8 +4,7 @@ import MainLayout from "@/components/templates/MainLayout";
 import ProductDetailSection from "@/components/organisms/products/ProductDetailSection";
 import ProductReviewSection from "@/components/organisms/products/ProductReviewSection";
 import ReviewForm from "@/components/organisms/products/ReviewForm";
-import { Link } from "react-router-dom";
-import { IoArrowBack } from "react-icons/io5"
+import BackButton from "@/components/atoms/BackButton";
 interface Product {
     id: string;
     name: string;
@@ -36,11 +35,8 @@ function ProductDetailPage() {
 
     return (
         <MainLayout>
-            <div className="grid grid-cols-5">
-                <Link to="/products" className="text-slate-600 col-span-1">
-                    <IoArrowBack size={70} />
-                </Link>
-                <div className="max-w-4xl space-y-10 col-span-4">
+                <BackButton className="mb-5 ml-52"/>
+                <div className="max-w-4xl space-y-10 mx-auto">
                     <ProductDetailSection product={product} />
                     <ReviewForm
                         onSubmit={(rating, comment, productId) => {
@@ -58,7 +54,6 @@ function ProductDetailPage() {
                         ]}
                     />
                 </div>
-            </div>
         </MainLayout>
     );
 }
