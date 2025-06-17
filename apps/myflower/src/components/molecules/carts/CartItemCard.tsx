@@ -1,5 +1,6 @@
 import ProductImage from "@/components/atoms/ProductImage";
 import QuantityButton from "@/components/atoms/QuantityButton";
+import { FaTrashCan } from "react-icons/fa6";
 
 export interface CartItemProps {
     id: string;
@@ -31,14 +32,14 @@ function CartItemCard({ item }: { item: CartItemProps }) {
                 <p className="text-gray-500 text-sm">Rp {item.price.toLocaleString()}</p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
                 <QuantityButton onClick={handleDecrease}>-</QuantityButton>
                 <span className="text-sm font-medium">{item.quantity}</span>
                 <QuantityButton onClick={handleIncrease}>+</QuantityButton>
             </div>
 
-            <button onClick={handleRemove} className="text-red-500 hover:text-red-600 text-sm">
-                Hapus
+            <button onClick={handleRemove} className="bg-red-500 hover:bg-red-600 text-sm text-white p-2 rounded-lg">
+                <FaTrashCan />
             </button>
         </div>
     );

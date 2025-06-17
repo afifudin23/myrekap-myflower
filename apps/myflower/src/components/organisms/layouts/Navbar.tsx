@@ -10,7 +10,7 @@ const Navbar = memo(function () {
     const navigate = useNavigate();
     const handleUserClick = () => {
         console.log("User is clicked");
-    }
+    };
     const handleCartClick = (e?: React.MouseEvent) => {
         e?.stopPropagation();
         navigate("/carts");
@@ -26,8 +26,11 @@ const Navbar = memo(function () {
             </div>
 
             <div onClick={handleUserClick} className="flex gap-3 items-center cursor-pointer">
-                <SmallButton type="button" colors={COLORS} className="text-lg rounded-xl" onClick={handleCartClick}>
+                <SmallButton type="button" colors={COLORS} className="text-lg rounded-lg relative" onClick={handleCartClick}>
                     <PiShoppingCartSimpleBold />
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center font-nunito font-bold rounded-full">
+                        9
+                    </span>
                 </SmallButton>
                 <div className="flex flex-col items-center">
                     <div className="text-lg font-nunito leading-none">zhanka</div>
