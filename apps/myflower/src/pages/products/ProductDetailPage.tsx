@@ -4,6 +4,8 @@ import MainLayout from "@/components/templates/MainLayout";
 import ProductDetailSection from "@/components/organisms/products/ProductDetailSection";
 import ProductReviewSection from "@/components/organisms/products/ProductReviewSection";
 import ReviewForm from "@/components/organisms/products/ReviewForm";
+import { Link } from "react-router-dom";
+import { IoArrowBack } from "react-icons/io5"
 interface Product {
     id: string;
     name: string;
@@ -27,27 +29,35 @@ function ProductDetailPage() {
             price: 50000,
             stock: 10,
         };
-        setProduct(fakeData); // Ganti dengan fetch API real di production
+        setProduct(fakeData);
     }, [id]);
 
     if (!product) return <p>Loading...</p>;
 
     return (
         <MainLayout>
-            <div className="max-w-4xl mx-auto p-4">
-                <ProductDetailSection product={product} />
-                <ReviewForm
-                    onSubmit={(rating, comment) => {
-                        console.log("Rating:", rating, "Komentar:", comment);
-                    }}
-                />
-                <ProductReviewSection
-                    averageRating={4.2}
-                    reviews={[
-                        { id: "1", user: "Budi", rating: 5, comment: "Produknya bagus banget!" },
-                        { id: "2", user: "Sari", rating: 4, comment: "Sesuai deskripsi. Fast respon seller!" },
-                    ]}
-                />
+            <div className="grid grid-cols-5">
+                <Link to="/products" className="text-slate-600 col-span-1">
+                    <IoArrowBack size={70} />
+                </Link>
+                <div className="max-w-4xl space-y-10 col-span-4">
+                    <ProductDetailSection product={product} />
+                    <ReviewForm
+                        onSubmit={(rating, comment, productId) => {
+                            console.log("Rating:", rating, "Komentar:", comment);
+                            console.log(productId);
+                        }}
+                    />
+                    <ProductReviewSection
+                        reviews={[
+                            { id: "1", user: "Budi", rating: 5, comment: "Produknya bagus banget!" },
+                            { id: "2", user: "Sari", rating: 4, comment: "Sesuai deskripsi. Fast respon seller!" },
+                            { id: "3", user: "Sari", rating: 3, comment: "Sesuai deskripsi. Fast respon seller!" },
+                            { id: "4", user: "Sari", rating: 1, comment: "Sesuai deskripsi. Fast respon seller!" },
+                            { id: "5", user: "Sari", rating: 4, comment: "Sesuai deskripsi. Fast respon seller!" },
+                        ]}
+                    />
+                </div>
             </div>
         </MainLayout>
     );

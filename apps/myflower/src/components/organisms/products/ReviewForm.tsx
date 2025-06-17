@@ -3,18 +3,20 @@ import { useState } from "react";
 import TextArea from "@/components/atoms/TextArea";
 import RatingSelector from "@/components/molecules/RatingSelector";
 import Button from "@/components/atoms/Button";
+import SectionTitle from "@/components/atoms/SectionTitle";
 
 interface ReviewFormProps {
-    onSubmit: (rating: number, comment: string) => void;
+    onSubmit: (rating: number, comment: string, productId: number) => void;
+    className?: string;
 }
 
-const ReviewForm = ({ onSubmit }: ReviewFormProps) => {
+const ReviewForm = ({ onSubmit, className }: ReviewFormProps) => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
 
     const handleSubmit = () => {
         if (rating > 0 && comment.trim()) {
-            onSubmit(rating, comment.trim());
+            onSubmit(rating, comment.trim(), 123);
             setRating(0);
             setComment("");
         } else {
@@ -23,8 +25,8 @@ const ReviewForm = ({ onSubmit }: ReviewFormProps) => {
     };
 
     return (
-        <div className="space-y-4 mt-6">
-            <h3 className="text-lg font-semibold">Beri Ulasan</h3>
+        <section className={`space-y-3 ${className}`}>
+            <SectionTitle>Beri Ulasan</SectionTitle>
             <RatingSelector rating={rating} onSelect={setRating} />
             <TextArea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Tulis ulasan Anda..." />
             <Button
@@ -35,7 +37,7 @@ const ReviewForm = ({ onSubmit }: ReviewFormProps) => {
             >
                 Kirim Ulasan
             </Button>
-        </div>
+        </section>
     );
 };
 

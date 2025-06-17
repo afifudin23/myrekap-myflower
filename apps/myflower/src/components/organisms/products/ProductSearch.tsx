@@ -12,8 +12,7 @@ const ProductSearch = () => {
                     className="border border-gray-300 px-5 py-1 rounded-lg text-base w-full 2xl:py-2"
                 />
                 <SmallButton
-                    className={`text-white py-1 px-1 rounded-lg transition gap-2`}
-                    bolder="font-medium"
+                    className={`text-white py-1 px-1 rounded-lg transitiontext-sm 2xl:text-base`}
                     colors={COLORS}
                 >
                     <IoFilterSharp />

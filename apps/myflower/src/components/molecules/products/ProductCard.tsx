@@ -1,6 +1,7 @@
 import Card from "@/components/atoms/Card";
 import ProductImage from "@/components/atoms/products/ProductImage";
 import SmallButton from "@/components/atoms/SmallButton";
+import { COLORS } from "@/constants/colorConstant";
 import { PiShoppingCartSimpleBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +26,7 @@ function ProductCard({ product }: any) {
                 <div>
                     <SmallButton
                         type="button"
-                        colors={{ primary: "#8f40f6", hover: "#773dc4" }}
+                        colors={COLORS}
                         onClick={handleAddToCart}
                     >
                         <PiShoppingCartSimpleBold />
