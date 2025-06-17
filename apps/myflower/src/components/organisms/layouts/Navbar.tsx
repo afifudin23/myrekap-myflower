@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar = memo(function () {
     const navigate = useNavigate();
-    const handleUserClick = () => {
-        console.log("User is clicked");
+    const handleProfileClick = () => {
+        navigate("/profile");
     };
     const handleCartClick = (e?: React.MouseEvent) => {
         e?.stopPropagation();
@@ -25,7 +25,7 @@ const Navbar = memo(function () {
                 </b>
             </div>
 
-            <div onClick={handleUserClick} className="flex gap-3 items-center cursor-pointer">
+            <div onClick={handleProfileClick} className="flex gap-3 items-center cursor-pointer">
                 <SmallButton type="button" colors={COLORS} className="text-lg rounded-lg relative" onClick={handleCartClick}>
                     <PiShoppingCartSimpleBold />
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center font-nunito font-bold rounded-full">

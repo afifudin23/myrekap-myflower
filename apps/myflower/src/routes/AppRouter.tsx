@@ -4,6 +4,7 @@ import Register from "@/pages/auth/RegisterPage";
 import CartPage from "@/pages/carts/CartPage";
 import ProductDetailPage from "@/pages/products/ProductDetailPage";
 import ProductPage from "@/pages/products/ProductPage";
+import ProfilePage from "@/pages/profiles/ProfilePage";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 function AppRouter() {
@@ -25,7 +26,7 @@ function AppRouter() {
                 </Route>
 
                 <Route path="/carts" element={<CartPage />} />
-
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="*" element={<h1>Not Found</h1>} />
             </Routes>
         </Router>

@@ -48,7 +48,7 @@ const CartPage = () => {
         console.log("Checkout");
     }
     return (
-        <MainLayout className="space-y-10">
+        <MainLayout className="space-y-10 w-7/12">
             <SectionTitle className="text-3xl font-bold">Keranjang Anda</SectionTitle>
             <CartListSection items={itemsDummy} />
             <CartSummary totalPrice={totalPrice} onClick={handleCheckout} />

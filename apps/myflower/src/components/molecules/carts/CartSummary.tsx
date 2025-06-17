@@ -11,8 +11,8 @@ function CartSummary({ totalPrice, onClick }: CartSummaryProps) {
     return (
         <div className="flex justify-between">
             <BackButton />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-1 items-center lg:gap-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 text-center gap-1 font-semibold text-base lg:text-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-1 items-center justify-center lg:gap-3">
+                <div className="grid grid-cols-1 2xl:grid-cols-2  text-center gap-0 font-semibold text-base lg:text-lg">
                     <p>Total Harga:</p>
                     <p>Rp {totalPrice.toLocaleString()}</p>
                 </div>
