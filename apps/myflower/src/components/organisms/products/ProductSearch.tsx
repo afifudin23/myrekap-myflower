@@ -8,7 +8,7 @@ const ProductSearch = () => {
             <div className="flex gap-4">
                 <input
                     type="text"
-                    placeholder="Cari berdasarkan invoice, nama, harga, alamat pengiriman..."
+                    placeholder="Cari berdasarkan nama produk dan deskripsi..."
                     className="border border-gray-300 px-5 py-1 rounded-lg text-base w-full 2xl:py-2"
                 />
                 <SmallButton
