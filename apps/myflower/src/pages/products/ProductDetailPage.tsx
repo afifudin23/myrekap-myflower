@@ -35,7 +35,7 @@ function ProductDetailPage() {
 
     return (
         <MainLayout>
-                <BackButton className="mb-5 ml-52"/>
+                <BackButton className="mb-5">Kembali ke Produk</BackButton>
                 <div className="max-w-4xl space-y-10 mx-auto">
                     <ProductDetailSection product={product} />
                     <ReviewForm

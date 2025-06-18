@@ -1,5 +1,5 @@
 import Card from "@/components/atoms/Card";
-import ProductImage from "@/components/atoms/ProductImage";
+import Image from "@/components/atoms/Image";
 import SmallButton from "@/components/atoms/SmallButton";
 import { COLORS } from "@/constants/colorConstant";
 import { PiShoppingCartSimpleBold } from "react-icons/pi";
@@ -16,7 +16,9 @@ function ProductCard({ product }: any) {
     };
     return (
         <Card className="group flex flex-col gap-3 cursor-default" onClick={handleCardClick}>
-            <ProductImage src={product.image} alt={product.name} />
+            <div className="overflow-hidden rounded-xl group">
+                <Image src={product.image} alt={product.name} className="w-full transition-all duration-300 ease-in-out group-hover:scale-110" />
+            </div>
             <div className="flex justify-between items-end gap-2">
                 <div className="font-semibold">
                     <p className="text-slate-500">STOK: {product.stock}</p>
@@ -24,11 +26,7 @@ function ProductCard({ product }: any) {
                     <p>Rp {product.price.toLocaleString()}</p>
                 </div>
                 <div>
-                    <SmallButton
-                        type="button"
-                        colors={COLORS}
-                        onClick={handleAddToCart}
-                    >
+                    <SmallButton type="button" colors={COLORS} onClick={handleAddToCart}>
                         <PiShoppingCartSimpleBold />
                     </SmallButton>
                 </div>

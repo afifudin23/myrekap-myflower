@@ -1,6 +1,6 @@
-import Avatar from "@/components/atoms/Avatar";
 import BackButton from "@/components/atoms/BackButton";
 import Button from "@/components/atoms/Button";
+import Image from "@/components/atoms/Image";
 import ProfileField from "@/components/atoms/ProfileField";
 import SectionTitle from "@/components/atoms/SectionTitle";
 import MainLayout from "@/components/templates/MainLayout";
@@ -8,10 +8,10 @@ import MainLayout from "@/components/templates/MainLayout";
 function ProfilePage() {
     return (
         <MainLayout className="w-8/12 space-y-6">
-            <BackButton />
+            <BackButton>Kembali ke Produk</BackButton>
             <SectionTitle className="text-4xl font-bold break-words">Profile Saya</SectionTitle>
             <div className="flex items-start gap-6 ">
-                <Avatar src="/assets/images/user.jpeg" alt="User Avatar" />
+                <Image src="/assets/images/user.jpeg" alt="User Avatar" className="max-w-xs" />
                 <div className="flex flex-col justify-between w-full h-96">
                     <div className="space-y-4">
                         <ProfileField label="Nama" value="Unknown Anonymous" />
