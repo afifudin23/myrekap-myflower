@@ -1,4 +1,4 @@
-import ProductImage from "@/components/atoms/ProductImage";
+import Image from "@/components/atoms/Image";
 import QuantityButton from "@/components/atoms/QuantityButton";
 import { FaTrashCan } from "react-icons/fa6";
 
@@ -25,8 +25,7 @@ function CartItemCard({ item }: { item: CartItemProps }) {
 
     return (
         <div className="flex gap-4 items-center p-4 bg-[#fafafa] rounded-xl shadow-sm">
-            <ProductImage src={item.imageUrl} alt={item.name} className="w-16 h-16" />
-
+            <Image src={item.imageUrl} alt={item.name} className="w-16 h-16" />
             <div className="flex-1">
                 <h3 className="text-sm font-semibold">{item.name}</h3>
                 <p className="text-gray-500 text-sm">Rp {item.price.toLocaleString()}</p>

@@ -5,7 +5,7 @@ interface AvatarProps {
 }
 
 function Image({ src, alt, className }: AvatarProps) {
-    return <img src={src} alt={alt} className={`rounded-xl object-contain border border-gray-300 ${className}`} />;
+    return <img src={src} alt={alt} className={`rounded-xl object-cover border border-gray-300 ${className}`} />;
 }
 
 export default Image;

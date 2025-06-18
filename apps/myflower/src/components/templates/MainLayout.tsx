@@ -10,7 +10,7 @@ function MainLayout({ children, className = "w-10/12" }: LayoutProps) {
     return (
         <div className="min-h-screen flex flex-col pb-16">
             <Navbar />
-            <main className={`mx-auto mt-32 px-10 overflow-auto pb-10 ${className}`}>{children}</main>
+            <main className={`mx-auto mt-32 px-10 ${className}`}>{children}</main>
         </div>
     );
 }
