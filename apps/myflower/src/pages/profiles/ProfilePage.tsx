@@ -4,8 +4,14 @@ import Image from "@/components/atoms/Image";
 import ProfileField from "@/components/atoms/ProfileField";
 import SectionTitle from "@/components/atoms/SectionTitle";
 import MainLayout from "@/components/templates/MainLayout";
+import { useNavigate } from "react-router-dom";
 
 function ProfilePage() {
+    const navigate = useNavigate();
+
+    const handleLogout= () => {
+        navigate("/auth/login");
+    }
     return (
         <MainLayout className="w-full max-w-7xl space-y-6">
             <BackButton>Kembali ke Produk</BackButton>
@@ -35,6 +41,7 @@ function ProfilePage() {
                             type="button"
                             colors={{ primary: "#8f40f6", hover: "#773dc4" }}
                             className="sm:w-[15rem] w-full p-2"
+                            onClick={handleLogout}
                         >
                             Logout
                         </Button>

@@ -2,6 +2,7 @@ import SectionTitle from "@/components/atoms/SectionTitle";
 import CartSummary from "@/components/molecules/carts/CartSummary";
 import CartListSection from "@/components/organisms/carts/CartListSection";
 import MainLayout from "@/components/templates/MainLayout";
+import { useNavigate } from "react-router-dom";
 
 const itemsDummy = [
     {
@@ -43,9 +44,10 @@ const itemsDummy = [
 
 
 const CartPage = () => {
+    const navigate = useNavigate();
     const totalPrice = itemsDummy.reduce((total, item) => total + item.price * item.quantity, 0);
     const handleCheckout = () => {
-        console.log("Checkout");
+        navigate("/checkout");
     }
     return (
         <MainLayout className="space-y-10 w-7/12">

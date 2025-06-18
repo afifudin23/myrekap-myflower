@@ -61,7 +61,7 @@ const dummyProducts = [
     },
 ];
 
-function ProductPage() {
+function ProductsPage() {
     return (
         <MainLayout>
             <div className="flex flex-col gap-10">
@@ -72,4 +72,4 @@ function ProductPage() {
     );
 }
 
-export default ProductPage;
+export default ProductsPage;
