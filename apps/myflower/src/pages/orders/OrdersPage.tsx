@@ -5,12 +5,12 @@ import BackButton from "@/components/atoms/BackButton";
 
 function OrdersPage() {
     const dummyOrders = [
-        { id: "1", date: "2025-06-17", total: 250000, status: "Diproses" },
-        { id: "2", date: "2025-06-15", total: 180000, status: "Selesai" },
+        { id: "INV-250607-131505", date: "2025-06-17", total: 250000, status: "Diproses" },
+        { id: "INV-250607-131305", date: "2025-06-15", total: 180000, status: "Selesai" },
     ];
 
     return (
-        <MainLayout className="space-y-6 max-w-4xl mx-auto">
+        <MainLayout className="w-full space-y-6 max-w-4xl mx-auto">
             <BackButton to="/products">Kembali ke Produk</BackButton>
             <SectionTitle className="text-3xl font-bold">Pesanan Saya</SectionTitle>
 

@@ -15,7 +15,7 @@ function CheckoutPage() {
                 <div className="space-y-4">
                     <h3 className="text-xl font-semibold">Informasi Pengiriman</h3>
                     <InputText id="name" className="p-2">
-                        Nama Pemesan
+                        Nama Penerima
                     </InputText>
                     <InputText id="message" className="p-2">
                         Pesan Ucapan
@@ -25,6 +25,9 @@ function CheckoutPage() {
                     </InputText>
                     <InputText id="address" className="p-2">
                         Alamat Pengiriman
+                    </InputText>
+                    <InputText id="address" className="p-2">
+                        Kategori Pembeli
                     </InputText>
                     <InputText id="note" className="p-2">
                         Catatan (Opsional)

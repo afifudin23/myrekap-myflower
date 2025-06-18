@@ -20,7 +20,7 @@ function OrderCard({ order }: OrderCardProps) {
     return (
         <div className="p-4 border rounded-lg shadow-sm bg-white space-y-2">
             <div className="flex justify-between items-center">
-                <h3 className="font-semibold text-lg">Pesanan #{order.id}</h3>
+                <h3 className="font-semibold text-base">Pesanan #{order.id}</h3>
                 <span className="text-sm text-gray-500">{order.date}</span>
             </div>
 
@@ -37,7 +37,7 @@ function OrderCard({ order }: OrderCardProps) {
             <div className="pt-2">
                 <Button
                     type="button"
-                    className="w-full"
+                    className="w-full py-1 mx-auto"
                     colors={{ primary: "#8f40f6", hover: "#773dc4" }}
                     onClick={handleDetailClick}
                 >
