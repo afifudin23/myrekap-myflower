@@ -10,7 +10,7 @@ function UpdateUser() {
     return (
         <MainLayout>
             <div className="flex justify-between">
-                <Title title="Update User" subtitle="Mengupdate User Sesuai Kebutuhan" />
+                <Title title="Update User Admin" subtitle="Mengupdate User Sesuai Kebutuhan" />
                 <button
                     onClick={() => {
                         navigate(-1);

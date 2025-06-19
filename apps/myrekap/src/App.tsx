@@ -11,6 +11,8 @@ import ReportOrder from "@/pages/ReportOrder";
 import UpdateOrder from "@/pages/UpdateOrder";
 import UpdateUser from "@/pages/UpdateUser";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import ProductPage from "@/pages/products/ProductPage";
+import CustomerPage from "@/pages/CustomerPage";
 
 function App() {
     return (
@@ -27,6 +29,8 @@ function App() {
                         <Route path="/order-summary/print" element={<PrintSummary />} />
                         <Route path="/order-summary/print/report" element={<ReportOrder />} />
                         <Route path="/input-order/" element={<AddOrder />} />
+                        <Route path="/products/" element={<ProductPage />} />
+                        <Route path="/customers/" element={<CustomerPage />} />
                         <Route path="/administrator/" element={<Administrator />} />
                         <Route path="/administrator/add" element={<AddUser />} />
                         <Route path="/administrator/edit/:id" element={<UpdateUser />} />

@@ -10,7 +10,7 @@ function AddUser() {
     return (
         <MainLayout>
             <div className="flex justify-between">
-                <Title title="Tambah User" subtitle="Menambah User Baru Sesuai Kebutuhan" />
+                <Title title="Tambah User Admin" subtitle="Menambah User Baru Sesuai Kebutuhan" />
                 <button
                     onClick={() => {
                         navigate(-1);
