@@ -57,7 +57,7 @@ const TableUser = () => {
     };
     return (
         <>
-            <div className="overflow-auto mt-8 rounded-lg shadow-[0_3px_10px_rgb(0,0,0,0.1)] hidden lg:block">
+            <div className="overflow-auto rounded-lg shadow-[0_3px_10px_rgb(0,0,0,0.1)] hidden lg:block">
                 <table className="w-full text-sm 2xl:text-lg ">
                     <thead className="bg-gray-50 border-b-2 border-gray-300">
                         <tr className="tracking-wide font-semibold text-left cursor-default">

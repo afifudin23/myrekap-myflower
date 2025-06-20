@@ -1,28 +1,28 @@
 import Title from "@/components/molecules/Title";
-import OrderSummaryCard from "@/components/organisms/OrderSummaryCard";
+import ProductForm from "@/components/organisms/products/ProductForm";
 import MainLayout from "@/components/templates/MainLayout";
-import { removeOrderCookies } from "@/utils/orderCookies";
+import { useForm } from "react-hook-form";
 import { TbLogout2 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
-function OrderSummary() {
+function ProductEditPage() {
     const navigate = useNavigate();
+    const { control } = useForm();
     return (
         <MainLayout>
             <div className="flex justify-between">
-                <Title title="Order Summary" subtitle="Mengelola Data Order Summary" />
+                <Title title="Edit Produk" subtitle="Mengelola Data Produk Penjualan" />
                 <button
                     onClick={() => {
-                        navigate("/beranda");
-                        removeOrderCookies();
+                        navigate(-1);
                     }}
                 >
                     <TbLogout2 className="text-5xl 2xl:text-6xl" />
                 </button>
             </div>
-            <OrderSummaryCard />
+            <ProductForm control={control} />
         </MainLayout>
     );
 }
 
-export default OrderSummary;
+export default ProductEditPage;

@@ -1,6 +1,9 @@
+import SmallButton from "@/components/atoms/SmallButton";
 import Title from "@/components/molecules/Title";
 import ProductList from "@/components/organisms/products/ProductList";
 import MainLayout from "@/components/templates/MainLayout";
+import { MdAddToPhotos } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const dummyProducts = [
     {
@@ -65,7 +68,9 @@ function ProductPage() {
     return (
         <MainLayout>
             <Title title="Produk Saya" subtitle="Mengelola Data Produk Penjualan" />
-
+            <Link to="/administrator/add" className="inline-block">
+                <SmallButton className="bg-[#4fcd53] hover:bg-[#42b146] py-1 2xl:py-2 px-4 font-bold mb-8"><MdAddToPhotos /> Tambah</SmallButton>
+            </Link>
             <ProductList products={dummyProducts} />
         </MainLayout>
     );

@@ -4,7 +4,7 @@ export type InputTextProps = {
     label: string;
     name: string;
     error?: string;
-    control: Control<any>;
+    control?: Control<any>;
 };
 
 export type InputDropdownProps = {

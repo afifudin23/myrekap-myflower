@@ -14,6 +14,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ProductPage from "@/pages/products/ProductPage";
 import CustomerPage from "@/pages/CustomerPage";
 import ProductDetailPage from "@/pages/products/ProductDetailPage";
+import ProductEditPage from "@/pages/products/ProductEditPage";
 
 function App() {
     return (
@@ -33,7 +34,7 @@ function App() {
                         <Route path="/products/">
                             <Route index element={<ProductPage />} />
                             <Route path=":id" element={<ProductDetailPage />} />
-                            <Route path=":id/edit" element={<ProductPage />} />
+                            <Route path=":id/edit" element={<ProductEditPage />} />
                         </Route>
                         <Route path="/customers/" element={<CustomerPage />} />
                         <Route path="/administrator/" element={<Administrator />} />
