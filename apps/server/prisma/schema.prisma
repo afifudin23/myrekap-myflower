@@ -21,77 +21,125 @@ model User {
   id        String   @id @default(cuid())
   username  String   @unique
   email     String   @unique
-  pin       String
-  role      Role     @default(ADMIN)
+  password  String
+  role      Role
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  orders Order[]
 
   @@map("users")
 }
 
 enum Role {
-  ADMIN
-  SUPERADMIN
+  ADMIN      @map("admin")
+  SUPERADMIN @map("superadmin")
+  CUSTOMER   @map("customer")
 }
 
-model OrderSummary {
-  id                    String           @id @default(cuid())
-  invoiceNumber         String           @unique @map("invoice_number")
-  customerName          String           @map("customer_name")
-  flowerCategory        FlowerCategory   @map("flower_category")
-  quantity              Int              @map("quantity")
-  greetingMessage       String           @map("greeting_message")
-  orderDate             DateTime         @default(now()) @map("order_date")
-  deliveryDate          DateTime         @map("delivery_date")
-  deliveryAddress       String           @map("delivery_address")
-  customerCategory      CustomerCategory @map("customer_category")
-  price                 Int              @map("price")
-  shippingCost          Int              @map("shipping_cost")
-  isPaid                Boolean          @map("is_paid")
-  paymentMethod         PaymentMethod?   @map("payment_method")
-  previousPaymentStatus String?          @map("previous_payment_status")
-  paymentStatus         PaymentStatus    @map("payment_status")
-  orderStatus           OrderStatus      @default(IN_PROCESS) @map("order_status")
-  paymentProof          PaymentProof?
-  finishedProduct       FinishedProduct?
+model Order {
+  id               String           @id @default(cuid())
+  userId           String           @map("user_id")
+  invoiceNumber    String           @unique @map("invoice_number")
+  customerName     String           @map("customer_name")
+  customerCategory CustomerCategory @map("customer_category")
 
-  @@map("order_summaries")
+  // Delivery
+  deliveryOption        DeliveryOption @map("delivery_option")
+  deliveryAddress       String?        @map("delivery_address")
+  deliveryDate          DateTime?      @map("delivery_date")
+  readyDate             DateTime       @map("ready_date")
+
+  // Payment
+  totalPrice            Int            @map("total_price")
+  shippingCost          Int?           @map("shipping_cost")
+  paymentMethod         PaymentMethod? @map("payment_method")
+  paymentStatus         PaymentStatus  @map("payment_status")
+  previousPaymentStatus PaymentStatus? @map("previous_payment_status")
+
+  // Status
+  orderStatus           OrderStatus    @default(IN_PROCESS) @map("order_status")
+  orderDate             DateTime       @default(now()) @map("order_date")
+
+  // Relation
+  paymentProof    PaymentProof?
+  finishedProduct FinishedProduct?
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id              String  @id @default(cuid())
+  orderId         String  @map("order_id")
+  productId       String  @map("product_id")
+  quantity        Int     @map("quantity")
+  greetingMessage String? @map("greeting_message")
+  unitPrice       Int     @map("unit_price")
+  totalPrice      Int     @map("total_price")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
 }
 
 model PaymentProof {
-  id             String       @id @default(cuid())
-  fileName       String       @map("file_name")
-  size           Int          @map("size")
-  publicId       String       @map("public_id")
-  secureUrl      String       @map("secure_url")
-  orderSummaryId String       @unique @map("order_summary_id")
-  orderSummary   OrderSummary @relation(fields: [orderSummaryId], references: [id], onDelete: Cascade)
+  id        String @id @default(cuid())
+  fileName  String @map("file_name")
+  size      Int    @map("size")
+  publicId  String @map("public_id")
+  secureUrl String @map("secure_url")
+  orderId   String @unique @map("order_id")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("payment_proofs")
 }
 
 model FinishedProduct {
-  id             String       @id @default(cuid())
-  fileName       String       @map("file_name")
-  size           Int          @map("size")
-  publicId       String       @map("public_id")
-  secureUrl      String       @map("secure_url")
-  orderSummaryId String       @unique @map("order_summary_id")
-  orderSummary   OrderSummary @relation(fields: [orderSummaryId], references: [id], onDelete: Cascade)
+  id        String @id @default(cuid())
+  fileName  String @map("file_name")
+  size      Int    @map("size")
+  publicId  String @map("public_id")
+  secureUrl String @map("secure_url")
+  orderId   String @unique @map("order_id")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("finished_products")
 }
 
-enum FlowerCategory {
-  TAFEL_BOUQUET @map("tafel_bouquet")
-  BOUQUET       @map("bouquet")
-  HANDS_BOUQUET @map("hands_bouquet")
-  KRANS         @map("krans")
-  TUTUP_PETI    @map("tutup_peti")
-  BUNGA_PAPAN   @map("bunga_papan")
-  PAPER_FLOWER  @map("paper_flower")
-  BUNGA_BALON   @map("bunga_balon")
-  BLOOMBOX      @map("bloombox")
+model Product {
+  id          String @id @default(cuid())
+  name        String @map("name")
+  price       Int    @map("price")
+  stock       Int    @map("stock")
+  description String @map("description")
+
+  orderItems OrderItem[]
+  images     ProductImage[]
+
+  @@map("products")
+}
+
+model ProductImage {
+  id        String @id @default(cuid())
+  fileName  String @map("file_name")
+  size      Int    @map("size")
+  publicId  String @map("public_id")
+  secureUrl String @map("secure_url")
+  productId String @map("product_id")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+enum DeliveryOption {
+  DELIVERY @map("delivery")
+  PICKUP   @map("pickup")
 }
 
 enum CustomerCategory {
@@ -106,17 +154,20 @@ enum CustomerCategory {
 enum PaymentMethod {
   TRANSFER @map("transfer")
   CASH     @map("cash")
-  PENDING  @map("pending")
+  GATEWAY  @map("gateway")
+  COD      @map("cod")
 }
 
 enum OrderStatus {
-  TERKIRIM   @map("terkirim")
   IN_PROCESS @map("in_process")
-  DIBATALKAN @map("dibatalkan")
+  COMPLETED  @map("completed")
+  CANCELLED  @map("cancelled")
 }
 
 enum PaymentStatus {
-  LUNAS       @map("lunas")
-  BELUM_LUNAS @map("belum_lunas")
-  BATAL       @map("batal")
+  PENDING   @map("pending")
+  UNPAID    @map("unpaid")
+  PAID      @map("paid")
+  FAILED    @map("failed")
+  CANCELLED @map("cancelled")
 }
