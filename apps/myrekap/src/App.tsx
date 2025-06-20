@@ -15,6 +15,7 @@ import ProductPage from "@/pages/products/ProductPage";
 import CustomerPage from "@/pages/CustomerPage";
 import ProductDetailPage from "@/pages/products/ProductDetailPage";
 import ProductEditPage from "@/pages/products/ProductEditPage";
+import ProductAddPage from "@/pages/products/ProductAddPage";
 
 function App() {
     return (
@@ -35,6 +36,7 @@ function App() {
                             <Route index element={<ProductPage />} />
                             <Route path=":id" element={<ProductDetailPage />} />
                             <Route path=":id/edit" element={<ProductEditPage />} />
+                            <Route path="new" element={<ProductAddPage />} />
                         </Route>
                         <Route path="/customers/" element={<CustomerPage />} />
                         <Route path="/administrator/" element={<Administrator />} />
