@@ -10,7 +10,7 @@ import ReceiptPreview from "@/pages/ReceiptViewer";
 import ReportOrder from "@/pages/ReportOrder";
 import UpdateOrder from "@/pages/UpdateOrder";
 import UpdateUser from "@/pages/UpdateUser";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import ProductPage from "@/pages/products/ProductPage";
 import CustomerPage from "@/pages/CustomerPage";
 import ProductDetailPage from "@/pages/products/ProductDetailPage";
@@ -22,6 +22,7 @@ function App() {
         <>
             <Router>
                 <Routes>
+                    <Route path="/" element={<Navigate to="/login" />} />
                     <Route path="/login" element={<LoginPage />} />
 
                     <Route element={<ProtectedRoute />}>
