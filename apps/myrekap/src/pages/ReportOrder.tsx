@@ -101,7 +101,7 @@ function ReportOrderSummary() {
 
             {orderFilter.length > 0 ? (
                 <>
-                    <SmallButton className="bg-purple-500 hover:bg-purple-600" onClick={() => handleUnduhPDF()}>
+                    <SmallButton className="bg-purple-500 hover:bg-purple-600 py-1 2xl:py-2 px-4 font-semibold" onClick={() => handleUnduhPDF()}>
                         <MdOutlineDownloadForOffline size={20} /> Unduh PDF
                     </SmallButton>
                     <TableReportOrders orderFilter={orderFilter} />

@@ -70,7 +70,7 @@ function InputFinishedProduct({
                                     <p className="text-red-500 text-sm">*{errors.finishedProduct.message as string}</p>
                                 )}
                             </div>
-                            <SmallButton type="submit" className="w-1/6 mx-auto bg-blue-600 hover:bg-blue-700">
+                            <SmallButton type="submit" className="w-1/6 mx-auto py-1 2xl:py-2 px-4 font-semibold bg-blue-600 hover:bg-blue-700">
                                 Simpan
                             </SmallButton>
                         </form>

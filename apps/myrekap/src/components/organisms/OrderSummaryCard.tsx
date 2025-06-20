@@ -164,20 +164,20 @@ function OrderSummaryCard() {
                 </div>
                 <div className="flex items-start mt-5 gap-4">
                     <SmallButton
-                        className="bg-orange-400 hover:bg-orange-500 px-5"
+                        className="bg-orange-400 hover:bg-orange-500 px-5 py-1 2xl:py-2 font-semibold"
                         onClick={() => navigate(`/order-summary/edit/${field.id}`)}
                     >
                         <RiEdit2Fill />
                         Edit
                     </SmallButton>
                     <SmallButton
-                        className="bg-blue-600 hover:bg-blue-700"
+                        className="bg-blue-600 hover:bg-blue-700 py-1 2xl:py-2 px-4 font-semibold"
                         onClick={() => setIsOpenFinishedProduct(!isOpenFinishedProduct)}
                     >
                         <HiPhoto /> Produk
                     </SmallButton>
 
-                    <SmallButton className="bg-cyan-500 hover:bg-cyan-600">
+                    <SmallButton className="bg-cyan-500 hover:bg-cyan-600 py-1 2xl:py-2 px-4 font-semibold">
                         <PDFDownloadLink
                             document={<Receipt data={dataReceipt} />}
                             fileName={`receipt-order-${field.invoiceNumber}.pdf`}

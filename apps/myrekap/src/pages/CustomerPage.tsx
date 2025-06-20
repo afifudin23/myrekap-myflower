@@ -3,7 +3,7 @@ import MainLayout from "@/components/templates/MainLayout";
 function CustomerPage() {
     return (
         <MainLayout>
-            <div>CustomerPage</div>
+            Titl
         </MainLayout>
     );
 }

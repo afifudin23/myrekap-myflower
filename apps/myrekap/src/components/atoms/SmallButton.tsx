@@ -4,7 +4,6 @@ function SmallButton({
     className,
     onClick,
     type = "button",
-    bolder = "font-semibold",
     children,
 }: {
     className?: string;
@@ -17,7 +16,7 @@ function SmallButton({
         <button
             type={type}
             onClick={onClick}
-            className={`flex items-center justify-center py-1 2xl:py-2 px-4 gap-1 rounded-lg text-white text-base 2xl:text-lg ${bolder} ${className}`}
+            className={`flex items-center justify-center gap-1 rounded-lg text-white text-base 2xl:text-lg ${className}`}
         >
             {children}
         </button>
