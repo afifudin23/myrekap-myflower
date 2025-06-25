@@ -3,12 +3,12 @@ import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException } from "@/exceptions";
 import cloudinary, { uploadFile } from "@/utils/cloudinary.util";
 
-export const addFinishedProduct = async (orderSummaryId: string, finishedProduct: any) => {
+export const addFinishedProduct = async (orderId: string, finishedProduct: any) => {
     try {
-        const existingFinishedProduct = await prisma.finishedProduct.findUnique({ where: { orderSummaryId } });
+        const existingFinishedProduct = await prisma.finishedProduct.findUnique({ where: { orderId } });
 
         if (existingFinishedProduct) {
-            await prisma.finishedProduct.delete({ where: { orderSummaryId } });
+            await prisma.finishedProduct.delete({ where: { orderId } });
             cloudinary.uploader.destroy(existingFinishedProduct.publicId);
         }
         if (!finishedProduct) {
@@ -19,7 +19,7 @@ export const addFinishedProduct = async (orderSummaryId: string, finishedProduct
             data: {
                 fileName: finishedProduct.originalname,
                 size: finishedProduct.size,
-                orderSummaryId,
+                orderId,
                 secureUrl: result.secure_url,
                 publicId: result.public_id,
             },

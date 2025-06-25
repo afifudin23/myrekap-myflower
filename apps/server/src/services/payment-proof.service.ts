@@ -3,11 +3,11 @@ import ErrorCode from "@/constants/error-code";
 import { NotFoundException } from "@/exceptions";
 import cloudinary from "@/utils/cloudinary.util";
 
-export const deletePaymentProofByOrderSummaryId = async (orderSummaryId: string) => {
+export const deletePaymentProofByOrderSummaryId = async (orderId: string) => {
     try {
-        const paymentProof = await prisma.paymentProof.findUnique({ where: { orderSummaryId } });
+        const paymentProof = await prisma.paymentProof.findUnique({ where: { orderId } });
         if (paymentProof) {
-            const data = await prisma.paymentProof.delete({ where: { orderSummaryId } });
+            const data = await prisma.paymentProof.delete({ where: { orderId } });
             cloudinary.uploader.destroy(data.publicId);
             return data;
         }

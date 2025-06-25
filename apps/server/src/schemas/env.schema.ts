@@ -8,7 +8,7 @@ const envSchema = object({
     JWT_TOKEN: string().min(20),
     USERNAME_SUPERADMIN: string().max(15),
     EMAIL_SUPERADMIN: string().email(),
-    PIN_SUPERADMIN: string().length(6),
+    PASSWORD_SUPERADMIN: string().min(5),
     CLOUDINARY_CLOUD_NAME: string(),
     CLOUDINARY_API_KEY: string(),
     CLOUDINARY_API_SECRET: string(),

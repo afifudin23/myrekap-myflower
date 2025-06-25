@@ -6,8 +6,8 @@ import { BadRequestException, NotFoundException } from "@/exceptions";
 const userService = {
     async getAllUsers() {
         const user = await prisma.user.findMany();
-        // supaya pin tidak di tampilkan
-        const data = user.map(({ pin, ...data }) => data);
+        // supaya password tidak di tampilkan
+        const data = user.map(({ password, ...data }) => data);
         return data;
     },
     async getUserById(id: string) {
@@ -17,17 +17,17 @@ const userService = {
                     id,
                 },
             });
-            const { pin, ...data } = user;
+            const { password, ...data } = user;
             return data;
         } catch (_error) {
             throw new NotFoundException("User not found", ErrorCode.USER_NOT_FOUND);
         }
     },
     async createUser(requestBody: any) {
-        const { username, email, pin, confPin, role } = requestBody;
+        const { username, email, password, confPassword, role } = requestBody;
 
-        if (pin !== confPin) {
-            throw new BadRequestException("PIN confirmation does not match", ErrorCode.PIN_MISMATCH);
+        if (password !== confPassword) {
+            throw new BadRequestException("Password confirmation does not match", ErrorCode.PASSWORD_MISMATCH);
         }
         // check if the username or email is already taken
         const existingUser = await prisma.user.findFirst({
@@ -60,20 +60,20 @@ const userService = {
             }
         }
 
-        const hashPin = await argon2.hash(pin);
+        const hashPin = await argon2.hash(password);
         const user = await prisma.user.create({
             data: {
                 username,
                 email,
-                pin: hashPin,
+                password: hashPin,
                 role,
             },
         });
-        const { pin: _remove, ...data } = user;
+        const { password: _remove, ...data } = user;
         return data;
     },
     async updateUser(id: string, requestBody: any) {
-        const { username, email, pin, confPin } = requestBody;
+        const { username, email, password, confPassword } = requestBody;
 
         // check if the user exists
         const findUser = await prisma.user.findUnique({ where: { id } });
@@ -93,19 +93,19 @@ const userService = {
         if (existingUser) {
             throw new BadRequestException("The username or email is already taken", ErrorCode.USER_ALREADY_EXISTS);
         }
-        if (pin) {
-            if (pin !== confPin) {
-                throw new BadRequestException("PIN confirmation does not match", ErrorCode.PIN_MISMATCH);
+        if (password) {
+            if (password !== confPassword) {
+                throw new BadRequestException("Password confirmation does not match", ErrorCode.PASSWORD_MISMATCH);
             }
-            const hashPin = await argon2.hash(pin);
-            requestBody.pin = hashPin;
-            requestBody.confPin = undefined;
+            const hashPin = await argon2.hash(password);
+            requestBody.password = hashPin;
+            requestBody.confPassword = undefined;
         }
         const user = await prisma.user.update({
             where: { id },
             data: requestBody,
         });
-        const { pin: _remove, ...data } = user;
+        const { password: _remove, ...data } = user;
         return data;
     },
 
@@ -124,7 +124,7 @@ const userService = {
                 id,
             },
         });
-        const { pin, ...data } = user;
+        const { password, ...data } = user;
         return data;
     },
 };

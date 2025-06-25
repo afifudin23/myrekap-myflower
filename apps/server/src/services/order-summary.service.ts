@@ -2,8 +2,8 @@ import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
 import cloudinary, { uploadFile } from "@/utils/cloudinary.util";
-import { generatedTextLink, generateInvoiceNumber } from "@/utils/formatters.utils";
-import enqueueWhatsAppMessage from "@/utils/queue-wa-message.util";
+import { generateInvoiceNumber } from "@/utils/formatters.utils";
+// import enqueueWhatsAppMessage from "@/utils/queue-wa-message.util";
 import puppeteer from "puppeteer";
 
 const orderSummaryService = {
@@ -13,7 +13,6 @@ const orderSummaryService = {
             year,
             from_date,
             to_date,
-            flower_category,
             customer_category,
             payment_method,
             payment_status,
@@ -43,10 +42,10 @@ const orderSummaryService = {
                 lte: undefined,
             };
         }
-        const data = await prisma.orderSummary.findMany({
+        const data = await prisma.order.findMany({
             where: {
                 orderDate: orderDateFilter,
-                flowerCategory: flower_category?.toLowerCase() !== "semua" ? flower_category?.toUpperCase() : undefined,
+                // flowerCategory: flower_category?.toLowerCase() !== "semua" ? flower_category?.toUpperCase() : undefined,
                 customerCategory:
                     customer_category?.toLowerCase() !== "semua" ? customer_category?.toUpperCase() : undefined,
                 paymentMethod: payment_method?.toLowerCase() !== "semua" ? payment_method?.toUpperCase() : undefined,
@@ -63,7 +62,7 @@ const orderSummaryService = {
 
     async getOrderSummaryById(id: string) {
         try {
-            const data = await prisma.orderSummary.findFirstOrThrow({
+            const data = await prisma.order.findFirstOrThrow({
                 where: {
                     id,
                 },
@@ -77,7 +76,7 @@ const orderSummaryService = {
     async addOrderSummary(request: any) {
         try {
             const { paymentProof, ...requestBody } = request;
-            const data = await prisma.orderSummary.create({
+            const data = await prisma.order.create({
                 data: {
                     ...requestBody,
                     invoiceNumber: generateInvoiceNumber(),
@@ -93,21 +92,21 @@ const orderSummaryService = {
                     data: {
                         fileName: paymentProof.originalname,
                         size: paymentProof.size,
-                        orderSummaryId: data.id,
+                        orderId: data.id,
                         secureUrl: result.secure_url,
                         publicId: result.public_id,
                     },
                 });
             }
 
-            const message = generatedTextLink(
-                data.customerName,
-                data.flowerCategory,
-                (data.price + data.shippingCost) * data.quantity,
-                data.deliveryAddress,
-                data.deliveryDate.toISOString()
-            );
-            enqueueWhatsAppMessage(message);
+            // const message = generatedTextLink(
+            //     data.customerName,
+            //     data.flowerCategory,
+            //     (data.price + data.shippingCost) * data.quantity,
+            //     data.deliveryAddress,
+            //     data.deliveryDate.toISOString()
+            // );
+            // enqueueWhatsAppMessage(message);
 
             return data;
         } catch (error) {
@@ -117,7 +116,7 @@ const orderSummaryService = {
 
     async updateOrderSummary(id: string, request: any) {
         try {
-            const existingOrderSummary = await prisma.orderSummary.findUnique({
+            const existingOrderSummary = await prisma.order.findUnique({
                 where: {
                     id,
                 },
@@ -126,7 +125,7 @@ const orderSummaryService = {
                 throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_SUMMARY_NOT_FOUND);
 
             const { paymentProof, ...requestBody } = request;
-            const data = await prisma.orderSummary.update({
+            const data = await prisma.order.update({
                 where: {
                     id,
                 },
@@ -141,7 +140,7 @@ const orderSummaryService = {
             if (paymentProof?.buffer) {
                 const existingPaymentProof = await prisma.paymentProof.findUnique({
                     where: {
-                        orderSummaryId: id,
+                        orderId: id,
                     },
                 });
                 if (existingPaymentProof) {
@@ -153,7 +152,7 @@ const orderSummaryService = {
                     data: {
                         fileName: paymentProof.originalname,
                         size: paymentProof.size,
-                        orderSummaryId: id,
+                        orderId: id,
                         secureUrl: result.secure_url,
                         publicId: result.public_id,
                     },
@@ -200,7 +199,7 @@ const orderSummaryService = {
         }
     },
     async updateOrderStatus(id: string, orderStatus: "TERKIRIM" | "IN_PROCESS" | "DIBATALKAN") {
-        const orderSummaryById = await prisma.orderSummary.findUnique({ where: { id } });
+        const orderSummaryById = await prisma.order.findUnique({ where: { id } });
         if (!orderSummaryById) {
             throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_SUMMARY_NOT_FOUND);
         }
@@ -213,7 +212,7 @@ const orderSummaryService = {
                 previousPaymentStatus: orderSummaryById.paymentStatus,
             };
         } else if (orderStatus === "TERKIRIM" || orderStatus === "IN_PROCESS") {
-            if (orderSummaryById.paymentStatus === "BATAL" && orderSummaryById.previousPaymentStatus) {
+            if (orderSummaryById.paymentStatus === "CANCELLED" && orderSummaryById.previousPaymentStatus) {
                 dataOrderStatus = {
                     orderStatus,
                     paymentStatus: orderSummaryById.previousPaymentStatus,
@@ -222,7 +221,7 @@ const orderSummaryService = {
             }
         }
         try {
-            const data = await prisma.orderSummary.update({
+            const data = await prisma.order.update({
                 where: { id },
                 data: dataOrderStatus,
             });

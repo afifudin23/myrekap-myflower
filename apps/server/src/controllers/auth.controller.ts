@@ -5,9 +5,9 @@ import { AuthReq } from "@/middlewares/auth.middleware";
 
 const authController = {
     async loginUser(req: Request, res: Response, next: NextFunction) {
-        const { username, pin } = loginUserSchema.parse(req.body);
+        const { username, password } = loginUserSchema.parse(req.body);
         try {
-            const { data, token } = await AuthService.loginUser(username, pin);
+            const { data, token } = await AuthService.loginUser(username, password);
             res.cookie("token", token, {
                 httpOnly: true, // Tidak dapat diakses oleh JavaScript
                 secure: true, // Hanya dikirim melalui HTTPS (penting untuk production)
