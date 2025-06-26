@@ -26,7 +26,8 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  orders Order[]
+  orders  Order[]
+  reviews Review[]
 
   @@map("users")
 }
@@ -45,10 +46,10 @@ model Order {
   customerCategory CustomerCategory @map("customer_category")
 
   // Delivery
-  deliveryOption        DeliveryOption @map("delivery_option")
-  deliveryAddress       String?        @map("delivery_address")
-  deliveryDate          DateTime?      @map("delivery_date")
-  readyDate             DateTime       @map("ready_date")
+  deliveryOption  DeliveryOption @map("delivery_option")
+  deliveryAddress String?        @map("delivery_address")
+  deliveryDate    DateTime?      @map("delivery_date")
+  readyDate       DateTime       @map("ready_date")
 
   // Payment
   totalPrice            Int            @map("total_price")
@@ -58,8 +59,8 @@ model Order {
   previousPaymentStatus PaymentStatus? @map("previous_payment_status")
 
   // Status
-  orderStatus           OrderStatus    @default(IN_PROCESS) @map("order_status")
-  orderDate             DateTime       @default(now()) @map("order_date")
+  orderStatus OrderStatus @default(IN_PROCESS) @map("order_status")
+  orderDate   DateTime    @default(now()) @map("order_date")
 
   // Relation
   paymentProof    PaymentProof?
@@ -120,6 +121,7 @@ model Product {
 
   orderItems OrderItem[]
   images     ProductImage[]
+  reviews    Review[]
 
   @@map("products")
 }
@@ -135,6 +137,20 @@ model ProductImage {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("product_images")
+}
+
+model Review {
+  id        String @id @default(cuid())
+  rating    Int    @map("rating")
+  comment   String @map("comment")
+  userId    String @map("user_id")
+  productId String @map("product_id")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("reviews")
 }
 
 enum DeliveryOption {

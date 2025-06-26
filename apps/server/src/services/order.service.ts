@@ -6,8 +6,8 @@ import { generateInvoiceNumber } from "@/utils/formatters.utils";
 // import enqueueWhatsAppMessage from "@/utils/queue-wa-message.util";
 import puppeteer from "puppeteer";
 
-const orderSummaryService = {
-    async getAllOrderSummaries(requestQuery: any) {
+const orderService = {
+    async getAllOrders(requestQuery: any) {
         const {
             month,
             year,
@@ -60,7 +60,7 @@ const orderSummaryService = {
         return data;
     },
 
-    async getOrderSummaryById(id: string) {
+    async getOrderById(id: string) {
         try {
             const data = await prisma.order.findFirstOrThrow({
                 where: {
@@ -73,7 +73,7 @@ const orderSummaryService = {
         }
     },
 
-    async addOrderSummary(request: any) {
+    async addOrder(request: any) {
         try {
             const { paymentProof, ...requestBody } = request;
             const data = await prisma.order.create({
@@ -114,7 +114,7 @@ const orderSummaryService = {
         }
     },
 
-    async updateOrderSummary(id: string, request: any) {
+    async updateOrder(id: string, request: any) {
         try {
             const existingOrderSummary = await prisma.order.findUnique({
                 where: {
@@ -166,7 +166,7 @@ const orderSummaryService = {
         }
     },
 
-    async printOrderSummary(html: string) {
+    async printOrder(html: string) {
         if (!html)
             throw new BadRequestException(
                 "HTML content is required for printing",
@@ -232,4 +232,4 @@ const orderSummaryService = {
     },
 };
 
-export default orderSummaryService;
+export default orderService;

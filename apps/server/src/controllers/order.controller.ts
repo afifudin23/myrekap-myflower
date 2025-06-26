@@ -1,28 +1,28 @@
-import { addOrderSummarySchema, updateOrderSummarySchema } from "@/schemas/order-summary.schema";
-import orderSummaryService from "@/services/order-summary.service";
+import { CreateOrderSchema, UpdateOrderSchema } from "@/schemas/order.schema";
+import orderService from "@/services/order.service";
 import { Request, Response, NextFunction } from "express";
 
-export const getAllOrderSummaries = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await orderSummaryService.getAllOrderSummaries(req.query);
+        const data = await orderService.getAllOrders(req.query);
         res.json({ message: data.length ? "Order summary retrieved successfully" : "No user available", data });
     } catch (error) {
         return next(error);
     }
 };
-export const getOrderSummaryById = async (req: Request, res: Response, next: NextFunction) => {
+export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await orderSummaryService.getOrderSummaryById(req.params.id);
+        const data = await orderService.getOrderById(req.params.id);
         res.json({ message: "Order summary retrieved successfully", data });
     } catch (error) {
         return next(error);
     }
 };
 
-export const addOrderSummary = async (req: Request, res: Response, next: NextFunction) => {
-    const request = addOrderSummarySchema.parse({ ...req.body, paymentProof: req.file });
+export const addOrder = async (req: Request, res: Response, next: NextFunction) => {
+    const request = CreateOrderSchema.parse({ ...req.body, paymentProof: req.file });
     try {
-        const data = await orderSummaryService.addOrderSummary(request);
+        const data = await orderService.addOrder(request);
         res.json({ message: "Order summary added successfully", data });
     } catch (error) {
         console.log(error);
@@ -30,7 +30,7 @@ export const addOrderSummary = async (req: Request, res: Response, next: NextFun
     }
 };
 
-export const updateOrderSummary = async (req: Request, res: Response, next: NextFunction) => {
+export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
     let paymentProof: any;
     if (req.file) {
         paymentProof = req.file;
@@ -40,20 +40,20 @@ export const updateOrderSummary = async (req: Request, res: Response, next: Next
         paymentProof = null;
     }
 
-    const request = updateOrderSummarySchema.parse({ ...req.body, paymentProof });
+    const request = UpdateOrderSchema.parse({ ...req.body, paymentProof });
     try {
-        const data = await orderSummaryService.updateOrderSummary(req.params.id, request);
+        const data = await orderService.updateOrder(req.params.id, request);
         res.json({ message: "Order summary updated successfully", data });
     } catch (error) {
         return next(error);
     }
 };
 
-export const printOrderSummary = async (req: Request, res: Response, next: NextFunction) => {
+export const printOrder = async (req: Request, res: Response, next: NextFunction) => {
     const { html } = req.body;
 
     try {
-        const data = await orderSummaryService.printOrderSummary(html);
+        const data = await orderService.printOrder(html);
         res.set({
             "Content-Type": "application/pdf",
             "Content-Disposition": `attachment; filename="Laporan_Penjualan_${
@@ -71,7 +71,7 @@ export const printOrderSummary = async (req: Request, res: Response, next: NextF
 };
 export const updateOrderStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await orderSummaryService.updateOrderStatus(req.params.id, req.body.orderStatus);
+        const data = await orderService.updateOrderStatus(req.params.id, req.body.orderStatus);
         res.json({ message: "Order summary canceled successfully", data });
     } catch (error) {
         return next(error);
