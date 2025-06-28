@@ -5,19 +5,20 @@ import { CreateProductType } from "@/schemas/product.schema";
 import cloudinary, { uploadFile } from "@/utils/cloudinary.util";
 
 export const create = async (body: CreateProductType, files: Express.Multer.File[]) => {
-    const uploadedResults: { fileName: string; size: number; secureUrl: string; publicId: string }[] = [];
-
+    let uploadedResults: { fileName: string; size: number; secureUrl: string; publicId: string }[] = [];
     try {
-        files.map(async (file) => {
-            const result = await uploadFile(file, `myrekap-app/produk/${body.name}`);
-            console.log(result)
-            uploadedResults.push({
-                fileName: file.originalname,
-                size: file.size,
-                secureUrl: result.secure_url,
-                publicId: result.public_id,
-            });
-        });
+        uploadedResults = await Promise.all(
+            files.map(async (file) => {
+                const result = await uploadFile(file, `myflower-myrekap/produk/${body.name}`);
+                return {
+                    fileName: file.originalname,
+                    size: file.size,
+                    secureUrl: result.secure_url,
+                    publicId: result.public_id,
+                };
+                
+            })
+        );
         const product = await prisma.product.create({
             data: {
                 ...body,
@@ -30,9 +31,15 @@ export const create = async (body: CreateProductType, files: Express.Multer.File
 
         return product;
     } catch (error) {
-        uploadedResults.map(async (result) => {
-            await cloudinary.uploader.destroy(result.publicId);
-        })
+        await Promise.all(
+            uploadedResults.map(async (result) => {
+                try {
+                    await cloudinary.uploader.destroy(result.publicId);
+                } catch (error) {
+                    console.error("❌ Gagal rollback:", result.publicId, error);
+                }
+            })
+        );
         throw new InternalException("Failed to create product", ErrorCode.PRODUCT_CREATE_FAILED, error);
     }
 };
