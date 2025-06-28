@@ -113,11 +113,12 @@ model FinishedProduct {
 }
 
 model Product {
-  id          String @id @default(cuid())
-  name        String @map("name")
-  price       Int    @map("price")
-  stock       Int    @map("stock")
-  description String @map("description")
+  id          String  @id @default(cuid())
+  name        String  @unique @map("name")
+  price       Int     @map("price")
+  stock       Int     @map("stock")
+  description String  @map("description")
+  isActive    Boolean @default(true) @map("is_active")
 
   orderItems OrderItem[]
   images     ProductImage[]

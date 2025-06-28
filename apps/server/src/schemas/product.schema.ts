@@ -1,4 +1,4 @@
-import { z, object, string } from "zod";
+import { z } from "zod";
 
 export const createProductSchema = z.object({
     name: z.string(),
@@ -8,16 +8,6 @@ export const createProductSchema = z.object({
 });
 
 export type CreateProductType = z.infer<typeof createProductSchema>;
-
-export const loginFormSchema = object({
-    username: string()
-        .nonempty("Username wajib diisi")
-        .min(3, "Username minimal 3 karakter")
-        .max(10, "Username maksimal 10 karakter"),
-    pin: string().nonempty("PIN wajib diisi").length(6, "PIN Harus 6 Angka"),
-});
-
-export type LoginFormType = z.infer<typeof loginFormSchema>;
 
 export const updateProductSchema = z.object({
     name: z.string().optional(),
@@ -30,6 +20,11 @@ export const updateProductSchema = z.object({
         .min(1, "Stock must be greater than 0")
         .optional(),
     description: z.string().optional(),
+    isActive: z
+        .enum(["true", "false"])
+        .transform((val) => val === "true")
+        .optional(),
     publicIdsToDelete: z.array(z.string()).optional(),
 });
 export type UpdateProductType = z.infer<typeof updateProductSchema>;
+// chore(db): set name as unique and add isActive field to product table

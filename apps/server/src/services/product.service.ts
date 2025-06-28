@@ -1,7 +1,7 @@
 import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
-import { InternalException, NotFoundException } from "@/exceptions";
-import { CreateProductType } from "@/schemas/product.schema";
+import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
+import { CreateProductType, UpdateProductType } from "@/schemas/product.schema";
 import cloudinary, { uploadFile } from "@/utils/cloudinary.util";
 
 type UploadResultsType = {
@@ -9,10 +9,14 @@ type UploadResultsType = {
     size: number;
     secureUrl: string;
     publicId: string;
-};
+}[];
 
 export const create = async (body: CreateProductType, files: Express.Multer.File[]) => {
-    let uploadResults: UploadResultsType[] = [];
+    const duplicateName = await prisma.product.findUnique({ where: { name: body.name } });
+    if (duplicateName) {
+        throw new BadRequestException("Product name already exists", ErrorCode.PRODUCT_NAME_DUPLICATE);
+    }
+    let uploadResults: UploadResultsType = [];
     try {
         uploadResults = await Promise.all(
             files.map(async (file) => {
@@ -56,11 +60,15 @@ export const findAll = async () => {
 export const findById = async (id: string) => {
     return await prisma.product.findUnique({ where: { id }, include: { images: true } });
 };
-export const update = async (id: string, body: any, files: Express.Multer.File[]) => {
+export const update = async (id: string, body: UpdateProductType, files: Express.Multer.File[]) => {
+    const duplicateName = await prisma.product.findUnique({ where: { name: body.name } });
+    if (duplicateName) {
+        throw new BadRequestException("Product name already exists", ErrorCode.PRODUCT_NAME_DUPLICATE);
+    }
     const existingProduct = await prisma.product.findUnique({ where: { id } });
     if (!existingProduct) throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
 
-    let uploadResults: UploadResultsType[] = [];
+    let uploadResults: UploadResultsType = [];
     try {
         // Upload new files
         if (files && files.length > 0) {
@@ -76,7 +84,7 @@ export const update = async (id: string, body: any, files: Express.Multer.File[]
                 })
             );
         }
-        
+
         // Delete old files
         if (body.publicIdsToDelete) {
             await Promise.all(
@@ -90,9 +98,10 @@ export const update = async (id: string, body: any, files: Express.Multer.File[]
             );
             await prisma.productImage.deleteMany({ where: { publicId: { in: body.publicIdsToDelete } } });
         }
-        
+
         // Update product
         const { publicIdsToDelete, ...cleanBody } = body;
+        console.log(cleanBody.isActive);
         return await prisma.product.update({
             where: { id },
             data: {
