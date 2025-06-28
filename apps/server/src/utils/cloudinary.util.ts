@@ -21,18 +21,17 @@ export const uploadFile = async (file: MulterFile, folder: string): Promise<Uplo
         const stream = cloudinary.uploader.upload_stream(
             {
                 folder,
-                public_id: `${folder}/${Date.now()}-${file.originalname}`,
+                public_id: `${Date.now()}-${file.originalname}`,
                 resource_type: "image",
             },
-            async (error, result) => {
-                if (error) {
-                    console.log(error);
-                    return reject(new Error(error.message));
-                }
+            (error, result) => {
+                if (error) return reject(new Error(error.message));
+                if (!result) return reject(new Error("No result from Cloudinary"));
                 // if (error) return reject(new Error(error.message));
                 resolve(result);
             }
         );
+
         stream.end(file.buffer);
     });
 };

@@ -1,6 +1,42 @@
-export const create = async (_data: any) => {
-    return "create";
+import prisma from "@/config/database";
+import ErrorCode from "@/constants/error-code";
+import { InternalException } from "@/exceptions";
+import { CreateProductType } from "@/schemas/product.schema";
+import cloudinary, { uploadFile } from "@/utils/cloudinary.util";
+
+export const create = async (body: CreateProductType, files: Express.Multer.File[]) => {
+    const uploadedResults: { fileName: string; size: number; secureUrl: string; publicId: string }[] = [];
+
+    try {
+        files.map(async (file) => {
+            const result = await uploadFile(file, `myrekap-app/produk/${body.name}`);
+            console.log(result)
+            uploadedResults.push({
+                fileName: file.originalname,
+                size: file.size,
+                secureUrl: result.secure_url,
+                publicId: result.public_id,
+            });
+        });
+        const product = await prisma.product.create({
+            data: {
+                ...body,
+                images: { create: uploadedResults.map((result) => result) },
+            },
+            include: {
+                images: true,
+            },
+        });
+
+        return product;
+    } catch (error) {
+        uploadedResults.map(async (result) => {
+            await cloudinary.uploader.destroy(result.publicId);
+        })
+        throw new InternalException("Failed to create product", ErrorCode.PRODUCT_CREATE_FAILED, error);
+    }
 };
+
 export const findAll = async () => {
     return "findAll";
 };
@@ -11,5 +47,5 @@ export const update = async (_id: string, _data: any) => {
     return "update";
 };
 export const remove = async (_id: string) => {
-    return "remove";                  
+    return "remove";
 };

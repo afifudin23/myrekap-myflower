@@ -8,18 +8,10 @@ import puppeteer from "puppeteer";
 
 const orderService = {
     async getAllOrders(requestQuery: any) {
-        const {
-            month,
-            year,
-            from_date,
-            to_date,
-            customer_category,
-            payment_method,
-            payment_status,
-            order_status,
-        } = requestQuery;
+        const { month, year, from_date, to_date, customer_category, payment_method, payment_status, order_status } =
+            requestQuery;
         let orderDateFilter: { gte: Date | undefined; lte: Date | undefined };
-        let orderDateOrderBy: "asc" | "desc";
+        let orderDateOrderBy: "asc" | "desc" = "asc";
         if (month && year) {
             const startDate = new Date(year, month - 1, 1, 0, 0, 0); // 1st day, 00:00:00
             const lastDay = new Date(year, month, 0).getDate(); // e.g. 28/30/31

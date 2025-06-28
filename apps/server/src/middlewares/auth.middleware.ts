@@ -10,7 +10,7 @@ export interface AuthReq extends Request {
     user: User;
 }
 
-const authMiddleware = async (req: AuthReq, _res: Response, next: NextFunction) => {
+const authMiddleware = async (req: Request, _res: Response, next: NextFunction) => {
     const userRoleSuperadmin = await prisma.user.findMany({
         where: {
             role: "SUPERADMIN",
@@ -33,7 +33,7 @@ const authMiddleware = async (req: AuthReq, _res: Response, next: NextFunction) 
     if (!user) {
         return next(new UnauthorizedException("Your session has expired. Please log in again", ErrorCode.UNAUTHORIZED));
     }
-    req.user = user;
+    (req as AuthReq).user = user;
     next();
 };
 

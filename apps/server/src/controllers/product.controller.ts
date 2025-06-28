@@ -1,9 +1,18 @@
 import { Request, Response, NextFunction } from "express";
 import * as productService from "@/services/product.service";
+import { createProductSchema, updateProductSchema } from "@/schemas/product.schema";
+import { UnprocessableUntityException } from "@/exceptions";
+import ErrorCode from "@/constants/error-code";
 
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const files = req.files as Express.Multer.File[];
+
+    if (!files || files.length === 0) {
+        throw new UnprocessableUntityException("Product image is required", ErrorCode.UNPROCESSABLE_UNTITY, null);
+    }
+    const body = createProductSchema.parse(req.body);
     try {
-        const data = await productService.create(req.body);
+        const data = await productService.create(body, files);
         res.json({ message: "Product created successfully", data });
     } catch (error) {
         return next(error);
@@ -29,8 +38,9 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
 };
 
 export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const body = updateProductSchema.parse(req.body);
     try {
-        const data = await productService.update(req.params.id, req.body);
+        const data = await productService.update(req.params.id, body);
         res.json({ message: "Product updated successfully", data });
     } catch (error) {
         return next(error);

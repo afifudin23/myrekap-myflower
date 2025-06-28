@@ -1,13 +1,13 @@
 import errorHandler from "@/utils/error-handler.util";
 import { Router } from "express";
 import * as finishedProductController from "@/controllers/finished-product.controller";
-import upload from "@/utils/upload.util";
+import { uploadSingle } from "@/utils/upload.util";
 
 const finishedProductRouter: Router = Router();
 
 finishedProductRouter.post(
     "/:orderSummaryId",
-    upload.single("finishedProduct"),
+    uploadSingle("finishedProduct"),
     errorHandler(finishedProductController.addFinishedProduct)
 );
 

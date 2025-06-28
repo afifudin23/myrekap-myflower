@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { loginUserSchema } from "@/schemas/auth.schema";
 import AuthService from "@/services/auth.service";
-import { AuthReq } from "@/middlewares/auth.middleware";
 
 const authController = {
     async loginUser(req: Request, res: Response, next: NextFunction) {
@@ -27,7 +26,7 @@ const authController = {
             next(error);
         }
     },
-    async logoutUser(_req: AuthReq, res: Response, next: NextFunction) {
+    async logoutUser(_req: Request, res: Response, next: NextFunction) {
         try {
             res.clearCookie("token", {
                 httpOnly: true,
