@@ -30,5 +30,6 @@ export const updateProductSchema = z.object({
         .min(1, "Stock must be greater than 0")
         .optional(),
     description: z.string().optional(),
+    publicIdsToDelete: z.array(z.string()).optional(),
 });
 export type UpdateProductType = z.infer<typeof updateProductSchema>;

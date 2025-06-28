@@ -1,13 +1,20 @@
 import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
-import { InternalException } from "@/exceptions";
+import { InternalException, NotFoundException } from "@/exceptions";
 import { CreateProductType } from "@/schemas/product.schema";
 import cloudinary, { uploadFile } from "@/utils/cloudinary.util";
 
+type UploadResultsType = {
+    fileName: string;
+    size: number;
+    secureUrl: string;
+    publicId: string;
+};
+
 export const create = async (body: CreateProductType, files: Express.Multer.File[]) => {
-    let uploadedResults: { fileName: string; size: number; secureUrl: string; publicId: string }[] = [];
+    let uploadResults: UploadResultsType[] = [];
     try {
-        uploadedResults = await Promise.all(
+        uploadResults = await Promise.all(
             files.map(async (file) => {
                 const result = await uploadFile(file, `myflower-myrekap/produk/${body.name}`);
                 return {
@@ -16,27 +23,26 @@ export const create = async (body: CreateProductType, files: Express.Multer.File
                     secureUrl: result.secure_url,
                     publicId: result.public_id,
                 };
-                
             })
         );
-        const product = await prisma.product.create({
+
+        return await prisma.product.create({
             data: {
                 ...body,
-                images: { create: uploadedResults.map((result) => result) },
+                images: { create: uploadResults.map((result) => result) },
             },
             include: {
                 images: true,
             },
         });
-
-        return product;
     } catch (error) {
+        // Rollback upload images
         await Promise.all(
-            uploadedResults.map(async (result) => {
+            uploadResults.map(async (result) => {
                 try {
                     await cloudinary.uploader.destroy(result.publicId);
                 } catch (error) {
-                    console.error("❌ Gagal rollback:", result.publicId, error);
+                    console.error("❌ Failed to delete image:", result.publicId, error);
                 }
             })
         );
@@ -45,14 +51,70 @@ export const create = async (body: CreateProductType, files: Express.Multer.File
 };
 
 export const findAll = async () => {
-    return "findAll";
+    return await prisma.product.findMany({ include: { images: true } });
 };
-export const findById = async (_id: string) => {
-    return "findById";
+export const findById = async (id: string) => {
+    return await prisma.product.findUnique({ where: { id }, include: { images: true } });
 };
-export const update = async (_id: string, _data: any) => {
-    return "update";
+export const update = async (id: string, body: any, files: Express.Multer.File[]) => {
+    const existingProduct = await prisma.product.findUnique({ where: { id } });
+    if (!existingProduct) throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
+
+    let uploadResults: UploadResultsType[] = [];
+    try {
+        // Upload new files
+        if (files && files.length > 0) {
+            uploadResults = await Promise.all(
+                files.map(async (file) => {
+                    const result = await uploadFile(file, `myflower-myrekap/produk/${body.name}`);
+                    return {
+                        fileName: file.originalname,
+                        size: file.size,
+                        secureUrl: result.secure_url,
+                        publicId: result.public_id,
+                    };
+                })
+            );
+        }
+        
+        // Delete old files
+        if (body.publicIdsToDelete) {
+            await Promise.all(
+                body.publicIdsToDelete.map(async (publicId: string) => {
+                    try {
+                        await cloudinary.uploader.destroy(publicId);
+                    } catch (error) {
+                        console.error("❌ Failed to delete image:", publicId, error);
+                    }
+                })
+            );
+            await prisma.productImage.deleteMany({ where: { publicId: { in: body.publicIdsToDelete } } });
+        }
+        
+        // Update product
+        const { publicIdsToDelete, ...cleanBody } = body;
+        return await prisma.product.update({
+            where: { id },
+            data: {
+                ...cleanBody,
+                images: { create: uploadResults.map((result) => result) },
+            },
+            include: { images: true },
+        });
+    } catch (error) {
+        // Rollback upload images
+        await Promise.all(
+            uploadResults.map(async (result) => {
+                try {
+                    await cloudinary.uploader.destroy(result.publicId);
+                } catch (error) {
+                    console.error("❌ Failed to delete image:", result.publicId, error);
+                }
+            })
+        );
+        throw new InternalException("Failed to update product", ErrorCode.PRODUCT_UPDATE_FAILED, error);
+    }
 };
-export const remove = async (_id: string) => {
-    return "remove";
+export const remove = async (id: string) => {
+    return await prisma.product.delete({ where: { id } });
 };

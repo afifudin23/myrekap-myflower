@@ -20,6 +20,8 @@ export enum ErrorCode {
 
   // Product
   PRODUCT_CREATE_FAILED = 4001,
+  PRODUCT_NOT_FOUND = 4002,
+  PRODUCT_UPDATE_FAILED = 4003,
 
   // Invalid Data
   UNPROCESSABLE_UNTITY = 8001,

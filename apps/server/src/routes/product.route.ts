@@ -8,7 +8,7 @@ const productRouter: Router = Router();
 productRouter.get("/", errorHandler(productController.getAllProducts));
 productRouter.get("/:id", errorHandler(productController.getProductById));
 productRouter.post("/", uploadMultiple("productImage"), errorHandler(productController.createProduct));
-productRouter.put("/:id", errorHandler(productController.updateProduct));
+productRouter.put("/:id", uploadMultiple("productImage"), errorHandler(productController.updateProduct));
 productRouter.delete("/:id", errorHandler(productController.deleteProduct));
 
 export default productRouter;
