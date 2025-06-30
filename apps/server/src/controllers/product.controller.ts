@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import * as productService from "@/services/product.service";
-import { createProductSchema, updateProductSchema } from "@/schemas/product.schema";
 import { UnprocessableUntityException } from "@/exceptions";
 import ErrorCode from "@/constants/error-code";
+import { productService } from "@/services";
+import { productSchema } from "@/schemas";
 
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
     const files = req.files as Express.Multer.File[];
@@ -10,7 +10,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     if (!files || files.length === 0) {
         throw new UnprocessableUntityException("Product image is required", ErrorCode.UNPROCESSABLE_UNTITY, null);
     }
-    const body = createProductSchema.parse(req.body);
+    const body = productSchema.createProductSchema.parse(req.body);
     try {
         const data = await productService.create(body, files);
         res.json({ message: "Product created successfully", data });
@@ -22,7 +22,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
 export const getAllProducts = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const data = await productService.findAll();
-        res.json({ message: "Product retrieved successfully", data });
+        res.json({ message: data.length ? "Products retrieved successfully" : "No products available", data });
     } catch (error) {
         return next(error);
     }
@@ -38,7 +38,7 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
 };
 
 export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
-    const body = updateProductSchema.parse({
+    const body = productSchema.updateProductSchema.parse({
         ...req.body,
         publicIdsToDelete: req.body.publicIdsToDelete
             ? Array.isArray(req.body.publicIdsToDelete)

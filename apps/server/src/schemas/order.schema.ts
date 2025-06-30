@@ -19,7 +19,7 @@ const paymentProofSchema = z
     ])
     .nullish();
 
-export const CreateOrderSchema = z
+export const createOrderSchema = z
     .object({
         customerName: z.string({
             invalid_type_error: "Customer name must be a string",
@@ -110,7 +110,7 @@ export const CreateOrderSchema = z
         }
     });
 
-export const UpdateOrderSchema = z
+export const updateOrderSchema = z
     .object({
         customerName: z.string({ invalid_type_error: "Customer name must be a string" }).nullish(),
         flowerCategory: z

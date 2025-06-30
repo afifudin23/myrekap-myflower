@@ -1,6 +1,6 @@
-import errorHandler from "@/utils/error-handler.util";
+import { paymentProofController } from "@/controllers";
+import { errorHandler } from "@/utils";
 import { Router } from "express";
-import * as paymentProofController from "@/controllers/payment-proof.controller";
 
 const paymentProofRouter : Router = Router();
 

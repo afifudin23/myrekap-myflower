@@ -20,7 +20,7 @@ const upload = multer({
     },
 });
 
-export const uploadSingle = (field: string) => {
+export const single = (field: string) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const uploader = upload.single(field);
         uploader(req, res, (error: any) => {
@@ -36,7 +36,7 @@ export const uploadSingle = (field: string) => {
     };
 };
 
-export const uploadMultiple = (field: string) => {
+export const multiple = (field: string) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const uploader = upload.array(field, 5);
         uploader(req, res, (error: any) => {

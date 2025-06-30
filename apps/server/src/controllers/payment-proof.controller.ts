@@ -1,5 +1,5 @@
+import { paymentProofService } from "@/services";
 import { Request, Response, NextFunction } from "express";
-import * as paymentProofService from "@/services/payment-proof.service";
 
 export const deletePaymentProof = async (req: Request, res: Response, next: NextFunction) => {
     try {

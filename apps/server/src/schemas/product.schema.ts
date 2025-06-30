@@ -27,4 +27,3 @@ export const updateProductSchema = z.object({
     publicIdsToDelete: z.array(z.string()).optional(),
 });
 export type UpdateProductType = z.infer<typeof updateProductSchema>;
-// chore(db): set name as unique and add isActive field to product table

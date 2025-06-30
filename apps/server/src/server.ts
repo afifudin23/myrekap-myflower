@@ -2,8 +2,8 @@ import "module-alias/register";
 import app from "./app";
 import env from "./config/env";
 import prisma from "./config/database";
-import logger from "@/utils/logger.util";
 import seedSuperadmin from "@/seeds/seed-superadmin";
+import { logger } from "@/utils";
 
 async function startServer() {
     try {

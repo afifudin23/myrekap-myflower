@@ -1,7 +1,7 @@
 import { Router } from "express";
-import userController from "@/controllers/user.controller";
-import errorHandler from "@/utils/error-handler.util";
 import { authMiddleware, singleSuperadminMiddleware, superadminMiddleware } from "@/middlewares";
+import { userController } from "@/controllers";
+import { errorHandler } from "@/utils";
 
 const usersRouter: Router = Router();
 

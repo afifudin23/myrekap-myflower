@@ -26,6 +26,7 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  carts   Cart[]
   orders  Order[]
   reviews Review[]
 
@@ -36,6 +37,48 @@ enum Role {
   ADMIN      @map("admin")
   SUPERADMIN @map("superadmin")
   CUSTOMER   @map("customer")
+}
+
+model Product {
+  id          String  @id @default(cuid())
+  name        String  @unique @map("name")
+  price       Int     @map("price")
+  stock       Int     @map("stock")
+  description String  @map("description")
+  isActive    Boolean @default(true) @map("is_active")
+
+  images     ProductImage[]
+  carts      Cart[]
+  orderItems OrderItem[]
+  reviews    Review[]
+
+  @@map("products")
+}
+
+model ProductImage {
+  id        String @id @default(cuid())
+  fileName  String @map("file_name")
+  size      Int    @map("size")
+  publicId  String @map("public_id")
+  secureUrl String @map("secure_url")
+  productId String @map("product_id")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+model Cart {
+  id        String @id @default(cuid())
+  userId    String @map("user_id")
+  productId String @map("product_id")
+  quantity  Int    @map("quantity")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("carts")
 }
 
 model Order {
@@ -110,34 +153,6 @@ model FinishedProduct {
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("finished_products")
-}
-
-model Product {
-  id          String  @id @default(cuid())
-  name        String  @unique @map("name")
-  price       Int     @map("price")
-  stock       Int     @map("stock")
-  description String  @map("description")
-  isActive    Boolean @default(true) @map("is_active")
-
-  orderItems OrderItem[]
-  images     ProductImage[]
-  reviews    Review[]
-
-  @@map("products")
-}
-
-model ProductImage {
-  id        String @id @default(cuid())
-  fileName  String @map("file_name")
-  size      Int    @map("size")
-  publicId  String @map("public_id")
-  secureUrl String @map("secure_url")
-  productId String @map("product_id")
-
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@map("product_images")
 }
 
 model Review {

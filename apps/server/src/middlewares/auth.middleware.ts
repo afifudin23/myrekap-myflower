@@ -24,7 +24,7 @@ const authMiddleware = async (req: Request, _res: Response, next: NextFunction) 
     if (!token) {
         return next(new UnauthorizedException("Your session has expired. Please log in again", ErrorCode.UNAUTHORIZED));
     }
-    const payload: any = jwt.verify(token, env.JWT_TOKEN);
+    const payload: any = jwt.verify(token, env.JWT_SECRET);
     const user = await prisma.user.findFirst({
         where: {
             id: payload.id,

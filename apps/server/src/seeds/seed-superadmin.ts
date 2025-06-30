@@ -10,11 +10,11 @@ async function seedSuperadmin() {
             },
         });
         if (!superadmin) {
-            const hashPassword = await argon2.hash(env.PASSWORD_SUPERADMIN);
+            const hashPassword = await argon2.hash(env.SUPERADMIN_PASSWORD);
             await prisma.user.create({
                 data: {
-                    username: env.USERNAME_SUPERADMIN,
-                    email: env.EMAIL_SUPERADMIN,
+                    username: env.SUPERADMIN_USERNAME,
+                    email: env.SUPERADMIN_EMAIL,
                     password: hashPassword,
                     role: "SUPERADMIN",
                 },

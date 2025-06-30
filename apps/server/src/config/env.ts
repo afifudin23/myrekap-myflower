@@ -1,5 +1,5 @@
+import { envSchema } from "@/schemas";
 import dotenv from "dotenv";
-import envSchema from "@/schemas/env.schema";
 
 dotenv.config();
 

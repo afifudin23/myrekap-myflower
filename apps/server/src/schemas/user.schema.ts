@@ -1,6 +1,6 @@
 import z, { object, string } from "zod";
 
-export const createNewUserSchema = object({
+export const createUserSchema = object({
   username: string(),
   email: string().email(),
   password: string().min(5),

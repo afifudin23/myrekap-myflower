@@ -1,15 +1,14 @@
-import * as OrderController from "@/controllers/order.controller";
-import errorHandler from "@/utils/error-handler.util";
-import { uploadSingle } from "@/utils/upload.util";
+import { orderController } from "@/controllers";
+import { errorHandler, upload } from "@/utils";
 import { Router } from "express";
 
 const orderRouter: Router = Router();
 
-orderRouter.get("/", errorHandler(OrderController.getAllOrders));
-orderRouter.get("/:id", errorHandler(OrderController.getOrderById));
-orderRouter.post("/", uploadSingle("paymentProof"), errorHandler(OrderController.addOrder));
-orderRouter.post("/pdf", errorHandler(OrderController.printOrder));
-orderRouter.put("/edit/:id", uploadSingle("paymentProof"), errorHandler(OrderController.updateOrder));
-orderRouter.put("/:id/order-status", errorHandler(OrderController.updateOrderStatus));
+orderRouter.get("/", errorHandler(orderController.getAllOrders));
+orderRouter.get("/:id", errorHandler(orderController.getOrderById));
+orderRouter.post("/", upload.single("paymentProof"), errorHandler(orderController.addOrder));
+orderRouter.post("/pdf", errorHandler(orderController.printOrder));
+orderRouter.put("/edit/:id", upload.single("paymentProof"), errorHandler(orderController.updateOrder));
+orderRouter.put("/:id/order-status", errorHandler(orderController.updateOrderStatus));
 
 export default orderRouter;

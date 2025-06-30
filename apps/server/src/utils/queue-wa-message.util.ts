@@ -4,7 +4,7 @@ const whatsappQueue: (() => Promise<void>)[] = [];
 let isProcessingQueue = false;
 const queuedMessages = new Set<string>();
 
-async function processQueue() {
+const processQueue = async () => {
     if (isProcessingQueue) return;
     isProcessingQueue = true;
 
@@ -20,9 +20,9 @@ async function processQueue() {
     }
 
     isProcessingQueue = false;
-}
+};
 
-async function sendWhatsAppSilent(message: string) {
+const sendWhatsAppSilent = async (message: string) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
 
@@ -36,9 +36,9 @@ async function sendWhatsAppSilent(message: string) {
         console.warn("WhatsApp API response not OK:", text);
         throw new Error("API response not OK");
     }
-}
+};
 
-export default function enqueueWhatsAppMessage(message: string) {
+const enqueueWhatsAppMessage = (message: string) => {
     if (queuedMessages.has(message)) {
         console.log("Duplicate message skipped:", message);
         return;
@@ -55,4 +55,6 @@ export default function enqueueWhatsAppMessage(message: string) {
     });
 
     processQueue();
-}
+};
+
+export default enqueueWhatsAppMessage;

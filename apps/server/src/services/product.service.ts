@@ -1,8 +1,8 @@
 import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
-import { CreateProductType, UpdateProductType } from "@/schemas/product.schema";
-import cloudinary, { uploadFile } from "@/utils/cloudinary.util";
+import { productSchema } from "@/schemas";
+import { cloudinary, uploadFile } from "@/utils";
 
 type UploadResultsType = {
     fileName: string;
@@ -11,7 +11,7 @@ type UploadResultsType = {
     publicId: string;
 }[];
 
-export const create = async (body: CreateProductType, files: Express.Multer.File[]) => {
+export const create = async (body: productSchema.CreateProductType, files: Express.Multer.File[]) => {
     const duplicateName = await prisma.product.findUnique({ where: { name: body.name } });
     if (duplicateName) {
         throw new BadRequestException("Product name already exists", ErrorCode.PRODUCT_NAME_DUPLICATE);
@@ -60,7 +60,7 @@ export const findAll = async () => {
 export const findById = async (id: string) => {
     return await prisma.product.findUnique({ where: { id }, include: { images: true } });
 };
-export const update = async (id: string, body: UpdateProductType, files: Express.Multer.File[]) => {
+export const update = async (id: string, body: productSchema.UpdateProductType, files: Express.Multer.File[]) => {
     const duplicateName = await prisma.product.findUnique({ where: { name: body.name } });
     if (duplicateName) {
         throw new BadRequestException("Product name already exists", ErrorCode.PRODUCT_NAME_DUPLICATE);

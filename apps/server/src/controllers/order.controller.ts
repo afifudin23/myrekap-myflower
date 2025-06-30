@@ -1,11 +1,11 @@
-import { CreateOrderSchema, UpdateOrderSchema } from "@/schemas/order.schema";
-import orderService from "@/services/order.service";
+import { orderSchema } from "@/schemas";
+import { orderService } from "@/services";
 import { Request, Response, NextFunction } from "express";
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = await orderService.getAllOrders(req.query);
-        res.json({ message: data.length ? "Order summary retrieved successfully" : "No user available", data });
+        res.json({ message: data.length ? "Orders retrieved successfully" : "No orders available", data });
     } catch (error) {
         return next(error);
     }
@@ -13,19 +13,18 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
 export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = await orderService.getOrderById(req.params.id);
-        res.json({ message: "Order summary retrieved successfully", data });
+        res.json({ message: "Order retrieved successfully", data });
     } catch (error) {
         return next(error);
     }
 };
 
 export const addOrder = async (req: Request, res: Response, next: NextFunction) => {
-    const request = CreateOrderSchema.parse({ ...req.body, paymentProof: req.file });
+    const request = orderSchema.createOrderSchema.parse({ ...req.body, paymentProof: req.file });
     try {
         const data = await orderService.addOrder(request);
-        res.json({ message: "Order summary added successfully", data });
+        res.json({ message: "Order created successfully", data });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 };
@@ -40,10 +39,10 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
         paymentProof = null;
     }
 
-    const request = UpdateOrderSchema.parse({ ...req.body, paymentProof });
+    const request = orderSchema.updateOrderSchema.parse({ ...req.body, paymentProof });
     try {
         const data = await orderService.updateOrder(req.params.id, request);
-        res.json({ message: "Order summary updated successfully", data });
+        res.json({ message: "Order updated successfully", data });
     } catch (error) {
         return next(error);
     }
@@ -72,7 +71,7 @@ export const printOrder = async (req: Request, res: Response, next: NextFunction
 export const updateOrderStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = await orderService.updateOrderStatus(req.params.id, req.body.orderStatus);
-        res.json({ message: "Order summary canceled successfully", data });
+        res.json({ message: "Order canceled successfully", data });
     } catch (error) {
         return next(error);
     }
