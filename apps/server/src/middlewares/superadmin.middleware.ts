@@ -13,7 +13,7 @@ const superadminMiddleware = async (req: Request, _res: Response, next: NextFunc
   if (userRoleSuperadmin.length === 0) {
     return next();
   }
-  const user = (req as unknown as AuthReq).user;
+  const user = (req as AuthReq).user;
   if (user.role !== "SUPERADMIN") {
     return next(new ForbiddenException("Access denied. Only Superadmin has permission", ErrorCode.FORBIDDEN));
   }

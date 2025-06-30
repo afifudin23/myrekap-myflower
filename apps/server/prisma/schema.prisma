@@ -26,9 +26,9 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  carts   Cart[]
-  orders  Order[]
-  reviews Review[]
+  cartItems CartItem[]
+  orders    Order[]
+  reviews   Review[]
 
   @@map("users")
 }
@@ -48,7 +48,7 @@ model Product {
   isActive    Boolean @default(true) @map("is_active")
 
   images     ProductImage[]
-  carts      Cart[]
+  cartItems  CartItem[]
   orderItems OrderItem[]
   reviews    Review[]
 
@@ -68,7 +68,7 @@ model ProductImage {
   @@map("product_images")
 }
 
-model Cart {
+model CartItem {
   id        String @id @default(cuid())
   userId    String @map("user_id")
   productId String @map("product_id")
@@ -78,7 +78,7 @@ model Cart {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
-  @@map("carts")
+  @@map("cart_items")
 }
 
 model Order {
