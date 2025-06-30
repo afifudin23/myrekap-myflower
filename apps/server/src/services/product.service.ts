@@ -43,11 +43,9 @@ export const create = async (body: productSchema.CreateProductType, files: Expre
         // Rollback upload images
         await Promise.all(
             uploadResults.map(async (result) => {
-                try {
-                    await cloudinary.uploader.destroy(result.publicId);
-                } catch (error) {
+                await cloudinary.uploader.destroy(result.publicId).catch((error) => {
                     console.error("❌ Failed to delete image:", result.publicId, error);
-                }
+                });
             })
         );
         throw new InternalException("Failed to create product", ErrorCode.PRODUCT_CREATE_FAILED, error);
@@ -58,7 +56,11 @@ export const findAll = async () => {
     return await prisma.product.findMany({ include: { images: true } });
 };
 export const findById = async (id: string) => {
-    return await prisma.product.findUnique({ where: { id }, include: { images: true } });
+    try {
+        return await prisma.product.findUniqueOrThrow({ where: { id }, include: { images: true } });
+    } catch (_error) {
+        throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
+    }
 };
 export const update = async (id: string, body: productSchema.UpdateProductType, files: Express.Multer.File[]) => {
     const duplicateName = await prisma.product.findUnique({ where: { name: body.name } });
@@ -89,11 +91,9 @@ export const update = async (id: string, body: productSchema.UpdateProductType, 
         if (body.publicIdsToDelete) {
             await Promise.all(
                 body.publicIdsToDelete.map(async (publicId: string) => {
-                    try {
-                        await cloudinary.uploader.destroy(publicId);
-                    } catch (error) {
+                    await cloudinary.uploader.destroy(publicId).catch((error) => {
                         console.error("❌ Failed to delete image:", publicId, error);
-                    }
+                    });
                 })
             );
             await prisma.productImage.deleteMany({ where: { publicId: { in: body.publicIdsToDelete } } });
@@ -114,16 +114,26 @@ export const update = async (id: string, body: productSchema.UpdateProductType, 
         // Rollback upload images
         await Promise.all(
             uploadResults.map(async (result) => {
-                try {
-                    await cloudinary.uploader.destroy(result.publicId);
-                } catch (error) {
+                await cloudinary.uploader.destroy(result.publicId).catch((error) => {
                     console.error("❌ Failed to delete image:", result.publicId, error);
-                }
+                });
             })
         );
         throw new InternalException("Failed to update product", ErrorCode.PRODUCT_UPDATE_FAILED, error);
     }
 };
 export const remove = async (id: string) => {
-    return await prisma.product.delete({ where: { id } });
+    try {
+        const existingProduct = await prisma.product.findUniqueOrThrow({ where: { id }, include: { images: true } });
+        await Promise.all(
+            existingProduct.images.map(async (image) => {
+                await cloudinary.uploader.destroy(image.publicId).catch((error) => {
+                    console.error("❌ Failed to delete image:", image.publicId, error);
+                });
+            })
+        );
+        return await prisma.product.delete({ where: { id }, include: { images: true } });
+    } catch (_error) {
+        throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
+    }
 };

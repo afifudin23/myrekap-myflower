@@ -24,6 +24,9 @@ export enum ErrorCode {
   PRODUCT_UPDATE_FAILED = 4003,
   PRODUCT_NAME_DUPLICATE = 4004,
 
+  // Cart Item
+  CART_ITEM_NOT_FOUND = 5001,
+
   // Invalid Data
   UNPROCESSABLE_UNTITY = 8001,
 

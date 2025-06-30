@@ -8,7 +8,7 @@ export const deletePaymentProofByOrderSummaryId = async (orderId: string) => {
         const paymentProof = await prisma.paymentProof.findUnique({ where: { orderId } });
         if (paymentProof) {
             const data = await prisma.paymentProof.delete({ where: { orderId } });
-            cloudinary.uploader.destroy(data.publicId);
+            await cloudinary.uploader.destroy(data.publicId);
             return data;
         }
         return true;

@@ -9,7 +9,7 @@ export const addFinishedProduct = async (orderId: string, finishedProduct: any) 
 
         if (existingFinishedProduct) {
             await prisma.finishedProduct.delete({ where: { orderId } });
-            cloudinary.uploader.destroy(existingFinishedProduct.publicId);
+            await cloudinary.uploader.destroy(existingFinishedProduct.publicId);
         }
         if (!finishedProduct) {
             throw new BadRequestException("Finished product not found", ErrorCode.FINISHED_PRODUCT_NOT_FOUND);
