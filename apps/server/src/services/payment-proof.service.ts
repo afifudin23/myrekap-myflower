@@ -13,6 +13,6 @@ export const deletePaymentProofByOrderSummaryId = async (orderId: string) => {
         }
         return true;
     } catch (_error) {
-        throw new NotFoundException("Order summary not found", ErrorCode.ORDER_SUMMARY_NOT_FOUND);
+        throw new NotFoundException("Order summary not found", ErrorCode.ORDER_NOT_FOUND);
     }
 };

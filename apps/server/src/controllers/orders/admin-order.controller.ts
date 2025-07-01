@@ -1,10 +1,10 @@
-import { orderSchema } from "@/schemas";
-import { orderService } from "@/services";
+import { adminOrderSchema } from "@/schemas";
+import { adminOrderService } from "@/services";
 import { Request, Response, NextFunction } from "express";
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await orderService.getAllOrders(req.query);
+        const data = await adminOrderService.getAllOrders(req.query);
         res.json({ message: data.length ? "Orders retrieved successfully" : "No orders available", data });
     } catch (error) {
         return next(error);
@@ -12,7 +12,7 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
 };
 export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await orderService.getOrderById(req.params.id);
+        const data = await adminOrderService.getOrderById(req.params.id);
         res.json({ message: "Order retrieved successfully", data });
     } catch (error) {
         return next(error);
@@ -20,9 +20,9 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 };
 
 export const addOrder = async (req: Request, res: Response, next: NextFunction) => {
-    const request = orderSchema.createOrderSchema.parse({ ...req.body, paymentProof: req.file });
+    const request = adminOrderSchema.createOrderSchema.parse({ ...req.body, paymentProof: req.file });
     try {
-        const data = await orderService.addOrder(request);
+        const data = await adminOrderService.addOrder(request);
         res.json({ message: "Order created successfully", data });
     } catch (error) {
         return next(error);
@@ -39,9 +39,9 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
         paymentProof = null;
     }
 
-    const request = orderSchema.updateOrderSchema.parse({ ...req.body, paymentProof });
+    const request = adminOrderSchema.updateOrderSchema.parse({ ...req.body, paymentProof });
     try {
-        const data = await orderService.updateOrder(req.params.id, request);
+        const data = await adminOrderService.updateOrder(req.params.id, request);
         res.json({ message: "Order updated successfully", data });
     } catch (error) {
         return next(error);
@@ -52,7 +52,7 @@ export const printOrder = async (req: Request, res: Response, next: NextFunction
     const { html } = req.body;
 
     try {
-        const data = await orderService.printOrder(html);
+        const data = await adminOrderService.printOrder(html);
         res.set({
             "Content-Type": "application/pdf",
             "Content-Disposition": `attachment; filename="Laporan_Penjualan_${
@@ -70,7 +70,7 @@ export const printOrder = async (req: Request, res: Response, next: NextFunction
 };
 export const updateOrderStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await orderService.updateOrderStatus(req.params.id, req.body.orderStatus);
+        const data = await adminOrderService.updateOrderStatus(req.params.id, req.body.orderStatus);
         res.json({ message: "Order canceled successfully", data });
     } catch (error) {
         return next(error);

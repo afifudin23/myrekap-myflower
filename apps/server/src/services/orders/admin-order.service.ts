@@ -59,7 +59,7 @@ export const getOrderById = async (id: string) => {
         });
         return data;
     } catch (_error) {
-        throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_SUMMARY_NOT_FOUND);
+        throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_NOT_FOUND);
     }
 };
 
@@ -111,8 +111,7 @@ export const updateOrder = async (id: string, request: any) => {
                 id,
             },
         });
-        if (!existingOrderSummary)
-            throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_SUMMARY_NOT_FOUND);
+        if (!existingOrderSummary) throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_NOT_FOUND);
 
         const { paymentProof, ...requestBody } = request;
         const data = await prisma.order.update({
@@ -158,10 +157,7 @@ export const updateOrder = async (id: string, request: any) => {
 
 export const printOrder = async (html: string) => {
     if (!html)
-        throw new BadRequestException(
-            "HTML content is required for printing",
-            ErrorCode.ORDER_SUMMARY_PRINT_HTML_NOT_FOUND
-        );
+        throw new BadRequestException("HTML content is required for printing", ErrorCode.ORDER_PRINT_HTML_NOT_FOUND);
     try {
         const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
@@ -185,14 +181,14 @@ export const printOrder = async (html: string) => {
         return pdfBuffer;
     } catch (error) {
         console.log(error);
-        throw new InternalException("Failed to print order summary", ErrorCode.ORDER_SUMMARY_PRINT_FAILED, error);
+        throw new InternalException("Failed to print order summary", ErrorCode.ORDER_PRINT_FAILED, error);
     }
 };
 
 export const updateOrderStatus = async (id: string, orderStatus: "TERKIRIM" | "IN_PROCESS" | "DIBATALKAN") => {
     const orderSummaryById = await prisma.order.findUnique({ where: { id } });
     if (!orderSummaryById) {
-        throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_SUMMARY_NOT_FOUND);
+        throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_NOT_FOUND);
     }
 
     let dataOrderStatus: any = { orderStatus };
@@ -218,6 +214,6 @@ export const updateOrderStatus = async (id: string, orderStatus: "TERKIRIM" | "I
         });
         return data;
     } catch (_error) {
-        throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_SUMMARY_NOT_FOUND);
+        throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_NOT_FOUND);
     }
 };
