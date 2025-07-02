@@ -63,12 +63,19 @@ export const findById = async (id: string) => {
     }
 };
 export const update = async (id: string, body: productSchema.UpdateProductType, files: Express.Multer.File[]) => {
-    const duplicateName = await prisma.product.findUnique({ where: { name: body.name } });
-    if (duplicateName) {
-        throw new BadRequestException("Product name already exists", ErrorCode.PRODUCT_NAME_DUPLICATE);
+    if (body.name) {
+        const duplicateName = await prisma.product.findUnique({ where: { name: body.name } });
+        if (duplicateName) {
+            throw new BadRequestException("Product name already exists", ErrorCode.PRODUCT_NAME_DUPLICATE);
+        }
     }
     const existingProduct = await prisma.product.findUnique({ where: { id } });
     if (!existingProduct) throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
+
+    // Check if product isActive changed to false then delete all cart items
+    if (existingProduct.isActive !== body.isActive && body.isActive === false) {
+        await prisma.cartItem.deleteMany({ where: { productId: id } });
+    }
 
     let uploadResults: UploadResultsType = [];
     try {
@@ -101,7 +108,6 @@ export const update = async (id: string, body: productSchema.UpdateProductType, 
 
         // Update product
         const { publicIdsToDelete, ...cleanBody } = body;
-        console.log(cleanBody.isActive);
         return await prisma.product.update({
             where: { id },
             data: {

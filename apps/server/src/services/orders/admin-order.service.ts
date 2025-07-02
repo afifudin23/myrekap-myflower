@@ -59,7 +59,7 @@ export const getOrderById = async (id: string) => {
         });
         return data;
     } catch (_error) {
-        throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_NOT_FOUND);
+        throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
     }
 };
 

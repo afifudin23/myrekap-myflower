@@ -1,16 +1,16 @@
 import { z } from "zod";
 
 export const createProductSchema = z.object({
-    name: z.string(),
+    name: z.string().transform((val) => val.trim()),
     price: z.coerce.number({ invalid_type_error: "Price must be a number" }).min(1, "Price must be greater than 0"),
     stock: z.coerce.number({ invalid_type_error: "Stock must be a number" }).min(1, "Stock must be greater than 0"),
-    description: z.string(),
+    description: z.string().transform((val) => val.trim()),
 });
 
 export type CreateProductType = z.infer<typeof createProductSchema>;
 
 export const updateProductSchema = z.object({
-    name: z.string().optional(),
+    name: z.string().transform((val) => val.trim()).optional(),
     price: z.coerce
         .number({ invalid_type_error: "Price must be a number" })
         .min(1, "Price must be greater than 0")
@@ -19,7 +19,7 @@ export const updateProductSchema = z.object({
         .number({ invalid_type_error: "Stock must be a number" })
         .min(1, "Stock must be greater than 0")
         .optional(),
-    description: z.string().optional(),
+    description: z.string().transform((val) => val.trim()).optional(),
     isActive: z
         .enum(["true", "false"])
         .transform((val) => val === "true")

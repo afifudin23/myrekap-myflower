@@ -20,6 +20,8 @@ const upload = multer({
     },
 });
 
+export const none = () => upload.none();
+
 export const single = (field: string) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const uploader = upload.single(field);
