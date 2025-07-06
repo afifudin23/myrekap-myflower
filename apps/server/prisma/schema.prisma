@@ -98,6 +98,7 @@ model Order {
   totalPrice            Int            @map("total_price")
   shippingCost          Int?           @map("shipping_cost")
   paymentMethod         PaymentMethod? @map("payment_method")
+  paymentProvider       String?        @map("payment_provider")
   paymentStatus         PaymentStatus  @map("payment_status")
   previousPaymentStatus PaymentStatus? @map("previous_payment_status")
 
@@ -184,10 +185,14 @@ enum CustomerCategory {
 }
 
 enum PaymentMethod {
-  TRANSFER @map("transfer")
-  CASH     @map("cash")
-  GATEWAY  @map("gateway")
-  COD      @map("cod")
+  BANK_TRANSFER @map("bank_transfer")
+  CASH          @map("cash")
+  GATEWAY       @map("gateway")
+  COD           @map("cod")
+  CREDIT_CARD   @map("credit_card")
+  CSTORE        @map("cstore")
+  QRIS          @map("qris")
+  EWALLET        @map("ewallet")
 }
 
 enum OrderStatus {
@@ -200,6 +205,8 @@ enum PaymentStatus {
   PENDING   @map("pending")
   UNPAID    @map("unpaid")
   PAID      @map("paid")
-  FAILED    @map("failed")
   CANCELLED @map("cancelled")
+  EXPIRED   @map("expired")
+  REFUNDED  @map("refunded")
+  DENIED    @map("denied")
 }

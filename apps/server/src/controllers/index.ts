@@ -1,8 +1,9 @@
 export * as authController from "@/controllers/auth.controller";
 export * as finishedProductController from "@/controllers/finished-product.controller";
-export * as adminOrderController from "@/controllers/orders/admin-order.controller";
-export * as customerOrderController from "@/controllers/orders/customer-order.controller";
 export * as paymentProofController from "@/controllers/payment-proof.controller";
 export * as productController from "@/controllers/product.controller";
 export * as userController from "@/controllers/user.controller";
 export * as cartItemController from "@/controllers/cart-item.controller";
+export * as adminOrderController from "@/controllers/orders/admin-order.controller";
+export * as customerOrderController from "@/controllers/orders/customer-order.controller";
+export * as transactionController from "@/controllers/transaction.controller";

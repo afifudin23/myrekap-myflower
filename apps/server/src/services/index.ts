@@ -6,3 +6,4 @@ export * as paymentProofService from "@/services/payment-proof.service";
 export * as productService from "@/services/product.service";
 export * as userService from "@/services/user.service";
 export * as cartItemService from "@/services/cart-item.service";
+export * as transactionService from "@/services/transaction.service";

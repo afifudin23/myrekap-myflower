@@ -7,6 +7,7 @@ import productRouter from "@/routes/product.route";
 import cartItemRouter from "@/routes/cart-item.route";
 import adminOrderRouter from "@/routes/orders/admin-order.route";
 import customerOrderRouter from "@/routes/orders/customer-order.route";
+import transactionRouter from "@/routes/transaction.route";
 
 const rootRouter: Router = Router();
 
@@ -18,5 +19,6 @@ rootRouter.use("/orders", customerOrderRouter);
 rootRouter.use("/admin/orders", adminOrderRouter);
 rootRouter.use("/payment-proofs", paymentProofRouter);
 rootRouter.use("/finished-products", finishedProductRouter);
+rootRouter.use("/transactions", transactionRouter);
 
 export default rootRouter;
