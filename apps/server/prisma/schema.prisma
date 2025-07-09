@@ -83,8 +83,8 @@ model CartItem {
 
 model Order {
   id               String           @id @default(cuid())
+  orderCode        String           @unique @map("order_code")
   userId           String           @map("user_id")
-  invoiceNumber    String           @unique @map("invoice_number")
   customerName     String           @map("customer_name")
   customerCategory CustomerCategory @map("customer_category")
 
@@ -185,10 +185,9 @@ enum CustomerCategory {
 }
 
 enum PaymentMethod {
-  BANK_TRANSFER @map("bank_transfer")
-  CASH          @map("cash")
-  GATEWAY       @map("gateway")
   COD           @map("cod")
+  CASH          @map("cash")
+  BANK_TRANSFER @map("bank_transfer")
   CREDIT_CARD   @map("credit_card")
   CSTORE        @map("cstore")
   QRIS          @map("qris")
@@ -205,7 +204,7 @@ enum PaymentStatus {
   PENDING   @map("pending")
   UNPAID    @map("unpaid")
   PAID      @map("paid")
-  CANCELLED @map("cancelled")
+  CANCELED @map("canceled")
   EXPIRED   @map("expired")
   REFUNDED  @map("refunded")
   DENIED    @map("denied")

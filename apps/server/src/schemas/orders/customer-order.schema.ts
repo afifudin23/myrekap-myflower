@@ -20,7 +20,7 @@ export const createCustomerOrderSchema = z.object({
         })
         .nullish(),
     readyDate: z.coerce.date(),
-    paymentMethod: z.enum(["GATEWAY", "COD"]).nullish(),
+    paymentMethod: z.enum(["COD", "OTHERS"]).nullish(),
     greetings: z.preprocess(
         (val) => (typeof val === "string" ? JSON.parse(val) : val),
         z.array(

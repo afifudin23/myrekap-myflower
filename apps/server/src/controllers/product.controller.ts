@@ -8,7 +8,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     const files = req.files as Express.Multer.File[];
 
     if (!files || files.length === 0) {
-        throw new UnprocessableUntityException("Product image is required", ErrorCode.UNPROCESSABLE_UNTITY, null);
+        throw new UnprocessableUntityException("Product image is required", ErrorCode.UNPROCESSABLE_ENTITY, null);
     }
     const body = productSchema.createProductSchema.parse(req.body);
     try {

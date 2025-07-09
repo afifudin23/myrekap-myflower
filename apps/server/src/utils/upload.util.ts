@@ -6,7 +6,7 @@ const storage = multer.memoryStorage();
 const fileFilter = (_req: any, file: any, cb: FileFilterCallback) => {
     if (!file.mimetype.startsWith("image/")) {
         return cb(
-            new UnprocessableUntityException("Only image files are allowed", ErrorCode.UNPROCESSABLE_UNTITY, null)
+            new UnprocessableUntityException("Only image files are allowed", ErrorCode.UNPROCESSABLE_ENTITY, null)
         );
     }
     cb(null, true);
@@ -28,7 +28,7 @@ export const single = (field: string) => {
         uploader(req, res, (error: any) => {
             if (error?.code === "LIMIT_FILE_SIZE") {
                 return next(
-                    new UnprocessableUntityException("File size too large", ErrorCode.UNPROCESSABLE_UNTITY, error)
+                    new UnprocessableUntityException("File size too large", ErrorCode.UNPROCESSABLE_ENTITY, error)
                 );
             } else if (error?.message.includes("Only image")) {
                 return next(error);
@@ -44,11 +44,11 @@ export const multiple = (field: string) => {
         uploader(req, res, (error: any) => {
             if (error?.code === "LIMIT_FILE_SIZE") {
                 return next(
-                    new UnprocessableUntityException("File size too large", ErrorCode.UNPROCESSABLE_UNTITY, error)
+                    new UnprocessableUntityException("File size too large", ErrorCode.UNPROCESSABLE_ENTITY, error)
                 );
             } else if (error?.code === "LIMIT_UNEXPECTED_FILE") {
                 return next(
-                    new UnprocessableUntityException("Too many files, max 5 files", ErrorCode.UNPROCESSABLE_UNTITY, error)
+                    new UnprocessableUntityException("Too many files, max 5 files", ErrorCode.UNPROCESSABLE_ENTITY, error)
                 );
             } else if (error?.message.includes("Only image")) {
                 return next(error);

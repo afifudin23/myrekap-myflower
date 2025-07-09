@@ -16,27 +16,27 @@ const errorHandler = (method: (req: Request, res: Response, next: NextFunction) 
                 if (error instanceof ZodError) {
                     exception = new UnprocessableUntityException(
                         "Invalid data",
-                        ErrorCode.UNPROCESSABLE_UNTITY,
+                        ErrorCode.UNPROCESSABLE_ENTITY,
                         error.issues
                     );
                 } else if (error instanceof multer.MulterError) {
                     // if (error.code === "LIMIT_FILE_SIZE") {
                     //     exception = new UnprocessableUntityException(
                     //         "File size too large",
-                    //         ErrorCode.UNPROCESSABLE_UNTITY,
+                    //         ErrorCode.UNPROCESSABLE_ENTITY,
                     //         error
                     //     );
                     // }
                     if (error.code === "LIMIT_FILE_SIZE") {
                         exception = new UnprocessableUntityException(
                             "File size too largexxxx",
-                            ErrorCode.UNPROCESSABLE_UNTITY,
+                            ErrorCode.UNPROCESSABLE_ENTITY,
                             error
                         );
                     } else {
                         exception = new UnprocessableUntityException(
                             error.message || "Upload failed",
-                            ErrorCode.UNPROCESSABLE_UNTITY,
+                            ErrorCode.UNPROCESSABLE_ENTITY,
                             error
                         );
                     }

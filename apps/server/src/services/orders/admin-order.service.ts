@@ -69,7 +69,7 @@ export const addOrder = async (request: any) => {
         const data = await prisma.order.create({
             data: {
                 ...requestBody,
-                invoiceNumber: formmatters.generateInvoiceNumber(),
+                invoiceNumber: formmatters.generateOrderCode(),
                 deliveryDate: new Date(requestBody.deliveryDate),
                 paymentStatus: requestBody.isPaid ? "LUNAS" : "BELUM_LUNAS",
                 paymentMethod: requestBody.isPaid ? requestBody.paymentMethod : "PENDING",
@@ -199,7 +199,7 @@ export const updateOrderStatus = async (id: string, orderStatus: "TERKIRIM" | "I
             previousPaymentStatus: orderSummaryById.paymentStatus,
         };
     } else if (orderStatus === "TERKIRIM" || orderStatus === "IN_PROCESS") {
-        if (orderSummaryById.paymentStatus === "CANCELLED" && orderSummaryById.previousPaymentStatus) {
+        if (orderSummaryById.paymentStatus === "CANCELED" && orderSummaryById.previousPaymentStatus) {
             dataOrderStatus = {
                 orderStatus,
                 paymentStatus: orderSummaryById.previousPaymentStatus,

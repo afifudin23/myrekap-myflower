@@ -12,6 +12,8 @@ export const envSchema = object({
     CLOUDINARY_CLOUD_NAME: string(),
     CLOUDINARY_API_KEY: string(),
     CLOUDINARY_API_SECRET: string(),
+    MIDTRANS_CLIENT_KEY: string(),
+    MIDTRANS_SERVER_KEY: string(),
     WHATSAPP_NUMBER: string().min(10),
     CALLMEBOT_API_KEY: string(),
 });
