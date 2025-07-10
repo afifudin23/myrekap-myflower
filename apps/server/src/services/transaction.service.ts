@@ -1,7 +1,7 @@
 import midtransClient from "midtrans-client";
 import crypto from "crypto";
 import { formmatters } from "@/utils";
-import { InternalException, MidtransException } from "@/exceptions";
+import { InternalException, MidtransException, NotFoundException } from "@/exceptions";
 import ErrorCode from "@/constants/error-code";
 import prisma from "@/config/database";
 
@@ -16,6 +16,7 @@ const core = new midtransClient.CoreApi({
 });
 
 export const notification = async (data: any) => {
+    console.log(data);
     try {
         const { order_id, status_code, gross_amount, signature_key } = data;
         const signatureHash = crypto
@@ -89,23 +90,33 @@ export const notification = async (data: any) => {
                 break;
             }
         }
-    } catch (error) {
-        console.log(error);
+    } catch (error: any) {
+        console.log(error.message);
     }
 };
-export const create = async (data: any) => {
+export const create = async (user: any, orderCode: string) => {
+    const order = await prisma.order.findFirst({
+        where: { orderCode, userId: user.id },
+        include: { items: { include: { product: { select: { name: true } } } } },
+    });
+    if (!order) throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
     try {
         const parameter = {
             transaction_details: {
-                order_id: data.orderCode,
-                gross_amount: data.totalPrice,
+                order_id: orderCode,
+                gross_amount: order.totalPrice,
             },
             credit_card: {
                 secure: true,
             },
             metadata: {
-                order_id: data.orderCode,
+                order_id: orderCode,
             },
+            customer_details: {
+                first_name: order.customerName,
+                email: user.email, // Isi sesuai data
+            },
+            item_details: formmatters.generateItemDetails(order.items),
             enabled_payments: [
                 "qris",
                 "bank_transfer",

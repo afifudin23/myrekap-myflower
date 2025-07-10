@@ -26,26 +26,12 @@ export const create = async (userId: string, data: customerOrderSchema.CreateCus
         const totalPrice = orderItems.reduce((total, item) => total + item.totalPrice, 0);
         const { greetings, ...orderData } = data;
 
-        // If delivery option is "PICKUP", set delivery address, date, and shipping cost to null
-        if (orderData.deliveryOption === "PICKUP") {
-            orderData.deliveryAddress = null;
-            orderData.deliveryDate = null;
-            orderData.shippingCost = null;
-        }
-
-        //  If payment method is "OTHERS", set it to null
-        let paymentMethod = orderData.paymentMethod;
-        if (paymentMethod === "OTHERS") {
-            paymentMethod = null;
-        } 
-
         const order = await prisma.order.create({
             data: {
                 ...orderData,
                 orderCode: formmatters.generateOrderCode(),
                 user: { connect: { id: userId } },
                 totalPrice,
-                paymentMethod,
                 paymentStatus: "PENDING",
                 orderStatus: "IN_PROCESS",
                 items: {

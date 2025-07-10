@@ -6,7 +6,6 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     const body = customerOrderSchema.createCustomerOrderSchema.parse(req.body);
     try {
         const userId = (req as any).user.id;
-
         const data = await customerOrderService.create(userId, body);
         res.status(200).json({ message: "Order created successfully", data });
     } catch (error) {

@@ -4,4 +4,5 @@ export * as customerOrderSchema from "./orders/customer-order.schema";
 export * as productSchema from "./product.schema";
 export * as userSchema from "./user.schema";
 export * as cartItemSchema from "./cart-item.schema";
+export * as transactionSchema from "./transaction.schema";
 export { envSchema } from "./env.schema";

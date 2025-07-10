@@ -86,3 +86,12 @@ Total: ${formatRupiah(total)}
 Alamat: ${formatCapital(deliveryAddress)}
 Dikirim: ${isoDateToStringDateTime(deliveryDate)} WIB`);
 };
+
+export const generateItemDetails = (orderItems: any[]) => {
+    return orderItems.map((item) => ({
+        id: item.productId,
+        name: item.product?.name,
+        price: item.unitPrice,
+        quantity: item.quantity,
+    }));
+};

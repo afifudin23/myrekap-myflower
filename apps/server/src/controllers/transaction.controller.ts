@@ -1,3 +1,4 @@
+import { transactionSchema } from "@/schemas";
 import { transactionService } from "@/services";
 import { Request, Response, NextFunction } from "express";
 
@@ -10,8 +11,10 @@ export const handlePaymentNotification = async (req: Request, res: Response, nex
     }
 };
 export const createTransaction = async (req: Request, res: Response, next: NextFunction) => {
+    const { orderCode } = transactionSchema.createTransactionSchema.parse(req.body);
     try {
-        const data = await transactionService.create(req.body);
+        const user = (req as any).user;
+        const data = await transactionService.create(user, orderCode);
         res.status(200).json({ message: "Transaction created successfully", data });
     } catch (error) {
         next(error);
