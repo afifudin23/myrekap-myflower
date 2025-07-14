@@ -1,5 +1,3 @@
-import { OrderSummaryType } from "@/types/Data";
-
 const formatters = {
     // parse = frontend -> backend
     // format = backend -> frontend
@@ -44,6 +42,19 @@ const formatters = {
 
     //     return new Date(year, month - 1, day, hour, minute);
     // },
+    dateToString: (isoDate: any) => {
+        const date = new Date(isoDate);
+        const options: Intl.DateTimeFormatOptions = {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        };
+        return date.toLocaleString("en-GB", options).replace(",", " at");
+    },
+    
     isoDateToStringDate: (isoDate: any) => {
         const date = new Date(isoDate);
         const day = String(date.getDate()).padStart(2, "0");
@@ -90,26 +101,25 @@ const formatters = {
         };
     },
 
-    formatDataOrderSummary(data: OrderSummaryType) {
+    formatDataOrderSummary(data: any) {
         return {
             id: data.id,
-            invoiceNumber: data.invoiceNumber,
+            orderCode: data.orderCode,
             customerName: this.formatCapital(data.customerName),
-            flowerCategory: this.formatCapital(data.flowerCategory),
             quantity: data.quantity,
             greetingMessage: data.greetingMessage,
             deliveryDate: this.isoDateToStringDateTime(data.deliveryDate),
             deliveryAddress: data.deliveryAddress,
             customerCategory: this.formatCapital(data.customerCategory),
-            price: this.formatRupiah(data.price),
+            price: this.formatRupiah(data.totalPrice),
             shippingCost: this.formatRupiah(data.shippingCost),
             isPaid: data.isPaid,
             paymentMethod: data.paymentMethod ? this.formatCapital(data.paymentMethod) : "Pending",
             paymentProof: data.paymentProof,
-            paymentStatus: this.formatCapital(data.paymentStatus),
+            paymentStatus: data.paymentStatus,
             previousPaymentStatus: data.previousPaymentStatus,
             orderStatus: this.formatCapital(data.orderStatus),
-            orderDate: this.isoDateToStringDateTime(data.orderDate),
+            orderDate: this.dateToString(data.orderDate),
             finishedProduct: data.finishedProduct,
         };
     },

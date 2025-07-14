@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MainLayout from "@/components/templates/MainLayout";
-import ProductDetailSection from "@/components/organisms/products/ProductDetailSection";
-import Title from "@/components/molecules/Title";
 import { TbLogout2 } from "react-icons/tb";
+import { ProductDetailSection } from "@/components/organisms/products";
+import { TitlePage } from "@/components/molecules";
 
 interface Product {
     id: string;
@@ -37,7 +37,7 @@ function ProductDetailPage() {
     return (
         <MainLayout>
             <div className="flex justify-between">
-                <Title title="Detail Produk" subtitle="Mengelola Data Produk Penjualan" />
+                <TitlePage title="Detail Produk" subtitle="Mengelola Data Produk Penjualan" />
                 <button
                     onClick={() => {
                         navigate("/products");

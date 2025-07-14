@@ -1,4 +1,4 @@
-import axiosInstance from "@/utils/axiosInstance";
+import { axiosInstance } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 
 function useUsers() {

@@ -1,4 +1,4 @@
-import ProductCard from "@/components/molecules/products/ProductCard";
+import { ProductCard } from "@/components/molecules";
 import { Link, useNavigate } from "react-router-dom";
 
 interface Product {

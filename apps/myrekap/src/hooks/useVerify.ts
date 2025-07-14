@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import axiosInstance from "@/utils/axiosInstance";
+import { axiosInstance } from "@/utils";
 import { AxiosError } from "axios";
 import { useEffect, useRef, useState } from "react";
 

@@ -1,16 +1,11 @@
-type ButtonProps = {
+interface ButtonProps {
     type: "submit" | "reset" | "button";
     width?: string;
     className?: string;
     children: React.ReactNode;
-};
+}
 
-export default function Button({
-    type,
-    className,
-    width = "w-[15rem] 2xl:w-[20rem] p-1 2xl:p-2",
-    children,
-}: ButtonProps) {
+function Button({ type, className, width = "w-[15rem] 2xl:w-[20rem] p-1 2xl:p-2", children }: ButtonProps) {
     return (
         <button
             type={type}
@@ -20,3 +15,5 @@ export default function Button({
         </button>
     );
 }
+
+export default Button;

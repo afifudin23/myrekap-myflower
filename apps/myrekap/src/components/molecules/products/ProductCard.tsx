@@ -1,5 +1,4 @@
-import Card from "@/components/atoms/Card";
-import Image from "@/components/atoms/Image";
+import { Card, Image } from "@/components/atoms";
 
 interface Product {
     id: string;

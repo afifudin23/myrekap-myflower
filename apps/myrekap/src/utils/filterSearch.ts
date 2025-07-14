@@ -2,16 +2,16 @@ import formatters from "@/utils/formatters";
 
 export const filterSearch = (
     {
-        invoiceNumber,
+        orderCode,
         customerName,
         price,
         deliveryAddress,
-    }: { invoiceNumber: string; customerName: string; price: number; deliveryAddress: string },
+    }: { orderCode: string; customerName: string; price: number; deliveryAddress: string },
     searchTerm: string
 ) => {
     const keyword = searchTerm.toLowerCase();
     return (
-        invoiceNumber.toLowerCase().includes(keyword) ||
+        orderCode.toLowerCase().includes(keyword) ||
         customerName.toLowerCase().includes(keyword) ||
         price.toString().toLowerCase().includes(keyword) ||
         deliveryAddress.toLowerCase().includes(keyword)

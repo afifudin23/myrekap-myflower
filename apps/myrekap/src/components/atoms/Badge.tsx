@@ -1,11 +1,17 @@
-import formatters from "@/utils/formatters";
+import { formatters } from "@/utils";
 
-export default function Badge({ className, size ="w-28 text-sm", field }: { className: string; size?: string; field: string }) {
+interface BadgeProps {
+    className: string;
+    size: string;
+    field: string;
+}
+
+function Badge({ className, size, field }: BadgeProps) {
     return (
-        <>
-            <div className={`${size} h-8 ${className} flex justify-center items-center rounded-md font-semibold text-white 2xl:font-bold`}>
-                <h1>{formatters.formatCapital(field)}</h1>
-            </div>
-        </>
+        <div className={`${size} ${className} py-1 px-2 flex justify-center items-center rounded-md text-white`}>
+            <h1>{formatters.formatCapital(field)}</h1>
+        </div>
     );
 }
+
+export default Badge;

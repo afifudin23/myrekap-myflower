@@ -1,7 +1,5 @@
-// import Button from "@/components/atoms/Button";
-import Image from "@/components/atoms/Image";
-import SmallButton from "@/components/atoms/SmallButton";
-import ProductInfo from "@/components/molecules/products/ProductInfo";
+import { ButtonSmall, Image } from "@/components/atoms";
+import { ProductInfo } from "@/components/molecules";
 import { FaTrashCan } from "react-icons/fa6";
 import { RiEdit2Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
@@ -29,18 +27,18 @@ const ProductDetailSection = ({ product }: ProductDetailSectionProps) => {
             <div className="flex flex-col gap-5 min-w-60">
                 <ProductInfo product={product} />
                 <div className="flex gap-2 flex-col md:flex-row font-semibold">
-                    <SmallButton
+                    <ButtonSmall
                         className="bg-orange-400 hover:bg-orange-500 py-1 2xl:py-2 px-4"
                         onClick={() => navigate(`/products/${product.id}/edit`)}
                     >
                         <RiEdit2Fill /> Edit
-                    </SmallButton>
-                    <SmallButton
+                    </ButtonSmall>
+                    <ButtonSmall
                         className="bg-red-500 hover:bg-red-600 py-1 2xl:py-2 px-4"
                         onClick={handleDeleteClick}
                     >
                         <FaTrashCan /> Hapus
-                    </SmallButton>
+                    </ButtonSmall>
                 </div>
             </div>
         </section>

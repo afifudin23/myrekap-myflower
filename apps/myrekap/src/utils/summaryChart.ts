@@ -1,5 +1,3 @@
-import { OrderSummaryType } from "@/types/Data";
-
 export function daysInMonth(monthYear: Date) {
     const year = monthYear.getFullYear();
     const month = monthYear.getMonth() + 1; // getMonth() 0-11, jadi +1
@@ -7,7 +5,7 @@ export function daysInMonth(monthYear: Date) {
     return new Date(year, month, 0).getDate();
 }
 
-export function getSummaryPerDay(orders: OrderSummaryType[]) {
+export function getSummaryPerDay(orders: any[]) {
     const salesPerDay = Array(31).fill(0); // index 0 = tgl 1
     const revenuePerDay = Array(31).fill(0);
 
@@ -19,9 +17,8 @@ export function getSummaryPerDay(orders: OrderSummaryType[]) {
         const index = day - 1;
 
         salesPerDay[index] += order.quantity;
-        revenuePerDay[index] += (order.price * order.quantity )+ order.shippingCost;
+        revenuePerDay[index] += order.totalPrice * order.quantity + order.shippingCost;
     });
 
     return { salesPerDay, revenuePerDay };
 }
-

@@ -1,10 +1,9 @@
-import { OrderSummaryType } from "@/types/Data";
-import axiosInstance from "@/utils/axiosInstance";
+import { axiosInstance } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 function useOrders(now = new Date()) {
-    const [orders, setOrders] = useState<OrderSummaryType[]>([]);
+    const [orders, setOrders] = useState<any[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const hasFetched = useRef(false);
 
@@ -36,7 +35,7 @@ function useOrders(now = new Date()) {
         };
         const getAllOrders = async () => {
             try {
-                const response = await axiosInstance.get("/order-summaries", { params });
+                const response = await axiosInstance.get("/admin/orders", { params });
                 setOrders(response.data.data);
             } catch (error: any) {
                 if (error.response.status === 500) {

@@ -1,5 +1,5 @@
-import Navbar from "@/components/organisms/Navbar";
-import Sidebar from "@/components/organisms/Sidebar";
+import { Navbar } from "@/components/organisms/navbars";
+import { Sidebar } from "@/components/organisms/sidebars";
 import { ReactNode } from "react";
 
 type LayoutProps = {

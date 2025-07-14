@@ -1,5 +1,5 @@
-import Title from "@/components/molecules/Title";
-import ProductForm from "@/components/organisms/products/ProductForm";
+import { TitlePage } from "@/components/molecules";
+import { ProductForm } from "@/components/organisms/products";
 import MainLayout from "@/components/templates/MainLayout";
 import { useForm } from "react-hook-form";
 import { TbLogout2 } from "react-icons/tb";
@@ -11,7 +11,7 @@ function ProductEditPage() {
     return (
         <MainLayout>
             <div className="flex justify-between">
-                <Title title="Edit Produk" subtitle="Mengelola Data Produk Penjualan" />
+                <TitlePage title="Edit Produk" subtitle="Mengelola Data Produk Penjualan" />
                 <button
                     onClick={() => {
                         navigate(-1);

@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import Loading from "@/components/atoms/Loading";
+import { Loading } from "@/components/atoms";
 import MainLayout from "@/components/templates/MainLayout";
-import useVerify from "@/hooks/useVerify";
-import axiosInstance from "@/utils/axiosInstance";
-import { getUserCookies, removeUserCookies } from "@/utils/userCookies";
+import { useVerify } from "@/hooks";
+import { axiosInstance, getUserCookies, removeUserCookies } from "@/utils";
 import { ReactNode } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
