@@ -29,6 +29,7 @@ export const create = async (userId: string, data: customerOrderSchema.CreateCus
         const order = await prisma.order.create({
             data: {
                 ...orderData,
+                source: "MYFLOWER",
                 orderCode: formmatters.generateOrderCode(),
                 user: { connect: { id: userId } },
                 totalPrice,
@@ -73,7 +74,7 @@ export const cancel = async (id: string) => {
         const data = await prisma.order.update({
             where: { id },
             include: { items: { include: { product: { include: { images: true } } } } },
-            data: { orderStatus: "CANCELLED" },
+            data: { orderStatus: "CANCELED" },
         });
         return data;
     } catch (_error) {

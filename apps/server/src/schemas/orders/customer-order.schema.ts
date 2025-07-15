@@ -7,6 +7,7 @@ export const createCustomerOrderSchema = z
             (val) => (typeof val === "string" ? val.toUpperCase() : val),
             z.enum(["UMUM", "PEMDA", "AKADEMIK", "RUMAH_SAKIT", "POLISI_MILITER", "PERBANKAN"])
         ),
+        phoneNumber: z.string(),
         deliveryOption: z.preprocess(
             (val) => (typeof val === "string" ? val.toUpperCase() : val),
             z.enum(["DELIVERY", "PICKUP"])

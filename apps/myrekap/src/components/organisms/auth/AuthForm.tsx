@@ -1,51 +1,37 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AxiosError } from "axios";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { RiFlowerLine } from "react-icons/ri";
-import { getUserCookies, setUserCookies } from "@/utils";
-import axiosInstance from "@/utils/axiosInstance";
-import { loginFormSchema, LoginFormType, LoginKey } from "@/schemas";
-import { Button } from "@/components/atoms";
+import { Button, Loading } from "@/components/atoms";
+import { TypeOf, ZodType } from "zod";
+import { FieldErrors, Path, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
+import { AnimatePresence } from "framer-motion";
+import { AlertInfo } from "@/components/molecules";
 
-function AuthForm() {
-    const [errorMessage, setErrorMessage] = useState<string>("");
-    const items = ["Username", "Password"];
-    const navigate = useNavigate();
-    useEffect(() => {
-        if (getUserCookies() !== null) {
-            navigate("/beranda");
-        }
-    }, []);
+interface AuthFormProps<TSchema extends ZodType<any, any>> {
+    showAlert: boolean;
+    setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
+    alertMessage: string;
+    onSubmit: SubmitHandler<TypeOf<TSchema>>;
+    items: string[];
+    register: UseFormRegister<TypeOf<TSchema>>;
+    handleSubmit: UseFormHandleSubmit<TypeOf<TSchema>>;
+    isLoading: boolean;
+    errors: FieldErrors<TypeOf<TSchema>>;
+}
+const getErrorMessage = (fieldName: string, errors: any) => {
+    const error = errors[fieldName as keyof typeof errors];
+    return typeof error?.message === "string" ? error.message : undefined;
+};
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<LoginFormType>({
-        resolver: zodResolver(loginFormSchema),
-    });
-
-    const onSubmit = async (data: LoginFormType) => {
-        try {
-            const response = await axiosInstance.post("auth/login", {
-                username: data.username,
-                password: data.password,
-            });
-            console.log(response)
-            setUserCookies({ username: response.data.username, role: response.data.role });
-            navigate("/beranda");
-        } catch (error) {
-            const axiosError = error as AxiosError;
-            if (axiosError.code === "ERR_NETWORK") {
-                setErrorMessage("Tidak Dapat Terhubung Ke Server. Periksa Koneksi Internet Anda");
-            }
-            if (axiosError.response) {
-                setErrorMessage("Username atau PIN Yang Anda Masukan Salah");
-            }
-        }
-    };
+function AuthForm<TSchema extends ZodType<any, any>>({
+    showAlert,
+    setShowAlert,
+    alertMessage,
+    onSubmit,
+    items,
+    register,
+    handleSubmit,
+    isLoading,
+    errors,
+}: AuthFormProps<TSchema>) {
     return (
         <div className="border w-1/3 2xl:w-1/4 m-auto p-5 rounded-2xl bg-[#F5F1FB]">
             <h1 className="text-base 2xl:text-xl font-poppins w-fit">
@@ -62,21 +48,20 @@ function AuthForm() {
                         Login Untuk Masuk Admin Dashboard
                     </p>
                 </div>
-                <p className="text-red-500 ml-4 mb-5 p-3 text-center text-sm 2xl:text-base">{errorMessage}</p>
                 <form className="flex flex-col px-7 2xl:px-10 gap-5 2xl:gap-5 w-full" onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex flex-col gap-3">
                         {items.map((item) => (
                             <div key={item}>
                                 <input
-                                    type={item === "PIN" ? "password" : "text"}
+                                    type={item.toLowerCase()}
                                     placeholder={`Input ${item}`}
                                     className="border p-2 pl-4 rounded-2xl w-full font-medium text-sm 2xl:text-base"
                                     autoComplete={item}
-                                    {...register(item.toLowerCase() as LoginKey)}
+                                    {...register(item.toLowerCase() as Path<TypeOf<TSchema>>)}
                                 />
-                                {errors[item.toLowerCase() as LoginKey] && (
+                                {errors[item.toLowerCase()] && (
                                     <p className="ml-3 text-sm text-red-500">
-                                        *{errors[item.toLowerCase() as LoginKey]?.message}
+                                        *{getErrorMessage(item.toLowerCase(), errors)}
                                     </p>
                                 )}
                             </div>
@@ -87,6 +72,14 @@ function AuthForm() {
                         Login
                     </Button>
                 </form>
+
+                {/* Custom Alert */}
+                <AnimatePresence>
+                    {showAlert && <AlertInfo handleAlert={() => setShowAlert(false)} message={alertMessage} />}
+                </AnimatePresence>
+
+                {/* Loading */}
+                {isLoading && <Loading />}
             </div>
         </div>
     );

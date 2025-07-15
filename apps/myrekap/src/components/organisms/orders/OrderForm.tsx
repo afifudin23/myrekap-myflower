@@ -7,7 +7,7 @@ import { AlertInfo, InputDate, InputDropdown, InputFile, InputIsPaid, InputMoney
 import { Button, Loading } from "@/components/atoms";
 
 
-type FormOrderProps<TSchema extends ZodType<any, any>> = {
+interface OrderFormProps<TSchema extends ZodType<any, any>> {
     onSubmit: SubmitHandler<TypeOf<TSchema>>; // ini lebih tepat daripada React.FormEventHandler
     fieldRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
     control: Control<TypeOf<TSchema>>;
@@ -19,6 +19,7 @@ type FormOrderProps<TSchema extends ZodType<any, any>> = {
     isLoading: boolean;
     errors: FieldErrors<TypeOf<TSchema>>;
 };
+
 const getErrorMessage = (fieldName: string, errors: any) => {
     const error = errors[fieldName as keyof typeof errors];
     return typeof error?.message === "string" ? error.message : undefined;
@@ -35,7 +36,7 @@ function OrderForm<TSchema extends ZodType<any, any>>({
     alertMessage,
     isLoading,
     errors,
-}: FormOrderProps<TSchema>) {
+}: OrderFormProps<TSchema>) {
     const isPaid = watch("isPaid" as Path<TypeOf<TSchema>>);
     useEffect(() => {
         if (!isPaid) {

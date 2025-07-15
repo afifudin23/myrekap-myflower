@@ -14,6 +14,7 @@ function OrderCreatePage() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     let loadingTimer: NodeJS.Timeout | null = null;
 
+    // Type Any, Next Fixing 
     const {
         handleSubmit,
         control,
@@ -21,7 +22,7 @@ function OrderCreatePage() {
         reset,
         clearErrors,
         formState: { errors },
-    } = useForm<CreateOrderType>({
+    } = useForm<any>({
         resolver: zodResolver(createOrderSchema),
         defaultValues: defaultValuesAddOrderSummary,
     });
@@ -47,11 +48,10 @@ function OrderCreatePage() {
             reset(defaultValuesAddOrderSummary);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (error: any) {
+            setShowAlert(true);
             if (error.response.status === 500) {
-                setShowAlert(true);
                 setAlertMessage("Oops! Server mengalami kendala teknis. Tim kami akan segera menanganinya");
             } else {
-                setShowAlert(true);
                 setAlertMessage(error.response.data.message);
             }
         } finally {
@@ -66,7 +66,7 @@ function OrderCreatePage() {
 
     return (
         <MainLayout>
-            <TitlePage title="Input Order" subtitle="Menginput Order Sesuai Kebutuhan" />
+            <TitlePage title="Tambah Order" subtitle="Menginput Order Sesuai Kebutuhan" />
             <OrderForm
                 onSubmit={handleSubmit(onSubmit)}
                 fieldRefs={fieldRefs}

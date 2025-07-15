@@ -10,13 +10,14 @@ export function getSummaryPerDay(orders: any[]) {
     const revenuePerDay = Array(31).fill(0);
 
     orders.forEach((order) => {
+        const totalQuantity = order.items.reduce((acc: number, item: any) => acc + item.quantity, 0);
         const date = new Date(order.orderDate);
         const day = date.getDate(); // tanggal 1–31
 
         // index array mulai dari 0
         const index = day - 1;
 
-        salesPerDay[index] += order.quantity;
+        salesPerDay[index] += totalQuantity;
         revenuePerDay[index] += order.totalPrice * order.quantity + order.shippingCost;
     });
 

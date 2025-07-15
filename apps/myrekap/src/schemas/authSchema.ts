@@ -1,4 +1,4 @@
-import { object, string, z } from "zod";
+import { object, string, TypeOf } from "zod";
 
 export const loginFormSchema = object({
     username: string()
@@ -8,6 +8,5 @@ export const loginFormSchema = object({
     password: string().nonempty("Password wajib diisi").length(6, "Password Harus 6 Angka"),
 });
 
-export type LoginFormType = z.infer<typeof loginFormSchema>;
+export type LoginFormType = TypeOf<typeof loginFormSchema>;
 
-export type LoginKey = "username" | "password";

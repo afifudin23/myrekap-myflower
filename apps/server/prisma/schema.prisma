@@ -83,9 +83,11 @@ model CartItem {
 
 model Order {
   id               String           @id @default(cuid())
+  source           Source           @map("source")
   orderCode        String           @unique @map("order_code")
   userId           String           @map("user_id")
   customerName     String           @map("customer_name")
+  phoneNumber      String           @map("phone_number")
   customerCategory CustomerCategory @map("customer_category")
 
   // Delivery
@@ -170,6 +172,11 @@ model Review {
   @@map("reviews")
 }
 
+enum Source {
+  MYREKAP  @map("myrekap")
+  MYFLOWER @map("myflower")
+}
+
 enum DeliveryOption {
   DELIVERY @map("delivery")
   PICKUP   @map("pickup")
@@ -191,21 +198,21 @@ enum PaymentMethod {
   CREDIT_CARD   @map("credit_card")
   CSTORE        @map("cstore")
   QRIS          @map("qris")
-  EWALLET        @map("ewallet")
+  EWALLET       @map("ewallet")
 }
 
 enum OrderStatus {
   IN_PROCESS @map("in_process")
   COMPLETED  @map("completed")
-  CANCELLED  @map("cancelled")
+  CANCELED   @map("canceled")
 }
 
 enum PaymentStatus {
-  PENDING   @map("pending")
-  UNPAID    @map("unpaid")
-  PAID      @map("paid")
+  PENDING  @map("pending")
+  UNPAID   @map("unpaid")
+  PAID     @map("paid")
   CANCELED @map("canceled")
-  EXPIRED   @map("expired")
-  REFUNDED  @map("refunded")
-  DENIED    @map("denied")
+  EXPIRED  @map("expired")
+  REFUNDED @map("refunded")
+  DENIED   @map("denied")
 }

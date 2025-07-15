@@ -34,7 +34,7 @@ const Search = ({
                 </ButtonSmall>
             </div>
             {isOpenFilter && (
-                <div className="grid grid-cols-2 gap-2 mt-3 2xl:grid-cols-4">
+                <div className="grid grid-cols-2 gap-2 mt-3 2xl:grid-cols-3">
                     <InputFilter options={CUSTOMER_CATEGORY_ITEMS} value={filterCustomer} onChange={setFilterCustomer} />
                     {/* <InputFilter options={} value={filterFlower} onChange={setFilterFlower} /> */}
                     <InputFilter options={PAYMENT_STATUS_ITEMS} value={filterPayment} onChange={setFilterPayment} />

@@ -16,7 +16,7 @@ function ProtectedRoute({ children }: { children?: ReactNode }) {
     if (!isAuthenticated || !userCookies) {
         removeUserCookies();
         (async () => await axiosInstance.post("auth/logout"))();
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/auth/login" replace />;
     }
     if (error.code === "ERR_NETWORK") {
         return (

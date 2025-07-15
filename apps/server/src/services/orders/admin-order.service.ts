@@ -45,7 +45,11 @@ export const getAllOrders = async (requestQuery: any) => {
         orderBy: {
             orderDate: orderDateOrderBy,
         },
-        include: { paymentProof: true, finishedProduct: true },
+        include: {
+            items: { include: { product: { include: { images: true } } } },
+            paymentProof: true,
+            finishedProduct: true,
+        },
     });
     return data;
 };

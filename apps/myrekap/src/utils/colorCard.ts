@@ -1,5 +1,4 @@
 export function bgColorOrderCard(paymentStatus: string) {
-    console.log(paymentStatus)
     if (paymentStatus === "PAID") {
         return "bg-[#DEF092]";
     } else if (paymentStatus === "UNPAID") {

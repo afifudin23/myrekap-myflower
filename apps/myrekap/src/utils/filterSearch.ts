@@ -4,17 +4,17 @@ export const filterSearch = (
     {
         orderCode,
         customerName,
-        price,
+        totalPrice,
         deliveryAddress,
-    }: { orderCode: string; customerName: string; price: number; deliveryAddress: string },
+    }: { orderCode: string; customerName: string; totalPrice: number; deliveryAddress: string },
     searchTerm: string
 ) => {
     const keyword = searchTerm.toLowerCase();
     return (
         orderCode.toLowerCase().includes(keyword) ||
         customerName.toLowerCase().includes(keyword) ||
-        price.toString().toLowerCase().includes(keyword) ||
-        deliveryAddress.toLowerCase().includes(keyword)
+        totalPrice.toString().toLowerCase().includes(keyword) ||
+        deliveryAddress?.toLowerCase().includes(keyword)
     );
 };
 

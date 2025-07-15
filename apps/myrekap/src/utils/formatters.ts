@@ -54,7 +54,7 @@ const formatters = {
         };
         return date.toLocaleString("en-GB", options).replace(",", " at");
     },
-    
+
     isoDateToStringDate: (isoDate: any) => {
         const date = new Date(isoDate);
         const day = String(date.getDate()).padStart(2, "0");
@@ -145,6 +145,13 @@ const formatters = {
             orderDate: this.isoDateToStringDate(data.orderDate),
             finishedProduct: data.finishedProduct,
         };
+    },
+
+    formatSource(value: string) {
+        return value
+            .toLowerCase()
+            .replace(/^([a-z])/, (m) => m.toUpperCase()) // Kapital huruf pertama
+            .replace(/([a-z])([a-z])/, (_, a, b) => a + b.toUpperCase()); // Kapital huruf ke-3 (index 2)
     },
 };
 export default formatters;

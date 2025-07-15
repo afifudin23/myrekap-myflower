@@ -11,7 +11,7 @@ function InputMonthYear({
     setMonthYear: React.Dispatch<React.SetStateAction<Date>>;
 }) {
     return (
-        <div className="flex items-center mb-3 gap-3">
+        <div className="flex items-center my-5 gap-3">
             <h1 className="text-lg">Periode</h1>
             <DatePicker
                 selected={monthYear}
