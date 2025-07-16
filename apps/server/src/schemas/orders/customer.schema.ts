@@ -1,13 +1,12 @@
 import { z } from "zod";
 
-export const createCustomerOrderSchema = z
+export const create = z
     .object({
         customerName: z.string(),
         customerCategory: z.preprocess(
             (val) => (typeof val === "string" ? val.toUpperCase() : val),
             z.enum(["UMUM", "PEMDA", "AKADEMIK", "RUMAH_SAKIT", "POLISI_MILITER", "PERBANKAN"])
         ),
-        phoneNumber: z.string(),
         deliveryOption: z.preprocess(
             (val) => (typeof val === "string" ? val.toUpperCase() : val),
             z.enum(["DELIVERY", "PICKUP"])
@@ -43,10 +42,10 @@ export const createCustomerOrderSchema = z
                 message: "Delivery date minimum is today",
             }
         ),
-        paymentMethod: z.preprocess(
-            (val) => (typeof val === "string" ? val.toUpperCase() : val),
-            z.enum(["COD", "OTHERS"])
-        ).nullable().transform((val) => (val === "OTHERS" ? null : val)),
+        paymentMethod: z
+            .preprocess((val) => (typeof val === "string" ? val.toUpperCase() : val), z.enum(["COD", "OTHERS"]))
+            .nullable()
+            .transform((val) => (val === "OTHERS" ? null : val)),
         messages: z.array(
             z.object({
                 productId: z.string(),
@@ -87,4 +86,4 @@ export const createCustomerOrderSchema = z
         }
     });
 
-export type CreateCustomerOrderType = z.infer<typeof createCustomerOrderSchema>;
+export type CreateType = z.infer<typeof create>;

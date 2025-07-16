@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 function OrderDetailSection() {
     const field = getOrderCookies();
-    console.log(field)
+    console.log(field);
     const navigate = useNavigate();
     return (
         <>
@@ -88,27 +88,24 @@ function OrderDetailSection() {
                         </li>
                     </div>
                 </div>
-                <div className="mt-5 p-8 rounded-xl bg-blue-50 bg-opacity-80">
+                <div className="mt-5 p-8 rounded-xl bg-blue-50 bg-opacity-80 space-y-5">
                     <div>
                         <h1 className="text-lg font-semibold 2xl:text-xl">Detail Pembayaran</h1>
                         <p>
-                            Metode Pembayaran :{" "}
-                            <span className="font-medium">{formatters.formatCapital(field.paymentMethod)}</span>
+                            Metode Pembayaran : <span className="font-medium">{field.paymentMethod.split("_").join(" ")}</span>
                         </p>
                         <p>
-                            Provider :{" "}
-                            <span className="font-medium">{formatters.formatCapital(field.paymentProvider)}</span>
+                            Provider : <span className="font-medium">{field.paymentProvider}</span>
                         </p>
                     </div>
                     <div>
                         <h1 className="text-lg font-semibold 2xl:text-xl">Detail Pengiriman</h1>
                         <p>
-                            Opsi Pengiriman :{" "}
-                            <span className="font-medium">{formatters.formatCapital(field.deliveryOption)}</span>
+                            Opsi Pengiriman : <span className="font-medium">{field.deliveryOption}</span>
                         </p>
                         <p>
                             Alamat Pengiriman :{" "}
-                            <span className="font-medium">Jl. Gatot Subroto Gg.4 Rt4/Rw9 Kel. Kejambon</span>
+                            <span className="font-medium">{field.deliveryAddress || "-"}</span>
                         </p>
                     </div>
                     <div>

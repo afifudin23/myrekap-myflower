@@ -1,6 +1,6 @@
 export * as authSchema from "./auth.schema";
-export * as adminOrderSchema from "./orders/admin-order.schema";
-export * as customerOrderSchema from "./orders/customer-order.schema";
+export * as ordersAdminSchema from "./orders/admin.schema";
+export * as ordersCustomerSchema from "./orders/customer.schema";
 export * as productSchema from "./product.schema";
 export * as userSchema from "./user.schema";
 export * as cartItemSchema from "./cart-item.schema";

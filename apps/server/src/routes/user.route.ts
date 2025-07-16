@@ -3,20 +3,22 @@ import { authMiddleware, singleSuperadminMiddleware, superadminMiddleware } from
 import { userController } from "@/controllers";
 import { errorHandler } from "@/utils";
 
-const usersRouter: Router = Router();
+const userRouter: Router = Router();
 
-usersRouter.get("/", [authMiddleware, superadminMiddleware], errorHandler(userController.getAllUsers));
-usersRouter.get("/:id", [authMiddleware, superadminMiddleware], errorHandler(userController.getUserById));
-usersRouter.post(
-  "/",
-  [authMiddleware, superadminMiddleware, singleSuperadminMiddleware],
-  errorHandler(userController.createNewUser)
+userRouter.get("/admin", [authMiddleware, superadminMiddleware], errorHandler(userController.getAllAdmins));
+userRouter.get("/customer", [authMiddleware, superadminMiddleware], errorHandler(userController.getAllCustomers));
+userRouter.get("/:id", [authMiddleware, superadminMiddleware], errorHandler(userController.getUserById));
+userRouter.post("/customer", errorHandler(userController.createCustomer));
+userRouter.post(
+    "/admin",
+    [authMiddleware, superadminMiddleware, singleSuperadminMiddleware],
+    errorHandler(userController.createAdmin)
 );
-usersRouter.put(
-  "/:id",
-  [authMiddleware, superadminMiddleware, singleSuperadminMiddleware],
-  errorHandler(userController.updateUser)
+userRouter.put(
+    "/:id",
+    [authMiddleware, superadminMiddleware, singleSuperadminMiddleware],
+    errorHandler(userController.updateUser)
 );
-usersRouter.delete("/:id", [authMiddleware, superadminMiddleware], errorHandler(userController.deleteUser));
+userRouter.delete("/:id", [authMiddleware, superadminMiddleware], errorHandler(userController.deleteUser));
 
-export default usersRouter;
+export default userRouter;

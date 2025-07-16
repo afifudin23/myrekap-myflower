@@ -1,7 +1,7 @@
 import { axiosInstance } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 
-function useUsers() {
+function useUsers(role: "admin" | "customer") {
     const [users, setUsers] = useState([]);
     const hasFetched = useRef(false);
     useEffect(() => {
@@ -9,7 +9,7 @@ function useUsers() {
         hasFetched.current = true;
         const getAllUsers = async () => {
             try {
-                const response = await axiosInstance.get("/users");
+                const response = await axiosInstance.get(`/users/${role}`);
                 setUsers(response.data.data);
             } catch (error: any) {
                 setUsers(error.response.data);

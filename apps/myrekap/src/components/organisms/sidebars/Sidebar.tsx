@@ -1,17 +1,17 @@
 import axiosInstance from "@/utils/axiosInstance";
 import { RiLogoutCircleFill, RiLogoutCircleLine } from "react-icons/ri";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { SIDEBAR_ITEMS } from ".";
-import { removeUserCookies } from "@/utils";
+import { removeOrderCookies, removeUserCookies, removeUserDetailCookies } from "@/utils";
 import { SidebarMenuItem } from "@/components/organisms/sidebars/SidebarMenuItem";
 
 const Sidebar = () => {
-    const navigate = useNavigate();
-    const handleLogout = () => {
+    const handleLogout = async () => {
         try {
-            axiosInstance.post("auth/logout");
+            removeOrderCookies();
+            removeUserDetailCookies();
             removeUserCookies();
-            navigate("/login");
+            await axiosInstance.post("auth/logout");
         } catch (error) {
             console.error("Logout failed:", error);
         }
@@ -23,7 +23,11 @@ const Sidebar = () => {
                     <SidebarMenuItem key={item.path} name={item.label} path={item.path} icons={item.icons} />
                 ))}
             </nav>
-            <Link to="/login" onClick={handleLogout} className="flex gap-2 mt-7 ml-4 cursor-pointer items-center group">
+            <Link
+                to="/auth/login"
+                onClick={handleLogout}
+                className="flex gap-2 mt-7 ml-4 cursor-pointer items-center group"
+            >
                 <RiLogoutCircleLine className="transition duration-150 ease-in-out opacity-100 group-hover:opacity-0" />
                 <RiLogoutCircleFill className="absolute transition duration-150 ease-in-out opacity-0 group-hover:opacity-100" />
                 <div>Logout</div>

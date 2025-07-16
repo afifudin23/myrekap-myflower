@@ -5,31 +5,28 @@ import { TbLogout2 } from "react-icons/tb";
 import { ProductDetailSection } from "@/components/organisms/products";
 import { TitlePage } from "@/components/molecules";
 
-interface Product {
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    price: number;
-    stock: number;
-}
+// interface Product {
+//     id: string;
+//     name: string;
+//     description: string;
+//     image: string;
+//     price: number;
+//     stock: number;
+// }
 
 function ProductDetailPage() {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
-    const [product, setProduct] = useState<Product | null>(null);
+    const [product, setProduct] = useState<any | null>(null);
 
     useEffect(() => {
-        // Simulasi fetch data
-        const fakeData: Product = {
-            id: "1",
-            name: "Bunga Mawar Merah",
-            description: "Bunga mawar merah segar dan harum untuk berbagai momen spesial.",
-            image: "/assets/images/test.jpg",
-            price: 50000,
-            stock: 10,
-        };
-        setProduct(fakeData);
+        const data = JSON.parse(localStorage.getItem("productDetail") || "{}");
+        console.log(data)
+        if (data.id === id) {
+            setProduct((data));
+        } else {
+            navigate("/products");
+        }
     }, [id]);
 
     if (!product) return <p>Loading...</p>;

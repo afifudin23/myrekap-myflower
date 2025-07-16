@@ -3,14 +3,20 @@ import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, NotFoundException } from "@/exceptions";
 
-export const getAllUsers = async () => {
-    const user = await prisma.user.findMany();
+export const findAllAdmins = async () => {
+    const user = await prisma.user.findMany({ where: { role: { in: ["ADMIN", "SUPERADMIN"] } } });
+    // supaya password tidak di tampilkan
+    const data = user.map(({ password, ...data }) => data);
+    return data;
+};
+export const findAllCustomers = async () => {
+    const user = await prisma.user.findMany({ where: { role: "CUSTOMER" } });
     // supaya password tidak di tampilkan
     const data = user.map(({ password, ...data }) => data);
     return data;
 };
 
-export const getUserById = async (id: string) => {
+export const findById = async (id: string) => {
     try {
         const user = await prisma.user.findFirstOrThrow({
             where: {
@@ -24,8 +30,8 @@ export const getUserById = async (id: string) => {
     }
 };
 
-export const createUser = async (requestBody: any) => {
-    const { username, email, phoneNumber, password, confPassword, role } = requestBody;
+export const createAdmin = async (requestBody: any) => {
+    const { username, email, phoneNumber, password, confPassword, role = "ADMIN" } = requestBody;
 
     if (password !== confPassword) {
         throw new BadRequestException("Password confirmation does not match", ErrorCode.PASSWORD_MISMATCH);
@@ -38,7 +44,7 @@ export const createUser = async (requestBody: any) => {
     if (existingUser) {
         throw new BadRequestException("The username or email is already taken", ErrorCode.USER_ALREADY_EXISTS);
     }
-    const users = await getAllUsers();
+    const users = await findAllAdmins();
 
     // check if the first user is a superadmin
     if (users.length === 0) {
@@ -61,7 +67,44 @@ export const createUser = async (requestBody: any) => {
     return data;
 };
 
-export const updateUser = async (id: string, requestBody: any) => {
+export const createCustomer = async (requestBody: any) => {
+    const { username, email, phoneNumber, password, confPassword, role = "CUSTOMER" } = requestBody;
+
+    if (password !== confPassword) {
+        throw new BadRequestException("Password confirmation does not match", ErrorCode.PASSWORD_MISMATCH);
+    }
+    // check if the username or email is already taken
+    const existingUser = await prisma.user.findFirst({
+        where: { OR: [{ username }, { email }] },
+        select: { id: true },
+    });
+    if (existingUser) {
+        throw new BadRequestException("The username or email is already taken", ErrorCode.USER_ALREADY_EXISTS);
+    }
+    const users = await findAllAdmins();
+
+    // check if the first user is a superadmin
+    if (users.length === 0) {
+        if (role !== "SUPERADMIN") {
+            throw new BadRequestException("First user must be a superadmin", ErrorCode.FIRST_USER_MUST_BE_SUPERADMIN);
+        }
+    }
+
+    const hashPin = await argon2.hash(password);
+    const user = await prisma.user.create({
+        data: {
+            username,
+            email,
+            phoneNumber,
+            password: hashPin,
+            role,
+        },
+    });
+    const { password: _remove, ...data } = user;
+    return data;
+};
+
+export const update = async (id: string, requestBody: any) => {
     const { username, email, password, confPassword } = requestBody;
 
     // check if the user exists
@@ -98,7 +141,7 @@ export const updateUser = async (id: string, requestBody: any) => {
     return data;
 };
 
-export const deleteUser = async (id: string) => {
+export const remove = async (id: string) => {
     // check if the user exists
     const findUser = await prisma.user.findFirst({
         where: {

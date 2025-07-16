@@ -35,7 +35,7 @@ function useOrders(now = new Date()) {
         };
         const getAllOrders = async () => {
             try {
-                const response = await axiosInstance.get("/admin/orders", { params });
+                const response = await axiosInstance.get("/orders/admin", { params });
                 setOrders(response.data.data);
             } catch (error: any) {
                 if (error.response.status === 500) {

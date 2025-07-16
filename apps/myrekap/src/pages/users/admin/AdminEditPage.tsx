@@ -2,11 +2,65 @@ import MainLayout from "@/components/templates/MainLayout";
 import { useNavigate } from "react-router-dom";
 import { TbLogout2 } from "react-icons/tb";
 import { TitlePage } from "@/components/molecules";
-import { removeUserDetailCookies } from "@/utils";
+import { axiosInstance, getUserDetailCookies, removeUserDetailCookies } from "@/utils";
 import { UserForm } from "@/components/organisms/users";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 
 function AdminEditPage() {
     const navigate = useNavigate();
+    const userCookies = getUserDetailCookies();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    if (!userCookies) return <h1 className="text-4xl font-semibold text-center mt-20">Data Tidak Ditemukan</h1>;
+    const fieldRefs = useRef<Record<string, HTMLDivElement | null>>({});
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<any>({
+        defaultValues: userCookies,
+    });
+
+    useEffect(() => {
+        if (!errors || Object.keys(errors).length === 0) return;
+        const firstErrorField = Object.keys(errors)[0];
+        const errorRef = fieldRefs.current[firstErrorField];
+
+        // Delay scroll agar DOM sempat update (error message muncul)
+        if (errorRef) {
+            setTimeout(() => {
+                errorRef.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 50);
+        }
+    }, [errors]);
+
+    const onSubmit = async (data: any) => {
+        console.log(data);
+        setIsLoading(true);
+        try {
+            await axiosInstance.put(`users/${userCookies.id}`, data);
+            navigate("/users/admin", {
+                state: { message: "Perubahan pada user berhasil disimpan" },
+            });
+            removeUserDetailCookies();
+        } catch (error: any) {
+            if (error.response.status === 500) {
+                navigate("/users/admin", {
+                    state: {
+                        message: "Oops! Server mengalami kendala teknis. Tim kami akan segera menanganinya",
+                    },
+                });
+            } else {
+                navigate("/users/admin", {
+                    state: {
+                        message: error.response.data.message,
+                    },
+                });
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
     return (
         <MainLayout>
             <div className="flex justify-between">
@@ -21,7 +75,13 @@ function AdminEditPage() {
                 </button>
             </div>
 
-            <UserForm type="update" />
+            <UserForm
+                control={control}
+                fieldRefs={fieldRefs}
+                errors={errors}
+                isLoading={isLoading}
+                onSubmit={handleSubmit(onSubmit)}
+            />
         </MainLayout>
     );
 }

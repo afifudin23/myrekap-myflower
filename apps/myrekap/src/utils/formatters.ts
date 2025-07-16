@@ -127,13 +127,13 @@ const formatters = {
         return {
             orderCode: data.orderCode,
             customerName: this.formatCustomerNameReceipt(data.customerName),
-            customerCategory: this.formatCapital(data.customerCategory),
+            customerCategory: data.customerCategory.split("_").join(" "),
             phoneNumber: data.phoneNumber,
             totalPrice: data.totalPrice,
-            paymentMethod: this.formatCapital(data.paymentMethod),
-            paymentProvider: data.paymentProvider.toUpperCase(),
-            paymentStatus: this.formatCapital(data.paymentStatus),
-            orderStatus: this.formatCapital(data.orderStatus),
+            paymentMethod: data.paymentMethod.split("_").join(" "),
+            paymentProvider: data.paymentProvider,
+            paymentStatus: data.paymentStatus,
+            orderStatus: data.orderStatus.split("_").join(" "),
             orderDate: this.isoDateToStringDate(data.orderDate),
         };
     },

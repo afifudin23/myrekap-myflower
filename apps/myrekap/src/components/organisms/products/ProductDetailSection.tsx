@@ -4,18 +4,18 @@ import { FaTrashCan } from "react-icons/fa6";
 import { RiEdit2Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
-interface ProductDetailSectionProps {
-    product: {
-        id: string;
-        name: string;
-        image: string;
-        price: number;
-        stock: number;
-        description?: string;
-    };
-}
+// interface ProductDetailSectionProps {
+//     product: {
+//         id: string;
+//         name: string;
+//         image: string;
+//         price: number;
+//         stock: number;
+//         description?: string;
+//     };
+// }
 
-const ProductDetailSection = ({ product }: ProductDetailSectionProps) => {
+const ProductDetailSection = ({ product }: any) => {
     const navigate = useNavigate();
 
     const handleDeleteClick = () => {
@@ -23,7 +23,7 @@ const ProductDetailSection = ({ product }: ProductDetailSectionProps) => {
     }
     return (
         <section className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-start">
-            <Image src={product.image} alt={product.name} className="w-full max-w-72" />
+            <Image src={product.images[0].secureUrl} alt={product.name} className="w-96 max-w-72" />
             <div className="flex flex-col gap-5 min-w-60">
                 <ProductInfo product={product} />
                 <div className="flex gap-2 flex-col md:flex-row font-semibold">

@@ -1,12 +1,12 @@
-import { customerOrderSchema } from "@/schemas";
-import { customerOrderService } from "@/services";
+import { ordersCustomerSchema } from "@/schemas";
+import { ordersCustomerService } from "@/services";
 import { Request, Response, NextFunction } from "express";
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
-    const body = customerOrderSchema.createCustomerOrderSchema.parse(req.body);
+    const body = ordersCustomerSchema.create.parse(req.body);
     try {
-        const userId = (req as any).user.id;
-        const data = await customerOrderService.create(userId, body);
+        const user = (req as any).user;
+        const data = await ordersCustomerService.create(user, body);
         res.status(200).json({ message: "Order created successfully", data });
     } catch (error) {
         next(error);
@@ -15,7 +15,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 export const getUserOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = (req as any).user.id;
-        const data = await customerOrderService.findAllByUser(userId);
+        const data = await ordersCustomerService.findAllByUser(userId);
         res.status(200).json({ message: data.length ? "Orders retrieved successfully" : "No orders available", data });
     } catch (error) {
         next(error);
@@ -24,7 +24,7 @@ export const getUserOrders = async (req: Request, res: Response, next: NextFunct
 export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = (req as any).user.id;
-        const data = await customerOrderService.findByIdAndUser(userId, req.params.id);
+        const data = await ordersCustomerService.findByIdAndUser(userId, req.params.id);
         res.status(200).json({ message: "Order retrieved successfully", data });
     } catch (error) {
         next(error);
@@ -32,7 +32,7 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 };
 export const cancelOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await customerOrderService.cancel(req.params.id);
+        const data = await ordersCustomerService.cancel(req.params.id);
         res.status(200).json({ message: "Order canceled successfully", data });
     } catch (error) {
         next(error);
@@ -41,7 +41,7 @@ export const cancelOrder = async (req: Request, res: Response, next: NextFunctio
 
 export const confirmOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await customerOrderService.confirm(req.params.id);
+        const data = await ordersCustomerService.confirm(req.params.id);
         res.status(200).json({ message: "Order confirmed successfully", data });
     } catch (error) {
         next(error);

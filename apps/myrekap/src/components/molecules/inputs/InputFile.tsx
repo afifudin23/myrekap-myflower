@@ -1,46 +1,41 @@
 import { Label } from "@/components/atoms";
 import { InputFileProps } from ".";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDropzone } from "react-dropzone";
 import { Controller } from "react-hook-form";
 
+type ImageItem = File | { fileName: string; size: number; secureUrl: string };
+
 const InputFile = React.forwardRef<HTMLDivElement, InputFileProps>(
     ({ label, name, control, error, disabled = false }, ref) => {
-        const [preview, setPreview] = useState<string | null>(null);
-
         return (
             <div className="input-text" ref={ref}>
                 <Label id={name} children={label} />
                 <Controller
                     name={name as any}
                     control={control}
-                    render={({ field: { onChange, value } }) => {
-                        useEffect(() => {
-                            if (value && value.secureUrl) {
-                                setPreview(value.secureUrl);
-                            }
-                            if (disabled) {
-                                setPreview(null);
-                                onChange(null);
-                            }
-                        }, [value, disabled]);
+                    render={({ field: { onChange, value = [] } }) => {
                         const { getRootProps, getInputProps, isDragActive } = useDropzone({
-                            accept: { "image/*": [] }, // Hanya menerima file gambar
-                            multiple: false,
+                            accept: { "image/*": [] },
+                            multiple: true,
                             onDrop: (acceptedFiles) => {
-                                if (disabled) return; // Blokir if not transfer
-                                const selectedFile = acceptedFiles[0];
-                                if (selectedFile) {
-                                    onChange(selectedFile); // Save selected file name
-                                    const reader = new FileReader();
-                                    reader.onloadend = () => {
-                                        setPreview(reader.result as string); // Save image preview
-                                    };
-                                    reader.readAsDataURL(selectedFile);
-                                }
+                                if (disabled) return;
+                                const newFiles = acceptedFiles.map((file) => file);
+                                onChange([...value, ...newFiles]);
                             },
-                            disabled, // Nonactive if not transfer
+                            disabled,
                         });
+
+                        const handleRemove = (index: number) => {
+                            const updated = [...value];
+                            updated.splice(index, 1);
+                            onChange(updated);
+                        };
+
+                        const handleClearAll = () => {
+                            onChange([]);
+                        };
+
                         return (
                             <div
                                 {...getRootProps()}
@@ -48,49 +43,71 @@ const InputFile = React.forwardRef<HTMLDivElement, InputFileProps>(
                                     disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
                                 }`}
                             >
-                                <div className="">
-                                    <input {...getInputProps()} />
+                                <input {...getInputProps()} />
+                                <div>
                                     {!disabled ? (
                                         isDragActive ? (
                                             <p>Drop file di sini...</p>
                                         ) : (
-                                            <p>Drag & drop file di sini, atau klik untuk memilih file</p>
+                                            <p>Drag & drop file, atau klik untuk memilih</p>
                                         )
                                     ) : (
-                                        <p className="text-gray-500 ">Upload hanya untuk metode pembayaran transfer</p>
+                                        <p className="text-gray-500">Upload dinonaktifkan</p>
                                     )}
                                 </div>
 
-                                {value && (
-                                    <div className="mt-4">
-                                        <p>
-                                            <strong className="mr-2">Nama File:</strong>
-                                            {value instanceof File ? value.name : value.fileName}
-                                        </p>
-                                        <p>
-                                            <strong className="mr-2">Ukuran:</strong>
-                                            {(value.size / 1024).toFixed(2)} KB
-                                        </p>
-                                    </div>
-                                )}
+                                {Array.isArray(value) && value.length > 0 && (
+                                    <div className="w-full mt-4">
+                                        <div className="mb-2 flex justify-between">
+                                            <p className="font-semibold">File Terpilih:</p>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleClearAll();
+                                                }}
+                                                className="text-red-500 text-sm hover:underline"
+                                            >
+                                                Hapus semua
+                                            </button>
+                                        </div>
+                                        <ul className="space-y-4">
+                                            {value.map((file: ImageItem, i: number) => {
+                                                const isFile = file instanceof File;
+                                                const imageUrl = isFile ? URL.createObjectURL(file) : file.secureUrl;
+                                                const fileName = isFile ? file.name : file.fileName;
+                                                const fileSize = (file.size / 1024).toFixed(2);
 
-                                {preview && (
-                                    <div className="mt-4 w-64 flex flex-col gap-5 2xl:gap-7 items-center">
-                                        <p className="leading-none">Preview:</p>
-                                        <img
-                                            src={preview}
-                                            alt="Preview"
-                                            className="w-full h-full object-contain rounded-lg"
-                                        />
-                                        <button
-                                            onClick={() => {
-                                                onChange(null);
-                                                setPreview(null);
-                                            }}
-                                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                                        >
-                                            Hapus
-                                        </button>
+                                                return (
+                                                    <li
+                                                        key={i}
+                                                        className="border p-2 rounded shadow bg-white text-center"
+                                                    >
+                                                        <p>
+                                                            <strong>Nama:</strong> {fileName}
+                                                        </p>
+                                                        <p>
+                                                            <strong>Ukuran:</strong> {fileSize} KB
+                                                        </p>
+                                                        {imageUrl && (
+                                                            <img
+                                                                src={imageUrl}
+                                                                alt={`preview-${i}`}
+                                                                className="w-40 h-auto mt-2 rounded object-cover mx-auto"
+                                                            />
+                                                        )}
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleRemove(i);
+                                                            }}
+                                                            className="mt-2 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                                                        >
+                                                            Hapus
+                                                        </button>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
                                     </div>
                                 )}
                             </div>

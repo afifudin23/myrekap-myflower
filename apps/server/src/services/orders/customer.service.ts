@@ -1,11 +1,11 @@
 import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
-import { customerOrderSchema } from "@/schemas";
+import { ordersCustomerSchema } from "@/schemas";
 import { formmatters } from "@/utils";
 
-export const create = async (userId: string, data: customerOrderSchema.CreateCustomerOrderType) => {
-    const cartItems = await prisma.cartItem.findMany({ where: { userId }, include: { product: true } });
+export const create = async (user: any, data: ordersCustomerSchema.CreateType) => {
+    const cartItems = await prisma.cartItem.findMany({ where: { userId: user.id }, include: { product: true } });
     if (cartItems.length === 0) {
         throw new BadRequestException("Cart must contain at least one item", ErrorCode.ORDER_MUST_CONTAIN_ITEMS);
     }
@@ -29,9 +29,10 @@ export const create = async (userId: string, data: customerOrderSchema.CreateCus
         const order = await prisma.order.create({
             data: {
                 ...orderData,
+                phoneNumber: user.phoneNumber,
                 source: "MYFLOWER",
                 orderCode: formmatters.generateOrderCode(),
-                user: { connect: { id: userId } },
+                user: { connect: { id: user.id } },
                 totalPrice,
                 paymentStatus: "PENDING",
                 orderStatus: "IN_PROCESS",
@@ -41,7 +42,7 @@ export const create = async (userId: string, data: customerOrderSchema.CreateCus
             },
             include: { items: true },
         });
-        // await prisma.cartItem.deleteMany({ where: { userId } });
+        // await prisma.cartItem.deleteMany({ where: { userId: user.id } });
         return order;
     } catch (error: any) {
         console.log(error.message);

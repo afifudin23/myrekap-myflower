@@ -1,6 +1,6 @@
 import z, { object, string } from "zod";
 
-export const createUserSchema = object({
+export const createAdmin = object({
   username: string(),
   email: string().email(),
   phoneNumber: string(),
@@ -9,7 +9,16 @@ export const createUserSchema = object({
   role: z.enum(["ADMIN", "SUPERADMIN"]).default("ADMIN"),
 });
 
-export const updatedUserSchema = object({
+export const createCustomer = object({
+  username: string(),
+  email: string().email(),
+  phoneNumber: string(),
+  password: string().min(5),
+  confPassword: string().min(5),
+  role: z.enum(["CUSTOMER"]).default("CUSTOMER"),
+});
+
+export const update = object({
   username: string().optional(),
   email: string().email().optional(),
   phoneNumber: string().optional(),

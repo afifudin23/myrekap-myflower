@@ -2,76 +2,21 @@ import { ButtonSmall } from "@/components/atoms";
 import { TitlePage } from "@/components/molecules";
 import { ProductList } from "@/components/organisms/products";
 import MainLayout from "@/components/templates/MainLayout";
+import { useProducts } from "@/hooks";
 import { MdAddToPhotos } from "react-icons/md";
 import { Link } from "react-router-dom";
 
-const dummyProducts = [
-    {
-        id: "1",
-        name: "Karangan Bunga Mawar",
-        image: "/assets/images/test.jpg",
-        price: 150000,
-        stock: 45,
-    },
-    {
-        id: "2",
-        name: "Buket Ulang Tahun",
-        image: "/assets/images/test.jpg",
-        price: 200000,
-        stock: 30,
-    },
-    {
-        id: "3",
-        name: "Buket Ulang Tahun",
-        image: "/assets/images/test2.jpg",
-        price: 200000,
-        stock: 30,
-    },
-    {
-        id: "4",
-        name: "Buket Ulang Tahun",
-        image: "/assets/images/test2.jpg",
-        price: 200000,
-        stock: 30,
-    },
-    {
-        id: "5",
-        name: "Buket Ulang Tahun",
-        image: "/assets/images/test.jpg",
-        price: 200000,
-        stock: 30,
-    },
-    {
-        id: "6",
-        name: "Buket Ulang Tahun",
-        image: "/assets/images/test2.jpg",
-        price: 200000,
-        stock: 30,
-    },
-    {
-        id: "7",
-        name: "Buket Ulang Tahun",
-        image: "/assets/images/test.jpg",
-        price: 200000,
-        stock: 30,
-    },
-    {
-        id: "8",
-        name: "Buket Ulang Tahun",
-        image: "/assets/images/test2.jpg",
-        price: 200000,
-        stock: 30,
-    },
-];
-
 function ProductPage() {
+    const { products } = useProducts();
     return (
         <MainLayout>
             <TitlePage title="Produk Saya" subtitle="Mengelola Data Produk Penjualan" />
             <Link to="/products/create" className="inline-block">
-                <ButtonSmall className="bg-[#4fcd53] hover:bg-[#42b146] py-1 2xl:py-2 px-4 font-bold mb-8"><MdAddToPhotos /> Tambah</ButtonSmall>
+                <ButtonSmall className="bg-[#4fcd53] hover:bg-[#42b146] py-1 2xl:py-2 px-4 font-bold mb-8">
+                    <MdAddToPhotos /> Tambah
+                </ButtonSmall>
             </Link>
-            <ProductList products={dummyProducts} />
+            <ProductList products={products} />
         </MainLayout>
     );
 }

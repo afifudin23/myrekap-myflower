@@ -2,7 +2,7 @@ export const PRODUCT_FORM_ITEMS = [
     {
         label: "Nama Produk",
         type: "text",
-        name: "productName",
+        name: "name",
     },
     {
         label: "Harga",
@@ -18,5 +18,10 @@ export const PRODUCT_FORM_ITEMS = [
         label: "Deskripsi Produk",
         type: "text",
         name: "description",
+    },
+    {
+        label: "Gambar Produk",
+        type: "file",
+        name: "images",
     },
 ];

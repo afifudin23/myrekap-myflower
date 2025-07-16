@@ -43,7 +43,7 @@ export const generatePaymentInfo = (notification: any) => {
             break;
     }
 
-    return { paymentMethod: paymentMethod.toUpperCase(), paymentProvider };
+    return { paymentMethod: paymentMethod.toUpperCase(), paymentProvider: paymentProvider.toUpperCase() };
 };
 
 export const isoDateToStringDateTime = (isoDate: string) => {
