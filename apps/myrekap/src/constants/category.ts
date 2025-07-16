@@ -8,8 +8,10 @@ export const CUSTOMER_CATEGORY_ITEMS: string[] = [
     "Perbankan",
 ];
 
-export const PAYMENT_METHOD_ITEMS: string[] = ["Semua", "Transfer", "Cash"];
+export const DELIVERY_OPTION_ITEMS: string[] = ["Semua", "Pickup", "Delivery"];
 
-export const PAYMENT_STATUS_ITEMS: string[] = ["Semua", "Lunas", "Belum Lunas", "Batal"];
+export const PAYMENT_METHOD_ITEMS: string[] = ["Semua", "Bank Transfer", "Cash"];
 
-export const ORDER_STATUS_ITEMS: string[] = ["Semua", "Terkirim", "In Process", "Dibatalkan"];
+export const PAYMENT_STATUS_ITEMS: string[] = ["Semua", "Paid", "Pending", "Unpaid", "Canceled", "Expired", "Refunded", "Denied"];
+
+export const ORDER_STATUS_ITEMS: string[] = ["Semua", "Completed", "In Process", "Canceled"];

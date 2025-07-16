@@ -25,26 +25,15 @@ export const getUserById = async (id: string) => {
 };
 
 export const createUser = async (requestBody: any) => {
-    const { username, email, password, confPassword, role } = requestBody;
+    const { username, email, phoneNumber, password, confPassword, role } = requestBody;
 
     if (password !== confPassword) {
         throw new BadRequestException("Password confirmation does not match", ErrorCode.PASSWORD_MISMATCH);
     }
     // check if the username or email is already taken
     const existingUser = await prisma.user.findFirst({
-        where: {
-            OR: [
-                {
-                    username,
-                },
-                {
-                    email,
-                },
-            ],
-        },
-        select: {
-            id: true,
-        },
+        where: { OR: [{ username }, { email }] },
+        select: { id: true },
     });
     if (existingUser) {
         throw new BadRequestException("The username or email is already taken", ErrorCode.USER_ALREADY_EXISTS);
@@ -63,6 +52,7 @@ export const createUser = async (requestBody: any) => {
         data: {
             username,
             email,
+            phoneNumber,
             password: hashPin,
             role,
         },

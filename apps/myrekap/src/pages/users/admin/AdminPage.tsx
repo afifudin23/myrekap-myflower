@@ -9,7 +9,7 @@ const AdminPage = () => {
     return (
         <MainLayout>
             <TitlePage title="Admin" subtitle="Mengelola Data Semua User Admin" />
-            <Link to="/administrator/add" className="inline-block">
+            <Link to="/users/admin/create" className="inline-block">
                 <ButtonSmall className="bg-[#4fcd53] hover:bg-[#42b146] py-1 2xl:py-2 px-4 font-bold mb-8">
                     <MdAddToPhotos /> Tambah
                 </ButtonSmall>

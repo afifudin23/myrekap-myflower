@@ -18,13 +18,14 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  role      Role
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(cuid())
+  username    String   @unique
+  email       String   @unique
+  password    String
+  phoneNumber String
+  role        Role
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   cartItems CartItem[]
   orders    Order[]
@@ -87,8 +88,8 @@ model Order {
   orderCode        String           @unique @map("order_code")
   userId           String           @map("user_id")
   customerName     String           @map("customer_name")
-  phoneNumber      String           @map("phone_number")
   customerCategory CustomerCategory @map("customer_category")
+  phoneNumber      String           @map("phone_number")
 
   // Delivery
   deliveryOption  DeliveryOption @map("delivery_option")
@@ -118,13 +119,13 @@ model Order {
 }
 
 model OrderItem {
-  id              String  @id @default(cuid())
-  orderId         String  @map("order_id")
-  productId       String  @map("product_id")
-  quantity        Int     @map("quantity")
-  greetingMessage String? @map("greeting_message")
-  unitPrice       Int     @map("unit_price")
-  totalPrice      Int     @map("total_price")
+  id         String  @id @default(cuid())
+  orderId    String  @map("order_id")
+  productId  String  @map("product_id")
+  quantity   Int     @map("quantity")
+  message    String? @map("message")
+  unitPrice  Int     @map("unit_price")
+  totalPrice Int     @map("total_price")
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)

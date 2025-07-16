@@ -16,7 +16,6 @@ function ReportOrderResultPage() {
     const params = {
         from_date: searchParams.get("from_date"),
         to_date: searchParams.get("to_date"),
-        flower_category: searchParams.get("flower_category"),
         customer_category: searchParams.get("customer_category"),
         payment_method: searchParams.get("payment_method"),
         payment_status: searchParams.get("payment_status"),
@@ -26,8 +25,9 @@ function ReportOrderResultPage() {
     useEffect(() => {
         const getOrderFilter = async () => {
             try {
-                const response = await axiosInstance.get("/order-summaries", { params });
-                const data = response.data.data.map((order: any) => formatters.formatDataOrderSummaryForPrint(order));
+                const response = await axiosInstance.get("/admin/orders", { params });
+                console.log(response.data.data);
+                const data = response.data.data.map((order: any) => formatters.formatReportOrder(order));
                 setOrderFilter(data);
             } catch (error) {
                 console.error("Error fetching order filter:", error);
@@ -60,7 +60,7 @@ function ReportOrderResultPage() {
                 </html>
             `;
 
-            const response = await axiosInstance.post("/order-summaries/pdf", { html }, { responseType: "blob" });
+            const response = await axiosInstance.post("/admin/orders/pdf", { html }, { responseType: "blob" });
             const blob = new Blob([response.data], { type: "application/pdf" });
             const url = window.URL.createObjectURL(blob);
 
@@ -90,7 +90,7 @@ function ReportOrderResultPage() {
                 <TitlePage title="Hasil Cetak Rekap" subtitle="Mencetak Laporan Penjualan Sesuai Kebutuhan" />
                 <button
                     onClick={() => {
-                        navigate("/order-summary/print");
+                        navigate("/reports/orders");
                         localStorage.removeItem("orderFilter");
                     }}
                 >
@@ -106,7 +106,7 @@ function ReportOrderResultPage() {
                     <ReportOrderTable orderFilter={orderFilter} />
                 </>
             ) : (
-                <h1 className="text-center text-2xl my-16">Data Pesanan Tidak Ditemukan</h1>
+                <h1 className="text-center text-2xl my-56">Data Pesanan Tidak Ditemukan</h1>
             )}
         </MainLayout>
     );

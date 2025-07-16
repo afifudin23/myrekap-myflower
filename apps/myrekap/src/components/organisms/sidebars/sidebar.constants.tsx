@@ -23,17 +23,17 @@ export const SIDEBAR_ITEMS = [
     },
     {
         label: "Cetak Rekap",
-        path: "order-summary/print",
+        path: "reports/orders",
         icons: { active: <FaFilePdf />, inactive: <FaRegFilePdf /> },
     },
     {
         label: "Admin",
-        path: "administrator",
+        path: "users/admin",
         icons: { active: <MdAdminPanelSettings />, inactive: <MdOutlineAdminPanelSettings /> },
     },
     {
         label: "Customer",
-        path: "customers",
+        path: "users/customer",
         icons: { active: <FaUserCircle />, inactive: <FaRegUserCircle /> },
     },
 ];

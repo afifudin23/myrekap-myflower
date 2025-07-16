@@ -5,7 +5,7 @@ import { Controller } from "react-hook-form";
 
 const InputText = React.forwardRef<HTMLInputElement, InputTextProps>(({ label, name, error, control }, ref) => {
     return (
-        <div >
+        <div>
             <Label id={name} children={label} />
             <Controller
                 name={name as any}

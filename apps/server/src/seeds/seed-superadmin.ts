@@ -15,6 +15,7 @@ async function seedSuperadmin() {
                 data: {
                     username: env.SUPERADMIN_USERNAME,
                     email: env.SUPERADMIN_EMAIL,
+                    phoneNumber: env.SUPERADMIN_PHONE_NUMBER,
                     password: hashPassword,
                     role: "SUPERADMIN",
                 },

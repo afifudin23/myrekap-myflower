@@ -6,7 +6,17 @@ import { TiArrowSortedDown } from "react-icons/ti";
 
 const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
     (
-        { label, options, name, error, control, width = "w-full", className = "py-2 2xl:py-4 px-4 2xl:px-6 text-base 2xl:text-xl", formInput = true, disabled },
+        {
+            label,
+            options,
+            name,
+            error,
+            control,
+            width = "w-full",
+            className = "py-2 2xl:py-4 px-4 2xl:px-6 text-base 2xl:text-xl",
+            formInput = true,
+            disabled,
+        },
         ref
     ) => {
         const dropdownRef = useRef<HTMLDivElement>(null);
@@ -29,15 +39,15 @@ const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
                     control={control}
                     render={({ field: { onChange, value } }) => {
                         // Handle the case when value from paymentMethod is "Pending" to set it to null
-                        if (value === "Pending") {
-                            onChange(null);
-                        }
-                        useEffect(() => {
-                            if (disabled) {
-                                setIsOpen(false);
-                                onChange(null);
-                            }
-                        }, [disabled]);
+                        // if (value === "Pending") {
+                        //     onChange(null);
+                        // }
+                        // useEffect(() => {
+                        //     if (disabled) {
+                        //         setIsOpen(false);
+                        //         onChange(null);
+                        //     }
+                        // }, [disabled]);
                         return (
                             <div className="relative inline-block w-full" ref={dropdownRef}>
                                 <div
@@ -66,6 +76,17 @@ const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
                                         isOpen ? "flex flex-col max-h-60" : "max-h-0"
                                     }`}
                                 >
+                                    <li
+                                        className={`${className} bg-gray-700 hover:bg-slate-400 rounded-lg cursor-pointer ${
+                                            value === null && "bg-slate-500"
+                                        }`}
+                                        onClick={() => {
+                                            onChange(null);
+                                            setIsOpen(false);
+                                        }}
+                                    >
+                                        - Pilih Salah Satu -
+                                    </li>
                                     {options.map((item, index) => (
                                         <li
                                             className={`${className} bg-gray-700 hover:bg-slate-400 rounded-lg cursor-pointer ${

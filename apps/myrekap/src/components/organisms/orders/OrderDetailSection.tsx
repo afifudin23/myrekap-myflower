@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 function OrderDetailSection() {
     const field = getOrderCookies();
+    console.log(field)
     const navigate = useNavigate();
     return (
         <>
@@ -70,7 +71,7 @@ function OrderDetailSection() {
                                                 {item.product.name}{" "}
                                                 <span className="text-xs font-medium">({item.quantity}x)</span>
                                             </p>
-                                            <p>{item.greetingMessage || "-"}</p>
+                                            <p>{item.message || "-"}</p>
                                         </div>
                                         <p>{formatters.formatRupiah(item.totalPrice)}</p>
                                     </div>

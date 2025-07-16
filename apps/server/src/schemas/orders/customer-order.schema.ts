@@ -47,7 +47,7 @@ export const createCustomerOrderSchema = z
             (val) => (typeof val === "string" ? val.toUpperCase() : val),
             z.enum(["COD", "OTHERS"])
         ).nullable().transform((val) => (val === "OTHERS" ? null : val)),
-        greetings: z.array(
+        messages: z.array(
             z.object({
                 productId: z.string(),
                 message: z.string().nullish(),

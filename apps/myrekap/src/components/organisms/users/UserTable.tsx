@@ -61,7 +61,8 @@ const UserTable = () => {
                             <th className="p-3">ID</th>
                             <th className="p-3">Username</th>
                             <th className="p-3">Email</th>
-                            <th className="p-3">PIN</th>
+                            <th className="p-3">Telepon</th>
+                            <th className="p-3">Password</th>
                             <th className="p-3">Role</th>
                             <th className="p-3">CreatedAt</th>
                             <th className="p-3">UpdatedAt</th>
@@ -81,6 +82,7 @@ const UserTable = () => {
                                 </td>
                                 <td className="p-3 2xl:py-7 whitespace-nowrap">{user.username}</td>
                                 <td className="p-3 2xl:py-7 whitespace-nowrap">{formatters.simplyfyEmail(user.email)}</td>
+                                <td className="p-3 2xl:py-7 whitespace-nowrap">0897655224</td>
                                 <td className="p-3 2xl:py-7 whitespace-nowrap">xxxxxx</td>
                                 <td className="p-3 2xl:py-7 whitespace-nowrap">
                                     <span

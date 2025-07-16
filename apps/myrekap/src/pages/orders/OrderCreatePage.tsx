@@ -1,33 +1,37 @@
 import { TitlePage } from "@/components/molecules";
-import { defaultValuesAddOrderSummary, OrderForm } from "@/components/organisms/orders";
 import MainLayout from "@/components/templates/MainLayout";
-import { createOrderSchema, CreateOrderType } from "@/schemas";
-import { axiosInstance } from "@/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
+import { OrderForm } from "@/components/organisms/orders";
+import { axiosInstance, removeOrderCookies } from "@/utils";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { TbLogout2 } from "react-icons/tb";
 
 function OrderCreatePage() {
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
     const fieldRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
     let loadingTimer: NodeJS.Timeout | null = null;
 
-    // Type Any, Next Fixing 
+    // Type Any, Next Fixing
     const {
         handleSubmit,
         control,
         watch,
-        reset,
         clearErrors,
         formState: { errors },
     } = useForm<any>({
-        resolver: zodResolver(createOrderSchema),
-        defaultValues: defaultValuesAddOrderSummary,
+        // resolver: zodResolver(createOrderSchema),
+        defaultValues: {
+            items: [{ productId: "", quantity: 1, message: "" }],
+        },
     });
 
-    const onSubmit = async (data: CreateOrderType) => {
+    const onSubmit = async (data: any) => {
+        console.log(data);
+        return false;
         loadingTimer = setTimeout(() => {
             setIsLoading(true);
         }, 500);
@@ -39,13 +43,13 @@ function OrderCreatePage() {
             await axiosInstance.post("order-summaries", formData);
 
             if (loadingTimer) {
-                clearTimeout(loadingTimer);
+                // clearTimeout(loadingTimer);
                 loadingTimer = null;
             }
             setIsLoading(false);
             setShowAlert(true);
             setAlertMessage("Pesanan baru telah berhasil disimpan");
-            reset(defaultValuesAddOrderSummary);
+            // reset(defaultValuesAddOrderSummary);
             window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (error: any) {
             setShowAlert(true);
@@ -56,7 +60,7 @@ function OrderCreatePage() {
             }
         } finally {
             if (loadingTimer) {
-                clearTimeout(loadingTimer);
+                // clearTimeout(loadingTimer);
                 loadingTimer = null;
             }
             setIsLoading(false);
@@ -66,7 +70,17 @@ function OrderCreatePage() {
 
     return (
         <MainLayout>
-            <TitlePage title="Tambah Order" subtitle="Menginput Order Sesuai Kebutuhan" />
+            <div className="flex justify-between">
+                <TitlePage title="Tambah Order" subtitle="Menginput Order Sesuai Kebutuhan" />
+                <button
+                    onClick={() => {
+                        navigate("/orders");
+                        removeOrderCookies();
+                    }}
+                >
+                    <TbLogout2 className="text-5xl 2xl:text-6xl" />
+                </button>
+            </div>
             <OrderForm
                 onSubmit={handleSubmit(onSubmit)}
                 fieldRefs={fieldRefs}

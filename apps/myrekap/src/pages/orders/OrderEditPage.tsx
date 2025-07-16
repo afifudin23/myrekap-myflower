@@ -1,16 +1,16 @@
 import { TitlePage } from "@/components/molecules";
 import { OrderForm } from "@/components/organisms/orders";
 import MainLayout from "@/components/templates/MainLayout";
-import { updateOrderSummarySchema, UpdateOrderSummaryType } from "@/schemas";
-import { axiosInstance, formatters, getOrderCookies, setOrderCookies } from "@/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {  UpdateOrderSummaryType } from "@/schemas";
+import { axiosInstance,  getOrderCookies, setOrderCookies } from "@/utils";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TbLogout2 } from "react-icons/tb";
 import { useNavigate, useParams } from "react-router-dom";
 
 function OrderEditPage() {
-    const orderCookies = formatters.formatInputOrderSummary(getOrderCookies());
+    // const orderCookies = formatters.formatInputOrderSummary(getOrderCookies());
+    const orderCookies = getOrderCookies();
     const navigate = useNavigate();
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
@@ -25,12 +25,15 @@ function OrderEditPage() {
         watch,
         clearErrors,
         formState: { errors },
-    } = useForm<UpdateOrderSummaryType>({
-        resolver: zodResolver(updateOrderSummarySchema),
+    } = useForm<any>({
+        // resolver: zodResolver(updateOrderSummarySchema),
         defaultValues: orderCookies,
     });
 
     const onSubmit = async (data: UpdateOrderSummaryType) => {
+        console.log(data);
+        return false;
+
         loadingTimer = setTimeout(() => {
             setIsLoading(true);
         }, 500);
@@ -81,7 +84,7 @@ function OrderEditPage() {
             }
         } finally {
             if (loadingTimer) {
-                clearTimeout(loadingTimer);
+                // clearTimeout(loadingTimer);
                 loadingTimer = null;
             }
             setIsLoading(false);

@@ -6,7 +6,8 @@ function ReportOrderTable({ orderFilter }: any) {
     const [searchParams] = useSearchParams();
     const fromDate = formatters.isoDateToStringDate(searchParams.get("from_date"));
     const toDate = formatters.isoDateToStringDate(searchParams.get("to_date"));
-    const totalRevenue = orderFilter.reduce((acc: number, order: any) => acc + order.total, 0);
+    const totalRevenue = orderFilter.reduce((acc: number, order: any) => acc + order.totalPrice, 0);
+    console.log(totalRevenue)
     return (
         <div
             id="table-report-orders"
@@ -57,19 +58,19 @@ function ReportOrderTable({ orderFilter }: any) {
                     </table>
                 </div>
 
-                <table className="w-full text-xs text-gray-700 border-collapse border border-slate-700">
+                <table className="w-full text-xs text-gray-700 border-collapse border-[1px] border-slate-700">
                     <thead>
                         <tr>
                             <th className="border p-2 border-slate-500 bg-blue-300">No.</th>
                             <th className="border p-2 border-slate-500 bg-blue-300">Tanggal</th>
-                            <th className="border p-2 border-slate-500 bg-blue-300">Invoice</th>
+                            <th className="border p-2 border-slate-500 bg-blue-300">Order Code</th>
                             <th className="border p-2 border-slate-500 bg-blue-300">Nama</th>
-                            <th className="border p-2 border-slate-500 bg-blue-300">Bunga</th>
-                            <th className="border p-2 border-slate-500 bg-blue-300">Customer</th>
-                            <th className="border p-2 border-slate-500 bg-blue-300">Pembayaran</th>
+                            <th className="border p-2 border-slate-500 bg-blue-300">Kategori</th>
+                            <th className="border p-2 border-slate-500 bg-blue-300">Telepon</th>
+                            <th className="border p-2 border-slate-500 bg-blue-300">Metode</th>
+                            <th className="border p-2 border-slate-500 bg-blue-300">Provider</th>
                             <th className="border p-2 border-slate-500 bg-blue-300">Status</th>
-                            <th className="border p-2 border-slate-500 bg-blue-300">Harga</th>
-                            <th className="border p-2 border-slate-500 bg-blue-300">Pengiriman</th>
+                            <th className="border p-2 border-slate-500 bg-blue-300">Pesanan</th>
                             <th className="border p-2 border-slate-500 bg-blue-300">Total</th>
                         </tr>
                     </thead>
@@ -78,17 +79,15 @@ function ReportOrderTable({ orderFilter }: any) {
                             <tr key={index}>
                                 <td className="border p-2 border-slate-700 text-center">{index + 1}</td>
                                 <td className="border p-2 border-slate-700">{order.orderDate}</td>
-                                <td className="border p-2 border-slate-700">{order.invoiceNumber}</td>
+                                <td className="border p-2 border-slate-700">{order.orderCode}</td>
                                 <td className="border p-2 border-slate-700">{order.customerName}</td>
-                                <td className="border p-2 border-slate-700">{order.flowerCategory}</td>
                                 <td className="border p-2 border-slate-700">{order.customerCategory}</td>
+                                <td className="border p-2 border-slate-700">{order.phoneNumber}</td>
                                 <td className="border p-2 border-slate-700">{order.paymentMethod}</td>
+                                <td className="border p-2 border-slate-700">{order.paymentProvider}</td>
                                 <td className="border p-2 border-slate-700">{order.paymentStatus}</td>
-                                <td className="border p-2 border-slate-700">
-                                    {order.price} ({order.quantity}x)
-                                </td>
-                                <td className="border p-2 border-slate-700">{order.shippingCost}</td>
-                                <td className="border p-2 border-slate-700">{formatters.formatRupiah(order.total)}</td>
+                                <td className="border p-2 border-slate-700">{order.orderStatus}</td>
+                                <td className="border p-2 border-slate-700">{formatters.formatRupiah(order.totalPrice)}</td>
                             </tr>
                         ))}
                     </tbody>

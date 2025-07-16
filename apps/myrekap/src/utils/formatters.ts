@@ -2,7 +2,7 @@ const formatters = {
     // parse = frontend -> backend
     // format = backend -> frontend
 
-    formatCapital(data: string) {
+    formatCapital(data: string = "") {
         return data
             .toLowerCase() // change to lowercase
             .replace(/_/g, " ") // change underscore to space
@@ -123,27 +123,18 @@ const formatters = {
             finishedProduct: data.finishedProduct,
         };
     },
-    formatDataOrderSummaryForPrint(data: any) {
+    formatReportOrder(data: any) {
         return {
-            id: data.id,
-            invoiceNumber: data.invoiceNumber,
+            orderCode: data.orderCode,
             customerName: this.formatCustomerNameReceipt(data.customerName),
-            flowerCategory: this.formatCapital(data.flowerCategory),
-            quantity: data.quantity,
-            greetingMessage: data.greetingMessage,
-            deliveryDate: this.isoDateToStringDate(data.deliveryDate),
-            deliveryAddress: data.deliveryAddress,
             customerCategory: this.formatCapital(data.customerCategory),
-            price: this.formatRupiah(data.price),
-            shippingCost: this.formatRupiah(data.shippingCost),
-            total: data.price + data.shippingCost,
-            isPaid: data.isPaid,
-            paymentMethod: data.paymentMethod ? this.formatCapital(data.paymentMethod) : "Pending",
-            paymentProof: data.paymentProof,
+            phoneNumber: data.phoneNumber,
+            totalPrice: data.totalPrice,
+            paymentMethod: this.formatCapital(data.paymentMethod),
+            paymentProvider: data.paymentProvider.toUpperCase(),
             paymentStatus: this.formatCapital(data.paymentStatus),
             orderStatus: this.formatCapital(data.orderStatus),
             orderDate: this.isoDateToStringDate(data.orderDate),
-            finishedProduct: data.finishedProduct,
         };
     },
 

@@ -3,9 +3,16 @@ import { useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { TypeOf, ZodType } from "zod";
 import { ORDER_FORM_ITEMS } from ".";
-import { AlertInfo, InputDate, InputDropdown, InputFile, InputIsPaid, InputMoney, InputText } from "@/components/molecules";
+import {
+    AlertInfo,
+    InputDate,
+    InputDropdown,
+    InputFile,
+    InputMoney,
+    InputProduct,
+    InputText,
+} from "@/components/molecules";
 import { Button, Loading } from "@/components/atoms";
-
 
 interface OrderFormProps<TSchema extends ZodType<any, any>> {
     onSubmit: SubmitHandler<TypeOf<TSchema>>; // ini lebih tepat daripada React.FormEventHandler
@@ -18,7 +25,7 @@ interface OrderFormProps<TSchema extends ZodType<any, any>> {
     alertMessage: string;
     isLoading: boolean;
     errors: FieldErrors<TypeOf<TSchema>>;
-};
+}
 
 const getErrorMessage = (fieldName: string, errors: any) => {
     const error = errors[fieldName as keyof typeof errors];
@@ -55,7 +62,6 @@ function OrderForm<TSchema extends ZodType<any, any>>({
             }, 100);
         }
     }, [errors]);
-
     return (
         <>
             <form className="flex flex-col justify-between gap-5 2xl:gap-6" onSubmit={onSubmit}>
@@ -72,6 +78,18 @@ function OrderForm<TSchema extends ZodType<any, any>>({
                                     error={getErrorMessage(item.name, errors)}
                                 />
                             );
+                        case "product":
+                            return (
+                                <InputProduct
+                                    key={item.name}
+                                    label={item.label}
+                                    name={item.name}
+                                    control={control}
+                                    // ref={(el) => (fieldRefs.current[item.name] = el)}  TODO: fix this
+                                    error={getErrorMessage(item.name, errors)}
+                                />
+                            );
+
                         case "money":
                             return (
                                 <InputMoney
@@ -92,7 +110,6 @@ function OrderForm<TSchema extends ZodType<any, any>>({
                                     name={item.name}
                                     control={control}
                                     ref={(el) => (fieldRefs.current[item.name] = el)}
-                                    disabled={item.name === "paymentMethod" ? !watch("isPaid" as any) : false}
                                     error={getErrorMessage(item.name, errors)}
                                 />
                             );
@@ -107,16 +124,7 @@ function OrderForm<TSchema extends ZodType<any, any>>({
                                     error={getErrorMessage(item.name, errors)}
                                 />
                             );
-                        case "checkbox":
-                            return (
-                                <InputIsPaid
-                                    key={item.name}
-                                    name={item.name}
-                                    control={control}
-                                    ref={(el) => (fieldRefs.current[item.name] = el)}
-                                    error={getErrorMessage(item.name, errors)}
-                                />
-                            );
+
                         case "file":
                             return (
                                 <InputFile
@@ -125,7 +133,7 @@ function OrderForm<TSchema extends ZodType<any, any>>({
                                     name={item.name}
                                     control={control}
                                     ref={(el) => (fieldRefs.current[item.name] = el)}
-                                    disabled={!watch("isPaid" as any) || watch("paymentMethod" as any) !== "Transfer"}
+                                    disabled={watch("paymentMethod" as any) !== "Bank Transfer"}
                                     error={getErrorMessage(item.name, errors)}
                                 />
                             );

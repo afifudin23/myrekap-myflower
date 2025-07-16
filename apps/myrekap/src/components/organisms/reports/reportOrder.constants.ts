@@ -28,7 +28,7 @@ export const REPORT_ORDER_FORM_ITEMS = [
     },
 ];
 
-export const defaultValueCetakRekap = {
+export const DEFAULT_VALUE_REPORT_ORDER = {
     flowerCategory: "Semua",
     customerCategory: "Semua",
     paymentMethod: "Semua",

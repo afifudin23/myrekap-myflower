@@ -11,20 +11,20 @@ export const create = async (userId: string, data: customerOrderSchema.CreateCus
     }
 
     const orderItems = cartItems.map((item) => {
-        const greeting = data.greetings.find((greeting) => greeting.productId === item.productId);
-        if (!greeting) throw new NotFoundException(`Product not found `, ErrorCode.PRODUCT_NOT_FOUND);
+        const message = data.messages.find((m) => m.productId === item.productId);
+        if (!message) throw new NotFoundException(`Product not found `, ErrorCode.PRODUCT_NOT_FOUND);
 
         return {
             product: { connect: { id: item.productId } },
             quantity: item.quantity,
-            greetingMessage: greeting?.message,
+            message: message?.message,
             unitPrice: item.product.price,
             totalPrice: item.product.price * item.quantity,
         };
     });
     try {
         const totalPrice = orderItems.reduce((total, item) => total + item.totalPrice, 0);
-        const { greetings, ...orderData } = data;
+        const { messages, ...orderData } = data;
 
         const order = await prisma.order.create({
             data: {

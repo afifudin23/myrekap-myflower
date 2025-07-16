@@ -1,25 +1,32 @@
-import { CUSTOMER_CATEGORY_ITEMS, PAYMENT_METHOD_ITEMS } from "@/constants/category";
+import { CUSTOMER_CATEGORY_ITEMS, DELIVERY_OPTION_ITEMS, PAYMENT_METHOD_ITEMS } from "@/constants/category";
 
 export const ORDER_FORM_ITEMS = [
     {
-        label: "Nama Customer",
+        label: "Nama Pelanggan",
         type: "text",
         name: "customerName",
     },
     {
-        label: "Kategori Bunga",
-        type: "text",
-        name: "flowerCategory",
+        label: "Kategori Pelanggan",
+        type: "dropdown",
+        name: "customerCategory",
+        options: CUSTOMER_CATEGORY_ITEMS.filter((item) => item !== "Semua"),
     },
     {
-        label: "Jumlah Pesan",
+        label: "Nomor Telepon",
         type: "text",
-        name: "quantity",
+        name: "phoneNumber",
     },
     {
-        label: "Pesan Ucapan",
-        type: "text",
-        name: "greetingMessage",
+        label: "Produk Item",
+        type: "product",
+        name: "items",
+    },
+    {
+        label: "Opsi Pengiriman",
+        type: "dropdown",
+        name: "deliveryOption",
+        options: DELIVERY_OPTION_ITEMS.filter((item) => item !== "Semua"),
     },
     {
         label: "Tanggal Pengiriman",
@@ -32,25 +39,9 @@ export const ORDER_FORM_ITEMS = [
         name: "deliveryAddress",
     },
     {
-        label: "Kategori Customer",
-        type: "dropdown",
-        name: "customerCategory",
-        options: CUSTOMER_CATEGORY_ITEMS.filter((item) => item !== "Semua"),
-    },
-    {
-        label: "Harga",
-        type: "money",
-        name: "price",
-    },
-    {
-        label: "Biaya Pengiriman",
-        type: "money",
-        name: "shippingCost",
-    },
-    {
-        label: "Status Pembayaran",
-        type: "checkbox",
-        name: "isPaid",
+        label: "Tanggal Produk Jadi",
+        type: "date",
+        name: "readyDate",
     },
     {
         label: "Metode Pembayaran",

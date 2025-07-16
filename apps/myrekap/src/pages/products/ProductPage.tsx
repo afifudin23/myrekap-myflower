@@ -68,7 +68,7 @@ function ProductPage() {
     return (
         <MainLayout>
             <TitlePage title="Produk Saya" subtitle="Mengelola Data Produk Penjualan" />
-            <Link to="/products/new" className="inline-block">
+            <Link to="/products/create" className="inline-block">
                 <ButtonSmall className="bg-[#4fcd53] hover:bg-[#42b146] py-1 2xl:py-2 px-4 font-bold mb-8"><MdAddToPhotos /> Tambah</ButtonSmall>
             </Link>
             <ProductList products={dummyProducts} />

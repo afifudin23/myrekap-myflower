@@ -8,6 +8,7 @@ export const envSchema = object({
     JWT_SECRET: string().min(20),
     SUPERADMIN_USERNAME: string().max(15),
     SUPERADMIN_EMAIL: string().email(),
+    SUPERADMIN_PHONE_NUMBER: string().min(10),
     SUPERADMIN_PASSWORD: string().min(5),
     CLOUDINARY_CLOUD_NAME: string(),
     CLOUDINARY_API_KEY: string(),
