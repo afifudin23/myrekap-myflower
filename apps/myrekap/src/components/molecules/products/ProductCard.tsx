@@ -13,7 +13,6 @@ import { Card, Image } from "@/components/atoms";
 // }
 
 function ProductCard({ product }: any) {
-    console.log(product)
     return (
         <Card className="group flex flex-col gap-3 cursor-default">
             <div className="overflow-hidden rounded-xl group">

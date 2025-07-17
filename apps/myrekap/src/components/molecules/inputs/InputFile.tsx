@@ -4,10 +4,10 @@ import React from "react";
 import { useDropzone } from "react-dropzone";
 import { Controller } from "react-hook-form";
 
-type ImageItem = File | { fileName: string; size: number; secureUrl: string };
+type ImageItem = File | { fileName: string; size: number; secureUrl: string; publicId: string };
 
 const InputFile = React.forwardRef<HTMLDivElement, InputFileProps>(
-    ({ label, name, control, error, disabled = false }, ref) => {
+    ({ label, name, control, error, disabled = false, setValue, getValues }, ref) => {
         return (
             <div className="input-text" ref={ref}>
                 <Label id={name} children={label} />
@@ -28,11 +28,25 @@ const InputFile = React.forwardRef<HTMLDivElement, InputFileProps>(
 
                         const handleRemove = (index: number) => {
                             const updated = [...value];
+                            const removedItem = updated[index];
+
+                            if (!(removedItem instanceof File) && removedItem?.publicId) {
+                                const current = getValues("publicIdsToDelete") || [];
+                                setValue("publicIdsToDelete", [...current, removedItem.publicId]);
+                            }
+
                             updated.splice(index, 1);
                             onChange(updated);
                         };
 
                         const handleClearAll = () => {
+                            const publicIdsToRemove = value
+                                .filter((item: ImageItem) => !(item instanceof File) && item?.publicId)
+                                .map((item: any) => item.publicId);
+
+                            const current = getValues("publicIdsToDelete") || [];
+                            setValue?.("publicIdsToDelete", [...current, ...publicIdsToRemove]);
+
                             onChange([]);
                         };
 
@@ -61,6 +75,7 @@ const InputFile = React.forwardRef<HTMLDivElement, InputFileProps>(
                                         <div className="mb-2 flex justify-between">
                                             <p className="font-semibold">File Terpilih:</p>
                                             <button
+                                                type="button"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleClearAll();
@@ -96,6 +111,7 @@ const InputFile = React.forwardRef<HTMLDivElement, InputFileProps>(
                                                             />
                                                         )}
                                                         <button
+                                                            type="button"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 handleRemove(i);

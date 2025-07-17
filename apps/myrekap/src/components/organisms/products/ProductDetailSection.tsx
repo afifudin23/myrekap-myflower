@@ -15,12 +15,9 @@ import { useNavigate } from "react-router-dom";
 //     };
 // }
 
-const ProductDetailSection = ({ product }: any) => {
+const ProductDetailSection = ({ product, handleDeleteConfirm }: any) => {
     const navigate = useNavigate();
 
-    const handleDeleteClick = () => {
-        alert("Delete clicked");
-    }
     return (
         <section className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-start">
             <Image src={product.images[0].secureUrl} alt={product.name} className="w-96 max-w-72" />
@@ -35,7 +32,7 @@ const ProductDetailSection = ({ product }: any) => {
                     </ButtonSmall>
                     <ButtonSmall
                         className="bg-red-500 hover:bg-red-600 py-1 2xl:py-2 px-4"
-                        onClick={handleDeleteClick}
+                        onClick={() => handleDeleteConfirm(product.name)}
                     >
                         <FaTrashCan /> Hapus
                     </ButtonSmall>

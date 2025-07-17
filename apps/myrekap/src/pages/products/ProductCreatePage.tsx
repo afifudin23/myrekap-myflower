@@ -21,7 +21,7 @@ function ProductCreatePage() {
             price: 0,
             stock: 0,
             description: "",
-            images: null,
+            images: [],
         },
     });
 
@@ -53,11 +53,6 @@ function ProductCreatePage() {
                 } else {
                     formData.append(key, value);
                 }
-            }
-
-            // Debugging isi formData
-            for (const [key, value] of formData.entries()) {
-                console.log(key, value);
             }
 
             await axiosInstance.post("products", formData);

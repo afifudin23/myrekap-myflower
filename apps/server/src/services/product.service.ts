@@ -64,7 +64,7 @@ export const findById = async (id: string) => {
 };
 export const update = async (id: string, body: productSchema.UpdateProductType, files: Express.Multer.File[]) => {
     if (body.name) {
-        const duplicateName = await prisma.product.findUnique({ where: { name: body.name } });
+        const duplicateName = await prisma.product.findFirst({ where: { name: body.name, NOT: { id } } });
         if (duplicateName) {
             throw new BadRequestException("Product name already exists", ErrorCode.PRODUCT_NAME_DUPLICATE);
         }

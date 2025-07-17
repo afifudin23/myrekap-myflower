@@ -6,7 +6,7 @@ import { PRODUCT_FORM_ITEMS } from ".";
 //     control: any;
 // }
 
-function ProductForm({ control, onSubmit, errors, fieldRefs, isLoading }: any) {
+function ProductForm({ control, onSubmit, errors, fieldRefs, isLoading, setValue, getValues }: any) {
     return (
         <>
             <form className="flex flex-col justify-between gap-5 2xl:gap-6" onSubmit={onSubmit}>
@@ -32,6 +32,8 @@ function ProductForm({ control, onSubmit, errors, fieldRefs, isLoading }: any) {
                                     ref={(el) => (fieldRefs.current[item.name] = el)}
                                     error={errors[item.name as any]?.message}
                                     control={control}
+                                    getValues={getValues}
+                                    setValue={setValue}
                                 />
                             );
                     }

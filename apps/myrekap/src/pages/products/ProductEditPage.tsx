@@ -18,6 +18,8 @@ function ProductEditPage() {
         handleSubmit,
         control,
         reset,
+        setValue, // Add setValue for push to publicIdsToDelete
+        getValues,
         formState: { errors },
     } = useForm({
         defaultValues: {
@@ -26,13 +28,13 @@ function ProductEditPage() {
             stock: 0,
             description: "",
             images: [],
+            publicIdsToDelete: [],
         },
     });
 
     // Check if the product is already in the local storage
     useEffect(() => {
         const data = JSON.parse(localStorage.getItem("productDetail") || "{}");
-        console.log(data);
         if (data.id === id) {
             reset(data);
         } else {
@@ -44,28 +46,30 @@ function ProductEditPage() {
         setIsLoading(true);
         try {
             const formData = new FormData();
+
             for (const key in data) {
                 const value = data[key];
 
                 // Handle multiple file upload
                 if (key === "images" && Array.isArray(value)) {
-                    value.forEach((file: File) => {
-                        formData.append(key, file);
+                    value.forEach((item: any) => {
+                        if (item instanceof File) {
+                            formData.append("images", item);
+                        }
+                    });
+                } else if (key === "publicIdsToDelete" && Array.isArray(value)) {
+                    value.forEach((publicId: string) => {
+                        formData.append(key, publicId);
                     });
                 } else {
                     formData.append(key, value);
                 }
             }
 
-            // Debugging isi formData
-            for (const [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
-
             await axiosInstance.put(`products/${id}`, formData);
             navigate("/products", {
                 state: {
-                    message: "Produk baru berhasil ditambahkan",
+                    message: "Perubahan pada produk telah berhasil disimpan",
                 },
             });
         } catch (error: any) {
@@ -105,6 +109,8 @@ function ProductEditPage() {
                 errors={errors}
                 isLoading={isLoading}
                 fieldRefs={fieldRefs}
+                getValues={getValues}
+                setValue={setValue}
             />
         </MainLayout>
     );

@@ -1,13 +1,31 @@
 import { ButtonSmall } from "@/components/atoms";
-import { TitlePage } from "@/components/molecules";
+import { AlertInfo, TitlePage } from "@/components/molecules";
 import { ProductList } from "@/components/organisms/products";
 import MainLayout from "@/components/templates/MainLayout";
 import { useProducts } from "@/hooks";
+import { AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import { MdAddToPhotos } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function ProductPage() {
     const { products } = useProducts();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [message, setMessage] = useState<string | null>(null);
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+
+    useEffect(() => {
+        const state = location.state as { message?: string };
+
+        if (state?.message) {
+            setMessage(state.message);
+            setShowAlert(true);
+            setTimeout(() => setShowAlert(false), 3000);
+            navigate(location.pathname, { replace: true });
+        }
+    }, []);
+
     return (
         <MainLayout>
             <TitlePage title="Produk Saya" subtitle="Mengelola Data Produk Penjualan" />
@@ -17,6 +35,11 @@ function ProductPage() {
                 </ButtonSmall>
             </Link>
             <ProductList products={products} />
+
+            {/* Alert */}
+            <AnimatePresence>
+                {showAlert && message && <AlertInfo message={message} handleAlert={() => setShowAlert(false)} />}
+            </AnimatePresence>
         </MainLayout>
     );
 }
