@@ -4,6 +4,8 @@ CREATE TABLE `users` (
     `username` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
+    `phoneNumber` VARCHAR(191) NOT NULL,
+    `customerCatgory` ENUM('umum', 'pemda', 'akademik', 'rumah_sakit', 'polisi_militer', 'perbankan') NULL,
     `role` ENUM('admin', 'superadmin', 'customer') NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -52,23 +54,25 @@ CREATE TABLE `cart_items` (
 -- CreateTable
 CREATE TABLE `orders` (
     `id` VARCHAR(191) NOT NULL,
+    `source` ENUM('myrekap', 'myflower') NOT NULL,
+    `order_code` VARCHAR(191) NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
-    `invoice_number` VARCHAR(191) NOT NULL,
     `customer_name` VARCHAR(191) NOT NULL,
-    `customer_category` ENUM('umum', 'pemda', 'akademik', 'rumah_sakit', 'polisi_militer', 'perbankan') NOT NULL,
+    `customer_category` ENUM('umum', 'pemda', 'akademik', 'rumah_sakit', 'polisi_militer', 'perbankan') NOT NULL DEFAULT 'umum',
+    `phone_number` VARCHAR(191) NOT NULL,
     `delivery_option` ENUM('delivery', 'pickup') NOT NULL,
-    `delivery_address` VARCHAR(191) NULL,
-    `delivery_date` DATETIME(3) NULL,
     `ready_date` DATETIME(3) NOT NULL,
-    `total_price` INTEGER NOT NULL,
     `shipping_cost` INTEGER NULL,
-    `payment_method` ENUM('transfer', 'cash', 'gateway', 'cod') NULL,
-    `payment_status` ENUM('pending', 'unpaid', 'paid', 'failed', 'cancelled') NOT NULL,
-    `previous_payment_status` ENUM('pending', 'unpaid', 'paid', 'failed', 'cancelled') NULL,
-    `order_status` ENUM('in_process', 'completed', 'cancelled') NOT NULL DEFAULT 'in_process',
+    `delivery_address` VARCHAR(191) NULL,
+    `total_price` INTEGER NOT NULL,
+    `payment_method` ENUM('cod', 'cash', 'bank_transfer', 'credit_card', 'cstore', 'qris', 'ewallet') NULL,
+    `payment_provider` VARCHAR(191) NULL,
+    `payment_status` ENUM('pending', 'unpaid', 'paid', 'canceled', 'expired', 'refunded', 'denied') NOT NULL,
+    `previous_payment_status` ENUM('pending', 'unpaid', 'paid', 'canceled', 'expired', 'refunded', 'denied') NULL,
+    `order_status` ENUM('in_process', 'completed', 'canceled') NOT NULL DEFAULT 'in_process',
     `order_date` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `orders_invoice_number_key`(`invoice_number`),
+    UNIQUE INDEX `orders_order_code_key`(`order_code`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -78,7 +82,7 @@ CREATE TABLE `order_items` (
     `order_id` VARCHAR(191) NOT NULL,
     `product_id` VARCHAR(191) NOT NULL,
     `quantity` INTEGER NOT NULL,
-    `greeting_message` VARCHAR(191) NULL,
+    `message` VARCHAR(191) NULL,
     `unit_price` INTEGER NOT NULL,
     `total_price` INTEGER NOT NULL,
 

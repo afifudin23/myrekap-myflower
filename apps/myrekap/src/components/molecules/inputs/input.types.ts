@@ -5,6 +5,7 @@ export type InputTextProps = {
     name: string;
     error?: string;
     control?: Control<any>;
+    disabled?: boolean;
 };
 
 export type InputDropdownProps = {

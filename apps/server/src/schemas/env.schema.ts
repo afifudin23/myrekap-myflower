@@ -6,6 +6,7 @@ export const envSchema = object({
     DATABASE_URL: string(),
     SHADOW_DATABASE_URL: string().optional( ),
     JWT_SECRET: string().min(20),
+    SUPERADMIN_FULL_NAME: string(),
     SUPERADMIN_USERNAME: string().max(15),
     SUPERADMIN_EMAIL: string().email(),
     SUPERADMIN_PHONE_NUMBER: string().min(10),

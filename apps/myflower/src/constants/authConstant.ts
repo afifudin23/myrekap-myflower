@@ -23,12 +23,17 @@ export const REGISTER_FIELDS = [
         type: "email",
     },
     {
-        name: "pin",
+        name: "phoneNumber",
+        placeholder: "Input Nomor Telepon",
+        type: "text",
+    },
+    {
+        name: "password",
         placeholder: "Input Password",
         type: "password",
     },
     {
-        name: "confPin",
+        name: "confPassword",
         placeholder: "Konfirmasi Password",
         type: "password",
     },

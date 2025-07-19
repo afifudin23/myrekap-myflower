@@ -29,11 +29,15 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
         const order = await prisma.order.create({
             data: {
                 ...orderData,
+                customerName: user.fullName,
                 phoneNumber: user.phoneNumber,
+                // Check if user.customerCategory is null, default to undefined (Admin/SuperAdmin will not see this field)
+                ...(user.customerCategory != null && { customerCategory: user.customerCategory }),
                 source: "MYFLOWER",
                 orderCode: formmatters.generateOrderCode(),
                 user: { connect: { id: user.id } },
                 totalPrice,
+                shippingCost: 100000, // Fixed shipping cost next time
                 paymentStatus: "PENDING",
                 orderStatus: "IN_PROCESS",
                 items: {
@@ -42,7 +46,10 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
             },
             include: { items: true },
         });
+
+        // Off during testing
         // await prisma.cartItem.deleteMany({ where: { userId: user.id } });
+
         return order;
     } catch (error: any) {
         console.log(error.message);

@@ -73,6 +73,7 @@ export const addOrder = async (request: any) => {
         const data = await prisma.order.create({
             data: {
                 ...requestBody,
+                invoiceNumbear: formmatters.generateOrderCode(),
                 invoiceNumber: formmatters.generateOrderCode(),
                 deliveryDate: new Date(requestBody.deliveryDate),
                 paymentStatus: requestBody.isPaid ? "LUNAS" : "BELUM_LUNAS",

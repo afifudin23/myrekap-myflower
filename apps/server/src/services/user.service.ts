@@ -31,7 +31,7 @@ export const findById = async (id: string) => {
 };
 
 export const createAdmin = async (requestBody: any) => {
-    const { username, email, phoneNumber, password, confPassword, role = "ADMIN" } = requestBody;
+    const { fullName, username, email, phoneNumber, password, confPassword, role = "ADMIN" } = requestBody;
 
     if (password !== confPassword) {
         throw new BadRequestException("Password confirmation does not match", ErrorCode.PASSWORD_MISMATCH);
@@ -56,6 +56,7 @@ export const createAdmin = async (requestBody: any) => {
     const hashPin = await argon2.hash(password);
     const user = await prisma.user.create({
         data: {
+            fullName,
             username,
             email,
             phoneNumber,
@@ -68,7 +69,7 @@ export const createAdmin = async (requestBody: any) => {
 };
 
 export const createCustomer = async (requestBody: any) => {
-    const { username, email, phoneNumber, password, confPassword, role = "CUSTOMER" } = requestBody;
+    const { fullName, username, email, phoneNumber, password, confPassword, role = "CUSTOMER" } = requestBody;
 
     if (password !== confPassword) {
         throw new BadRequestException("Password confirmation does not match", ErrorCode.PASSWORD_MISMATCH);
@@ -93,6 +94,7 @@ export const createCustomer = async (requestBody: any) => {
     const hashPin = await argon2.hash(password);
     const user = await prisma.user.create({
         data: {
+            fullName,
             username,
             email,
             phoneNumber,

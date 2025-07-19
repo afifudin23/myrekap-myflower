@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 
 function OrderDetailSection() {
     const field = getOrderCookies();
-    console.log(field);
     const navigate = useNavigate();
     return (
         <>
@@ -92,10 +91,10 @@ function OrderDetailSection() {
                     <div>
                         <h1 className="text-lg font-semibold 2xl:text-xl">Detail Pembayaran</h1>
                         <p>
-                            Metode Pembayaran : <span className="font-medium">{field.paymentMethod.split("_").join(" ")}</span>
+                            Metode Pembayaran : <span className="font-medium">{field.paymentMethod?.split("_").join(" ") || "-"}</span>
                         </p>
                         <p>
-                            Provider : <span className="font-medium">{field.paymentProvider}</span>
+                            Provider : <span className="font-medium">{field.paymentProvider || "-"}</span>
                         </p>
                     </div>
                     <div>
@@ -113,12 +112,6 @@ function OrderDetailSection() {
                         <p>
                             Tanggal Siap :{" "}
                             <span className="font-medium">{formatters.isoDateToStringDateTime(field.readyDate)}</span>
-                        </p>
-                        <p>
-                            Tanggal Pengiriman :{" "}
-                            <span className="font-medium">
-                                {field.deliveryDate ? formatters.isoDateToStringDateTime(field.deliveryDate) : "-"}
-                            </span>
                         </p>
                     </div>
                 </div>

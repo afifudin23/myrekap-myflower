@@ -29,11 +29,6 @@ export const ORDER_FORM_ITEMS = [
         options: DELIVERY_OPTION_ITEMS.filter((item) => item !== "Semua"),
     },
     {
-        label: "Tanggal Pengiriman",
-        type: "date",
-        name: "deliveryDate",
-    },
-    {
         label: "Alamat Pengiriman",
         type: "text",
         name: "deliveryAddress",

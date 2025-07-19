@@ -15,6 +15,43 @@ function OrderCreatePage() {
     const navigate = useNavigate();
     let loadingTimer: NodeJS.Timeout | null = null;
 
+// model Order {
+//   id        String @id @default(cuid())
+//   source    Source @map("source")
+//   orderCode String @unique @map("order_code")
+//   userId    String @map("user_id")
+
+//   // Customer
+//   customerName     String           @map("customer_name")
+//   customerCategory CustomerCategory @default(UMUM) @map("customer_category")
+//   phoneNumber      String           @map("phone_number")
+//   deliveryOption   DeliveryOption   @map("delivery_option")
+//   readyDate        DateTime         @map("ready_date")
+
+//   // Delivery
+//   shippingCost    Int?    @map("shipping_cost")
+//   deliveryAddress String? @map("delivery_address")
+
+//   // Payment
+//   totalPrice      Int            @map("total_price")
+//   paymentMethod   PaymentMethod? @map("payment_method")
+//   paymentProvider String?        @map("payment_provider")
+
+//   // Status
+//   paymentStatus         PaymentStatus  @map("payment_status")
+//   previousPaymentStatus PaymentStatus? @map("previous_payment_status")
+//   orderStatus           OrderStatus    @default(IN_PROCESS) @map("order_status")
+//   orderDate             DateTime       @default(now()) @map("order_date")
+
+//   // Relation
+//   paymentProof    PaymentProof?
+//   finishedProduct FinishedProduct?
+//   user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   items           OrderItem[]
+
+//   @@map("orders")
+// }
+
     // Type Any, Next Fixing
     const {
         handleSubmit,
@@ -25,7 +62,15 @@ function OrderCreatePage() {
     } = useForm<any>({
         // resolver: zodResolver(createOrderSchema),
         defaultValues: {
+            customerName: "",
+            customerCategory: "",
+            phoneNumber: "",
             items: [{ productId: "", quantity: 1, message: "" }],
+            deliveryOption: "",
+            deliveryAddress: "",
+            readyDate: "",
+            paymentMethod: "",
+            paymentProof: [],
         },
     });
 

@@ -23,7 +23,7 @@ const Search = ({
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Cari berdasarkan invoice, nama, harga, alamat pengiriman..."
+                    placeholder="Cari berdasarkan kode, nama, harga, alamat pengiriman..."
                     className="border border-gray-300 px-5 py-1 rounded-lg text-base w-full 2xl:py-2"
                 />
                 <ButtonSmall

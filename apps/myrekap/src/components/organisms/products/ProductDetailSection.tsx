@@ -20,7 +20,7 @@ const ProductDetailSection = ({ product, handleDeleteConfirm }: any) => {
 
     return (
         <section className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-start">
-            <Image src={product.images[0].secureUrl} alt={product.name} className="w-96 max-w-72" />
+            <Image src={product.images[0].secureUrl || ""} alt={product.name} className="w-80 h-80" />
             <div className="flex flex-col gap-5 min-w-60">
                 <ProductInfo product={product} />
                 <div className="flex gap-2 flex-col md:flex-row font-semibold">

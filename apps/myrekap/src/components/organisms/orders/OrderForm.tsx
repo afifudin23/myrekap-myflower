@@ -1,7 +1,5 @@
-import { Control, FieldErrors, Path, SubmitHandler, UseFormClearErrors, UseFormWatch } from "react-hook-form";
 import { useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-import { TypeOf, ZodType } from "zod";
 import { ORDER_FORM_ITEMS } from ".";
 import {
     AlertInfo,
@@ -14,42 +12,37 @@ import {
 } from "@/components/molecules";
 import { Button, Loading } from "@/components/atoms";
 
-interface OrderFormProps<TSchema extends ZodType<any, any>> {
-    onSubmit: SubmitHandler<TypeOf<TSchema>>; // ini lebih tepat daripada React.FormEventHandler
-    fieldRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
-    control: Control<TypeOf<TSchema>>;
-    watch: UseFormWatch<TypeOf<TSchema>>;
-    clearErrors: UseFormClearErrors<TypeOf<TSchema>>;
-    showAlert: boolean;
-    setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
-    alertMessage: string;
-    isLoading: boolean;
-    errors: FieldErrors<TypeOf<TSchema>>;
-}
+// interface OrderFormProps<TSchema extends ZodType<any, any>> {
+//     onSubmit: SubmitHandler<TypeOf<TSchema>>; // ini lebih tepat daripada React.FormEventHandler
+//     fieldRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
+//     control: Control<TypeOf<TSchema>>;
+//     watch: UseFormWatch<TypeOf<TSchema>>;
+//     clearErrors: UseFormClearErrors<TypeOf<TSchema>>;
+//     showAlert: boolean;
+//     setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
+//     alertMessage: string;
+//     isLoading: boolean;
+//     errors: FieldErrors<TypeOf<TSchema>>;
+// }
 
 const getErrorMessage = (fieldName: string, errors: any) => {
     const error = errors[fieldName as keyof typeof errors];
     return typeof error?.message === "string" ? error.message : undefined;
 };
 
-function OrderForm<TSchema extends ZodType<any, any>>({
+function OrderForm({
     onSubmit,
     fieldRefs,
     control,
     watch,
-    clearErrors,
     showAlert,
     setShowAlert,
     alertMessage,
     isLoading,
     errors,
-}: OrderFormProps<TSchema>) {
-    const isPaid = watch("isPaid" as Path<TypeOf<TSchema>>);
-    useEffect(() => {
-        if (!isPaid) {
-            clearErrors(["paymentMethod", "paymentProof"] as Path<TypeOf<TSchema>>[]);
-        }
-    }, [isPaid]);
+}: any) {
+    const deliveryOption = watch("deliveryOption");
+    const paymentMethod = watch("paymentMethod");
 
     useEffect(() => {
         if (!errors || Object.keys(errors).length === 0) return;
@@ -76,6 +69,7 @@ function OrderForm<TSchema extends ZodType<any, any>>({
                                     control={control}
                                     ref={(el) => (fieldRefs.current[item.name] = el)}
                                     error={getErrorMessage(item.name, errors)}
+                                    disabled={deliveryOption !== "Delivery"}
                                 />
                             );
                         case "product":
@@ -133,7 +127,7 @@ function OrderForm<TSchema extends ZodType<any, any>>({
                                     name={item.name}
                                     control={control}
                                     ref={(el) => (fieldRefs.current[item.name] = el)}
-                                    disabled={watch("paymentMethod" as any) !== "Bank Transfer"}
+                                    disabled={paymentMethod !== "Bank Transfer"}
                                     error={getErrorMessage(item.name, errors)}
                                 />
                             );

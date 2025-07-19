@@ -24,6 +24,8 @@ function OrderPage() {
             filterPaymenrtStatus(order, filterPayment) &&
             filterOrderStatus(order, filterOrder)
     );
+
+    // Get Order By Month Year Periode
     useEffect(() => {
         const fetchOrders = async () => {
             const month = monthYear ? monthYear.getMonth() + 1 : new Date().getMonth() + 1; // getMonth() is zero-based
@@ -32,7 +34,7 @@ function OrderPage() {
                 month: month.toString().padStart(2, "0"),
                 year: year.toString(),
             };
-            const ordersFilter = await axiosInstance.get("/admin/orders", { params });
+            const ordersFilter = await axiosInstance.get("/orders/admin", { params });
             setSearchParams(params);
             setOrders(ordersFilter.data.data);
         };

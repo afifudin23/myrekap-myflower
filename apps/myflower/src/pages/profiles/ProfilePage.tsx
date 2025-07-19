@@ -20,6 +20,7 @@ function ProfilePage() {
                         <ProfileField label="Nama" value="Unknown Anonymous" />
                         <ProfileField label="Username" value="unknown" />
                         <ProfileField label="Email" value="unknown@email.com" />
+                        <ProfileField label="Nomor Telepon" value="089758368617" />
                         <ProfileField label="Password Lama" value="******" />
                         <ProfileField label="Password" value="" />
                         <ProfileField label="Konfirmasi Password" value="" />

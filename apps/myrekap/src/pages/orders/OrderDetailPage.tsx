@@ -10,7 +10,7 @@ function OrderDetailPage() {
     return (
         <MainLayout>
             <div className="flex justify-between">
-                <TitlePage title="Order Summary" subtitle="Mengelola Data Order Summary" />
+                <TitlePage title="Detail Penjualan" subtitle="Mengelola Data Penjualan" />
                 <button
                     onClick={() => {
                         navigate("/orders");
