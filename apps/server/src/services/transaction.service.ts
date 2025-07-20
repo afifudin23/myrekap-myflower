@@ -1,6 +1,6 @@
 import midtransClient from "midtrans-client";
 import crypto from "crypto";
-import { formmatters } from "@/utils";
+import { formatters } from "@/utils";
 import { InternalException, MidtransException, NotFoundException } from "@/exceptions";
 import ErrorCode from "@/constants/error-code";
 import prisma from "@/config/database";
@@ -42,7 +42,7 @@ export const notification = async (data: any) => {
         switch (transactionStatus) {
             case "capture":
             case "settlement": {
-                const { paymentMethod, paymentProvider } = formmatters.generatePaymentInfo(notification);
+                const { paymentMethod, paymentProvider } = formatters.generatePaymentInfo(notification);
                 await prisma.order.update({
                     where: { orderCode: orderCode },
                     data: {
@@ -116,7 +116,7 @@ export const create = async (user: any, orderCode: string) => {
                 first_name: order.customerName,
                 email: user.email, // Isi sesuai data
             },
-            item_details: formmatters.generateItemDetails(order.items),
+            item_details: formatters.generateItemDetails(order.items),
             enabled_payments: [
                 "qris",
                 "bank_transfer",

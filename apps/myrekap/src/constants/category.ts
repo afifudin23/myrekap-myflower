@@ -10,7 +10,7 @@ export const CUSTOMER_CATEGORY_ITEMS: string[] = [
 
 export const DELIVERY_OPTION_ITEMS: string[] = ["Semua", "Pickup", "Delivery"];
 
-export const PAYMENT_METHOD_ITEMS: string[] = ["Semua", "Bank Transfer", "Cash"];
+export const PAYMENT_METHOD_ITEMS: string[] = ["Semua", "Transfer", "Cash"];
 
 export const PAYMENT_STATUS_ITEMS: string[] = ["Semua", "Paid", "Pending", "Unpaid", "Canceled", "Expired", "Refunded", "Denied"];
 

@@ -1,14 +1,14 @@
-import { OrderCard } from ".";
-import React, { useState } from "react";
+import { OrderList } from "@/components/organisms/orders";
+import { useState } from "react";
 
-interface PaginationProps {
-    filteredOrders: any[];
-    itemsPerPage: number;
-}
+// interface PaginationProps {
+//     orders: any[];
+//     itemsPerPage: number;
+// }
 
-const OrderPagination: React.FC<PaginationProps> = ({ filteredOrders, itemsPerPage }) => {
+const OrderPagination = ({ orders, itemsPerPage }: any) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+    const totalPages = Math.ceil(orders.length / itemsPerPage);
 
     const handlePrev = () => {
         if (currentPage > 1) setCurrentPage((prev) => prev - 1);
@@ -35,12 +35,12 @@ const OrderPagination: React.FC<PaginationProps> = ({ filteredOrders, itemsPerPa
     };
 
     const startIdx = (currentPage - 1) * itemsPerPage;
-    const currentData = filteredOrders.slice(startIdx, startIdx + itemsPerPage);
+    const currentData = orders.slice(startIdx, startIdx + itemsPerPage);
 
     return (
         <div className="">
             {/* List Data */}
-            <OrderCard filteredOrders={currentData} />
+            <OrderList orders={currentData} />
 
             {/* Pagination Controls */}
             <div className="flex justify-center items-center gap-2 my-28">

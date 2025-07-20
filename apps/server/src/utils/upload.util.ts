@@ -11,7 +11,6 @@ const fileFilter = (_req: any, file: any, cb: FileFilterCallback) => {
     }
     cb(null, true);
 };
-
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter,

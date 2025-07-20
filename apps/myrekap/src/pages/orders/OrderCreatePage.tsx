@@ -6,61 +6,24 @@ import { axiosInstance, removeOrderCookies } from "@/utils";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { TbLogout2 } from "react-icons/tb";
+import { Loading } from "@/components/atoms";
+import { orderSchema } from "@/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 function OrderCreatePage() {
-    const [showAlert, setShowAlert] = useState<boolean>(false);
-    const [alertMessage, setAlertMessage] = useState<string>("");
     const fieldRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const navigate = useNavigate();
-    let loadingTimer: NodeJS.Timeout | null = null;
-
-// model Order {
-//   id        String @id @default(cuid())
-//   source    Source @map("source")
-//   orderCode String @unique @map("order_code")
-//   userId    String @map("user_id")
-
-//   // Customer
-//   customerName     String           @map("customer_name")
-//   customerCategory CustomerCategory @default(UMUM) @map("customer_category")
-//   phoneNumber      String           @map("phone_number")
-//   deliveryOption   DeliveryOption   @map("delivery_option")
-//   readyDate        DateTime         @map("ready_date")
-
-//   // Delivery
-//   shippingCost    Int?    @map("shipping_cost")
-//   deliveryAddress String? @map("delivery_address")
-
-//   // Payment
-//   totalPrice      Int            @map("total_price")
-//   paymentMethod   PaymentMethod? @map("payment_method")
-//   paymentProvider String?        @map("payment_provider")
-
-//   // Status
-//   paymentStatus         PaymentStatus  @map("payment_status")
-//   previousPaymentStatus PaymentStatus? @map("previous_payment_status")
-//   orderStatus           OrderStatus    @default(IN_PROCESS) @map("order_status")
-//   orderDate             DateTime       @default(now()) @map("order_date")
-
-//   // Relation
-//   paymentProof    PaymentProof?
-//   finishedProduct FinishedProduct?
-//   user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   items           OrderItem[]
-
-//   @@map("orders")
-// }
 
     // Type Any, Next Fixing
     const {
         handleSubmit,
         control,
         watch,
-        clearErrors,
+        getValues,
         formState: { errors },
     } = useForm<any>({
-        // resolver: zodResolver(createOrderSchema),
+        resolver: zodResolver(orderSchema.create),
         defaultValues: {
             customerName: "",
             customerCategory: "",
@@ -75,41 +38,47 @@ function OrderCreatePage() {
     });
 
     const onSubmit = async (data: any) => {
-        console.log(data);
-        return false;
-        loadingTimer = setTimeout(() => {
-            setIsLoading(true);
-        }, 500);
+        setIsLoading(true);
         try {
             const formData = new FormData();
             for (const key in data) {
-                formData.append(key, (data as Record<string, any>)[key]);
-            }
-            await axiosInstance.post("order-summaries", formData);
+                const value = data[key];
 
-            if (loadingTimer) {
-                // clearTimeout(loadingTimer);
-                loadingTimer = null;
+                if (key === "paymentProof" && Array.isArray(value)) {
+                    value.map((file) => {
+                        formData.append(key, file);
+                    });
+                } else if (typeof value === "object" && !(value instanceof File)) {
+                    formData.append(key, JSON.stringify(value));
+                } else {
+                    formData.append(key, value);
+                }
             }
-            setIsLoading(false);
-            setShowAlert(true);
-            setAlertMessage("Pesanan baru telah berhasil disimpan");
+
+            await axiosInstance.post("orders/admin", formData);
+
+            navigate("/orders", {
+                state: {
+                    message: "Pesanan baru berhasil ditambahkan",
+                },
+            });
             // reset(defaultValuesAddOrderSummary);
-            window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (error: any) {
-            setShowAlert(true);
             if (error.response.status === 500) {
-                setAlertMessage("Oops! Server mengalami kendala teknis. Tim kami akan segera menanganinya");
+                navigate("/orders", {
+                    state: {
+                        message: "Oops! Server mengalami kendala teknis. Tim kami akan segera menanganinya",
+                    },
+                });
             } else {
-                setAlertMessage(error.response.data.message);
+                navigate("/orders", {
+                    state: {
+                        message: error.response.data.message,
+                    },
+                });
             }
         } finally {
-            if (loadingTimer) {
-                // clearTimeout(loadingTimer);
-                loadingTimer = null;
-            }
             setIsLoading(false);
-            setTimeout(() => setShowAlert(false), 3000);
         }
     };
 
@@ -131,13 +100,12 @@ function OrderCreatePage() {
                 fieldRefs={fieldRefs}
                 control={control}
                 watch={watch}
-                clearErrors={clearErrors}
-                showAlert={showAlert}
-                setShowAlert={setShowAlert}
-                alertMessage={alertMessage}
-                isLoading={isLoading}
                 errors={errors}
+                getValues={getValues}
             />
+
+            {/* Loading */}
+            {isLoading && <Loading />}
         </MainLayout>
     );
 }

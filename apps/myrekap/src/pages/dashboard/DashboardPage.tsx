@@ -1,9 +1,10 @@
 import MainLayout from "@/components/templates/MainLayout";
 import "react-datepicker/dist/react-datepicker.css";
-import { InputMonthYear, OrderCard } from "@/components/molecules";
+import { InputMonthYear } from "@/components/molecules";
 import { DashboardChart } from "@/components/organisms/dashboard";
 import { useOrders } from "@/hooks";
 import { useState } from "react";
+import { OrderList } from "@/components/organisms/orders";
 
 function DashboardPage() {
     const [monthYear, setMonthYear] = useState<Date>(new Date());
@@ -18,7 +19,7 @@ function DashboardPage() {
             <DashboardChart monthYear={monthYear} orders={orders} />
 
             {ordersSix.length > 0 ? (
-                <OrderCard filteredOrders={ordersSix} />
+                <OrderList orders={ordersSix} />
             ) : (
                 <h1 className="text-center text-2xl my-16">Data Pesanan Tidak Ditemukan</h1>
             )}

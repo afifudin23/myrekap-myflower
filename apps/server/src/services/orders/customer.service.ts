@@ -2,7 +2,7 @@ import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
 import { ordersCustomerSchema } from "@/schemas";
-import { formmatters } from "@/utils";
+import { formatters } from "@/utils";
 
 export const create = async (user: any, data: ordersCustomerSchema.CreateType) => {
     const cartItems = await prisma.cartItem.findMany({ where: { userId: user.id }, include: { product: true } });
@@ -24,6 +24,7 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
     });
     try {
         const totalPrice = orderItems.reduce((total, item) => total + item.totalPrice, 0);
+        const shippingCost = totalPrice * 0.1;
         const { messages, ...orderData } = data;
 
         const order = await prisma.order.create({
@@ -34,15 +35,11 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
                 // Check if user.customerCategory is null, default to undefined (Admin/SuperAdmin will not see this field)
                 ...(user.customerCategory != null && { customerCategory: user.customerCategory }),
                 source: "MYFLOWER",
-                orderCode: formmatters.generateOrderCode(),
+                orderCode: formatters.generateOrderCode(),
                 user: { connect: { id: user.id } },
                 totalPrice,
-                shippingCost: 100000, // Fixed shipping cost next time
-                paymentStatus: "PENDING",
-                orderStatus: "IN_PROCESS",
-                items: {
-                    create: orderItems,
-                },
+                shippingCost, // Fixed shipping cost next time
+                items: { create: orderItems },
             },
             include: { items: true },
         });

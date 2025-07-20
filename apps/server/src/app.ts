@@ -1,3 +1,4 @@
+
 import express from "express";
 import cors from "cors";
 import rootRouter from "./routes";
@@ -7,11 +8,9 @@ import { InternalException } from "./exceptions";
 import ErrorCode from "./constants/error-code";
 import cookieParser from "cookie-parser";
 import path from "path";
-import env from "@/config/env";
-
+import { env } from "@/config";
 const app = express();
 const allowedOrigins = env.CLIENT_ORIGINS.split(",") || [];
-
 // middlewares
 app.use(helmet()); // for security
 app.use(

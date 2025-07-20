@@ -14,6 +14,7 @@ function ProductCreatePage() {
     const {
         handleSubmit,
         control,
+        getValues,
         formState: { errors },
     } = useForm({
         defaultValues: {
@@ -54,7 +55,6 @@ function ProductCreatePage() {
                     formData.append(key, value);
                 }
             }
-
             await axiosInstance.post("products", formData);
             navigate("/products", {
                 state: {
@@ -96,6 +96,7 @@ function ProductCreatePage() {
                 onSubmit={onSubmit}
                 errors={errors}
                 isLoading={isLoading}
+                getValues={getValues}
                 fieldRefs={fieldRefs}
             />
         </MainLayout>

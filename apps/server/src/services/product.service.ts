@@ -2,7 +2,7 @@ import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
 import { productSchema } from "@/schemas";
-import { cloudinary, uploadFile } from "@/utils";
+import { cloudinary, uploadFile } from "@/config";
 
 type UploadResultsType = {
     fileName: string;

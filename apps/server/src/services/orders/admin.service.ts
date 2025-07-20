@@ -1,9 +1,9 @@
-import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
-import { cloudinary, formmatters, uploadFile } from "@/utils";
+import { cloudinary, prisma, uploadFile } from "@/config";
 // import enqueueWhatsAppMessage from "@/utils/queue-wa-message.util";
 import puppeteer from "puppeteer";
+import { generateOrderCode } from "@/utils/formatters.utils";
 
 export const getAllOrders = async (requestQuery: any) => {
     const { month, year, from_date, to_date, customer_category, payment_method, payment_status, order_status } =
@@ -67,33 +67,46 @@ export const getOrderById = async (id: string) => {
     }
 };
 
-export const addOrder = async (request: any) => {
+export const create = async (userId: string, body: any, file: Express.Multer.File) => {
+    const products = await prisma.product.findMany();
+    const orderItems = body.items.map((item: any) => {
+        const product = products.find((product) => product.id === item.productId);
+        if (!product) throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
+        return {
+            product: { connect: { id: item.productId } },
+            quantity: item.quantity,
+            message: item.message,
+            unitPrice: product?.price,
+            totalPrice: product.price * item.quantity,
+        };
+    });
     try {
-        const { paymentProof, ...requestBody } = request;
+        const totalPrice = orderItems.reduce((total: number, item: any) => total + item.totalPrice, 0);
+        const shippingCost = totalPrice * 0.1;
         const data = await prisma.order.create({
             data: {
-                ...requestBody,
-                invoiceNumbear: formmatters.generateOrderCode(),
-                invoiceNumber: formmatters.generateOrderCode(),
-                deliveryDate: new Date(requestBody.deliveryDate),
-                paymentStatus: requestBody.isPaid ? "LUNAS" : "BELUM_LUNAS",
-                paymentMethod: requestBody.isPaid ? requestBody.paymentMethod : "PENDING",
+                ...body,
+                orderCode: generateOrderCode(),
+                source: "MYREKAP",
+                userId,
+                totalPrice,
+                ...(body.deliveryOption === "DELIVERY" && { shippingCost }),
+                items: { create: orderItems },
             },
         });
 
-        if (paymentProof) {
-            const result = await uploadFile(paymentProof, "myrekap-app/bukti-transfer");
+        if (file && body.paymentMethod === "BANK_TRANSFER") {
+            const result = await uploadFile(file, "myflower-myrekap/bukti-transfer");
             await prisma.paymentProof.create({
                 data: {
-                    fileName: paymentProof.originalname,
-                    size: paymentProof.size,
+                    fileName: file.originalname,
+                    size: file.size,
                     orderId: data.id,
                     secureUrl: result.secure_url,
                     publicId: result.public_id,
                 },
             });
         }
-
         // const message = generatedTextLink(
         //     data.customerName,
         //     data.flowerCategory,
@@ -102,62 +115,103 @@ export const addOrder = async (request: any) => {
         //     data.deliveryDate.toISOString()
         // );
         // enqueueWhatsAppMessage(message);
-
         return data;
-    } catch (error) {
-        throw new InternalException("Something went wrong", ErrorCode.INTERNAL_EXCEPTION, error);
-    }
-};
-
-export const updateOrder = async (id: string, request: any) => {
-    try {
-        const existingOrderSummary = await prisma.order.findUnique({
-            where: {
-                id,
-            },
-        });
-        if (!existingOrderSummary) throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_NOT_FOUND);
-
-        const { paymentProof, ...requestBody } = request;
-        const data = await prisma.order.update({
-            where: {
-                id,
-            },
-            data: {
-                ...requestBody,
-                deliveryDate: new Date(requestBody.deliveryDate),
-                paymentStatus: requestBody.isPaid ? "LUNAS" : "BELUM_LUNAS",
-                paymentMethod: requestBody.isPaid ? requestBody.paymentMethod : "PENDING",
-            },
-        });
-        let paymentProofUpdated: any;
-        if (paymentProof?.buffer) {
-            const existingPaymentProof = await prisma.paymentProof.findUnique({
-                where: {
-                    orderId: id,
-                },
-            });
-            if (existingPaymentProof) {
-                await cloudinary.uploader.destroy(existingPaymentProof?.publicId);
-                await prisma.paymentProof.delete({ where: { id: existingPaymentProof.id } });
-            }
-            const result = await uploadFile(paymentProof, "myrekap-app/bukti-transfer");
-            paymentProofUpdated = await prisma.paymentProof.create({
-                data: {
-                    fileName: paymentProof.originalname,
-                    size: paymentProof.size,
-                    orderId: id,
-                    secureUrl: result.secure_url,
-                    publicId: result.public_id,
-                },
-            });
-        }
-
-        return { ...data, paymentProof: paymentProofUpdated };
     } catch (error) {
         console.log(error);
         throw new InternalException("Something went wrong", ErrorCode.INTERNAL_EXCEPTION, error);
     }
+};
+
+export const update = async (id: string, body: any, file: Express.Multer.File) => {
+    // body.items.map((item: any) => {
+    //     console.log(item);
+    // });
+    // console.log({ id, body, file });
+    // return;
+    // Check if order exists
+    const existingOrder = await prisma.order.findUnique({ where: { id }, include: { items: true } });
+    if (!existingOrder) throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
+
+    // Check if orderItem wants to be updated
+    const incomingItems = body.items;
+    if (incomingItems) {
+        const products = await prisma.product.findMany();
+
+        const existingItemIds = existingOrder.items.map((item) => item.id);
+        const incomingItemIds: string[] = [];
+
+        // UPDATE OR CREATE
+        for (const item of incomingItems) {
+            const product = products.find((p) => p.id === item.productId);
+            if (!product) {
+                throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
+            }
+
+            const baseData = {
+                quantity: item.quantity,
+                message: item.message,
+                unitPrice: product.price,
+                totalPrice: product.price * item.quantity,
+                productId: item.productId,
+                orderId: id,
+            };
+
+            // UPDATE EXISTING ITEM
+            if (item.id) {
+                await prisma.orderItem.update({
+                    where: { id: item.id },
+                    data: baseData,
+                });
+                incomingItemIds.push(item.id);
+            } else {
+                // CREATE NEW ITEM
+                const created = await prisma.orderItem.create({ data: baseData });
+                incomingItemIds.push(created.id);
+            }
+        }
+
+        // DELETE ORDER ITEM
+        const itemsToDelete = existingItemIds.filter((id) => !incomingItemIds.includes(id));
+        if (itemsToDelete.length > 0) {
+            await prisma.orderItem.deleteMany({
+                where: { id: { in: itemsToDelete } },
+            });
+        }
+    }
+
+    // UPLOAD FILE IF EXISTS
+    if (file?.buffer) {
+        const existingProof = await prisma.paymentProof.findUnique({
+            where: { orderId: id },
+        });
+
+        if (existingProof) {
+            await cloudinary.uploader.destroy(existingProof.publicId);
+            await prisma.paymentProof.delete({ where: { id: existingProof.id } });
+        }
+
+        const result = await uploadFile(file, "myrekap-app/bukti-transfer");
+
+        await prisma.paymentProof.create({
+            data: {
+                fileName: file.originalname,
+                size: file.size,
+                orderId: id,
+                secureUrl: result.secure_url,
+                publicId: result.public_id,
+            },
+        });
+    }
+
+    // UPDATE ORDER (EXCLUDE ORDER ITEM)
+    const { items, ...data } = body;
+    const updatedOrder = await prisma.order.update({
+        where: { id },
+        data,
+        include: { items: { include: { product: true } } },
+    });
+
+    return updatedOrder;
 };
 
 export const printOrder = async (html: string) => {

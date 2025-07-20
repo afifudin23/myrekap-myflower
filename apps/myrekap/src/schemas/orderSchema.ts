@@ -1,141 +1,162 @@
-import formatters from "@/utils/formatters";
-import { TypeOf, z } from "zod";
+import { formatters } from "@/utils";
+import { z } from "zod";
 
-const existingFile = z.object({
-    fileName: z.string(),
-    id: z.string(),
-    orderSummaryId: z.string(),
-    publicId: z.string(),
-    secureUrl: z.string(),
-    size: z.number(),
-});
-
-export const createOrderSchema = z
+export const create = z
     .object({
         customerName: z.string().nonempty("Nama wajib diisi"),
-        flowerCategory: z
+        customerCategory: z
             .string()
-            .nonempty("Wajib pilih kategori bunga")
+            .nonempty("Wajib pilih kategori customer")
+            // enum validation replace
+            .refine(
+                (val) => ["Umum", "Pemda", "Akademik", "Rumah Sakit", "Polisi/Militer", "Perbankan"].includes(val),
+                {
+                    message: "Kategori customer tidak valid",
+                }
+            )
             .transform((value) => formatters.parseCapital(value)),
-        quantity: z.coerce.number().positive("Jumlah pesan tidak boleh 0 atau negatif"),
-        greetingMessage: z.string().nonempty("Pesan ucapan wajib diisi").max(200, "Maksimal 200 karakter"),
-        deliveryDate: z
+        phoneNumber: z.string().nonempty("Nomor telepon wajib diisi"),
+        items: z.array(
+            z.object({
+                id: z.string().nullish(),
+                productId: z.string().nonempty("Wajib pilih bunga"),
+                quantity: z.coerce.number().positive("Jumlah pesan tidak boleh 0 atau negatif"),
+                message: z
+                    .string()
+                    .transform((val) => (val === "" ? null : val))
+                    .nullish(),
+            })
+        ),
+        deliveryOption: z
+            .string()
+            .nonempty("Wajib pilih metode pengiriman")
+            .refine((val) => ["Delivery", "Pickup"].includes(val), {
+                message: "Metode pengiriman tidak valid",
+            })
+            .transform((val) => formatters.parseCapital(val)),
+        deliveryAddress: z
+            .string()
+            .transform((val) => (val === "" ? null : val))
+            .nullish(),
+        readyDate: z
             .date({
-                required_error: "Tanggal pengiriman wajib diisi",
+                required_error: "Tanggal siap wajib diisi",
                 invalid_type_error: "Format tanggal tidak valid",
             })
-            .refine((date) => date > new Date(), "Pengiriman tidak boleh sebelum hari ini"),
-        deliveryAddress: z.string().nonempty("Alamat pengiriman wajib diisi").max(200, "Maksimal 200 karakter"),
-        customerCategory: z
-            .string()
-            .nonempty("Wajib pilih kategori customer")
-            .transform((value) => formatters.parseCapital(value)),
-        price: z
-            .number({
-                required_error: "Harga wajib diisi",
-                invalid_type_error: "Harga harus berupa angka",
-            })
-            .positive("Harga tidak boleh 0"),
-        shippingCost: z
-            .number({
-                required_error: "Biaya pengiriman wajib diisi",
-                invalid_type_error: "Biaya pengiriman harus berupa angka",
-            })
-            .positive("Biaya pengiriman tidak boleh 0"),
-        isPaid: z.coerce.boolean().default(false),
+            .refine(
+                (date) => {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Reset to midnight
+                    return date > today;
+                },
+                {
+                    message: "Ready date minimum is today",
+                }
+            )
+            .transform((date) => date.toISOString()),
         paymentMethod: z
             .string()
-            .nullish()
-            .transform((value) => formatters.parseCapital(value || "Pending")),
-        paymentProof: z.union([
-            existingFile,
-            z
-                .instanceof(File)
-                .nullish()
-                .refine((file) => (file?.size ? file.size <= 2 * 1024 * 1024 : true), {
-                    message: "Maksimal ukuran 2 MB.",
-                }),
-        ]),
+            .nonempty("Wajib pilih metode pembayaran")
+            .refine((val) => ["Cash", "Transfer"].includes(val), {
+                message: "Metode pembayaran tidak valid",
+            })
+            .transform((value) => (value === "Transfer" ? "Bank Transfer" : value))
+            .transform((value) => formatters.parseCapital(value)),
+        paymentProof: z.array(z.instanceof(File)),
     })
     .superRefine((data, ctx) => {
-        if (data.paymentMethod === "TRANSFER" && !data.paymentProof) {
+        if (data.paymentMethod === "Transfer" && !data.paymentProof) {
             ctx.addIssue({
                 path: ["paymentProof"],
                 code: z.ZodIssueCode.custom,
                 message: "Bukti transfer wajib diunggah untuk metode pembayaran transfer",
             });
         }
-        if (data.isPaid && data.paymentMethod === "PENDING") {
+        if (data.deliveryOption === "DELIVERY" && !data.deliveryAddress) {
             ctx.addIssue({
-                path: ["paymentMethod"],
+                path: ["deliveryAddress"],
                 code: z.ZodIssueCode.custom,
-                message: "Metode pembayaran wajib diisi jika pesanan sudah dibayar",
+                message: "Alamat pengiriman wajib diisi untuk metode pengiriman delivery",
             });
         }
     });
 
-export type CreateOrderType = TypeOf<typeof createOrderSchema>;
-
-export const updateOrderSummarySchema = z
+export const update = z
     .object({
         customerName: z.string().nonempty("Nama wajib diisi"),
-        flowerCategory: z
-            .string()
-            .nonempty("Wajib pilih kategori bunga")
-            .transform((value) => formatters.parseCapital(value)),
-        quantity: z.coerce.number().positive("Jumlah pesan tidak boleh 0 atau negatif"),
-        greetingMessage: z.string().nonempty("Pesan ucapan wajib diisi").max(200, "Maksimal 200 karakter"),
-        deliveryDate: z.date({
-            required_error: "Tanggal pengiriman wajib diisi",
-            invalid_type_error: "Format tanggal tidak valid",
-        }),
-        deliveryAddress: z.string().nonempty("Alamat pengiriman wajib diisi").max(200, "Maksimal 200 karakter"),
         customerCategory: z
             .string()
             .nonempty("Wajib pilih kategori customer")
+            // enum validation replace
+            .refine(
+                (val) => ["Umum", "Pemda", "Akademik", "Rumah Sakit", "Polisi/Militer", "Perbankan"].includes(val),
+                {
+                    message: "Kategori customer tidak valid",
+                }
+            )
             .transform((value) => formatters.parseCapital(value)),
-        price: z
-            .number({
-                required_error: "Harga wajib diisi",
-                invalid_type_error: "Harga harus berupa angka",
+        phoneNumber: z.string().nonempty("Nomor telepon wajib diisi"),
+        items: z.array(
+            z.object({
+                id: z.string().nullish(),
+                productId: z.string().nonempty("Wajib pilih bunga"),
+                quantity: z.coerce.number().positive("Jumlah pesan tidak boleh 0 atau negatif"),
+                message: z
+                    .string()
+                    .transform((val) => (val === "" ? null : val))
+                    .nullish(),
             })
-            .positive("Harga tidak boleh 0"),
-        shippingCost: z
-            .number({
-                required_error: "Biaya pengiriman wajib diisi",
-                invalid_type_error: "Biaya pengiriman harus berupa angka",
+        ),
+        deliveryOption: z
+            .string()
+            .nonempty("Wajib pilih metode pengiriman")
+            .refine((val) => ["Delivery", "Pickup"].includes(val), {
+                message: "Metode pengiriman tidak valid",
             })
-            .positive("Biaya pengiriman tidak boleh 0"),
-        isPaid: z.coerce.boolean().default(false),
+            .transform((val) => formatters.parseCapital(val)),
+        deliveryAddress: z
+            .string()
+            .transform((val) => (val === "" ? null : val))
+            .nullish(),
+        readyDate: z
+            .date({
+                required_error: "Tanggal siap wajib diisi",
+                invalid_type_error: "Format tanggal tidak valid",
+            })
+            .refine(
+                (date) => {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Reset to midnight
+                    return date > today;
+                },
+                {
+                    message: "Ready date minimum is today",
+                }
+            )
+            .transform((date) => date.toISOString()),
         paymentMethod: z
             .string()
-            .nullish()
-            .transform((value) => formatters.parseCapital(value || "Pending")),
-        paymentProof: z.union([
-            existingFile,
-            z
-                .instanceof(File)
-                .nullish()
-                .refine((file) => (file?.size ? file.size <= 2 * 1024 * 1024 : true), {
-                    message: "Maksimal ukuran 2 MB.",
-                }),
-        ]),
+            .nonempty("Wajib pilih metode pembayaran")
+            .refine((val) => ["Cash", "Transfer"].includes(val), {
+                message: "Metode pembayaran tidak valid",
+            })
+            .transform((value) => (value === "Transfer" ? "Bank Transfer" : value))
+            .transform((value) => formatters.parseCapital(value)),
+        paymentProof: z.array(z.instanceof(File)),
     })
     .superRefine((data, ctx) => {
-        if (data.paymentMethod === "TRANSFER" && !data.paymentProof) {
+        if (data.paymentMethod === "Transfer" && !data.paymentProof) {
             ctx.addIssue({
                 path: ["paymentProof"],
                 code: z.ZodIssueCode.custom,
                 message: "Bukti transfer wajib diunggah untuk metode pembayaran transfer",
             });
         }
-        if (data.isPaid && data.paymentMethod === "PENDING") {
+        if (data.deliveryOption === "DELIVERY" && !data.deliveryAddress) {
             ctx.addIssue({
-                path: ["paymentMethod"],
+                path: ["deliveryAddress"],
                 code: z.ZodIssueCode.custom,
-                message: "Metode pembayaran wajib diisi jika pesanan sudah dibayar",
+                message: "Alamat pengiriman wajib diisi untuk metode pengiriman delivery",
             });
         }
     });
-
-export type UpdateOrderSummaryType = TypeOf<typeof updateOrderSummarySchema>;

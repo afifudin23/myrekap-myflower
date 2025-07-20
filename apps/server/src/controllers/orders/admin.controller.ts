@@ -1,3 +1,6 @@
+import ErrorCode from "@/constants/error-code";
+import { UnprocessableUntityException } from "@/exceptions";
+import { AuthReq } from "@/middlewares/auth.middleware";
 import { ordersAdminSchema } from "@/schemas";
 import { ordersAdminService } from "@/services";
 import { Request, Response, NextFunction } from "express";
@@ -19,10 +22,15 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
-export const addOrder = async (req: Request, res: Response, next: NextFunction) => {
-    const request = ordersAdminSchema.createOrderSchema.parse({ ...req.body, paymentProof: req.file });
+export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
+    const file = req.file as Express.Multer.File;
+    const body = ordersAdminSchema.create.parse(req.body);
+    if (body.paymentMethod === "BANK_TRANSFER" && !file) {
+        throw new UnprocessableUntityException("Payment proof is required for bank transfer", ErrorCode.UNPROCESSABLE_ENTITY, null);
+    }
     try {
-        const data = await ordersAdminService.addOrder(request);
+        const userId = (req as AuthReq).user.id;
+        const data = await ordersAdminService.create(userId, body, file);
         res.json({ message: "Order created successfully", data });
     } catch (error) {
         return next(error);
@@ -30,18 +38,10 @@ export const addOrder = async (req: Request, res: Response, next: NextFunction) 
 };
 
 export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
-    let paymentProof: any;
-    if (req.file) {
-        paymentProof = req.file;
-    } else if (req.body.paymentProof) {
-        paymentProof = JSON.parse(req.body.paymentProof);
-    } else {
-        paymentProof = null;
-    }
-
-    const request = ordersAdminSchema.updateOrderSchema.parse({ ...req.body, paymentProof });
+    const file = req.file as Express.Multer.File;
+    const body = ordersAdminSchema.update.parse(req.body);
     try {
-        const data = await ordersAdminService.updateOrder(req.params.id, request);
+        const data = await ordersAdminService.update(req.params.id, body, file);
         res.json({ message: "Order updated successfully", data });
     } catch (error) {
         return next(error);

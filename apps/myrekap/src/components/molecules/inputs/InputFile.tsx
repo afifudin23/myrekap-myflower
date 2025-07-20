@@ -74,16 +74,18 @@ const InputFile = React.forwardRef<HTMLDivElement, InputFileProps>(
                                     <div className="w-full mt-4">
                                         <div className="mb-2 flex justify-between">
                                             <p className="font-semibold">File Terpilih:</p>
-                                            <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleClearAll();
-                                                }}
-                                                className="text-red-500 text-sm hover:underline"
-                                            >
-                                                Hapus semua
-                                            </button>
+                                            {value.length > 1 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleClearAll();
+                                                    }}
+                                                    className="text-red-500 text-sm hover:underline"
+                                                >
+                                                    Hapus semua
+                                                </button>
+                                            )}
                                         </div>
                                         <ul className="space-y-4">
                                             {value.map((file: ImageItem, i: number) => {

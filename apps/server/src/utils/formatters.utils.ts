@@ -63,6 +63,9 @@ export const formatCapital = (data: string) => {
         .replace(/_/g, " ") // change underscore to space
         .replace(/\b\w/g, (char) => char.toUpperCase()); // cpitalize each word
 };
+export const parseCapital = (data: string) => {
+    return data.toUpperCase().replace(/[ /-]/g, "_"); // Replace spaces and slashes with underscores
+};
 
 export const formatRupiah = (data: number) => {
     return new Intl.NumberFormat("id-ID", {

@@ -98,7 +98,7 @@ model Order {
   readyDate        DateTime         @map("ready_date")
 
   // Delivery
-  shippingCost    Int?    @map("shipping_cost")
+  shippingCost    Int     @default(0) @map("shipping_cost")
   deliveryAddress String? @map("delivery_address")
 
   // Payment
@@ -107,7 +107,7 @@ model Order {
   paymentProvider String?        @map("payment_provider")
 
   // Status
-  paymentStatus         PaymentStatus  @map("payment_status")
+  paymentStatus         PaymentStatus  @default(PENDING) @map("payment_status")
   previousPaymentStatus PaymentStatus? @map("previous_payment_status")
   orderStatus           OrderStatus    @default(IN_PROCESS) @map("order_status")
   orderDate             DateTime       @default(now()) @map("order_date")

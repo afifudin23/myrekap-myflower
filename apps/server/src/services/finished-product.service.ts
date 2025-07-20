@@ -1,7 +1,7 @@
 import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException } from "@/exceptions";
-import { cloudinary, uploadFile } from "@/utils";
+import { cloudinary, uploadFile } from "@/config";
 
 export const addFinishedProduct = async (orderId: string, finishedProduct: any) => {
     try {

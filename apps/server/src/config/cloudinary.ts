@@ -1,4 +1,4 @@
-import env from "@/config/env";
+import { env } from "@/config";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import type { Request } from "express";
 type MulterFile = Request["file"];

@@ -1,92 +1,75 @@
+import { Loading } from "@/components/atoms";
 import { TitlePage } from "@/components/molecules";
 import { OrderForm } from "@/components/organisms/orders";
 import MainLayout from "@/components/templates/MainLayout";
-import {  UpdateOrderSummaryType } from "@/schemas";
-import { axiosInstance,  getOrderCookies, setOrderCookies } from "@/utils";
+import { orderSchema } from "@/schemas";
+import { axiosInstance, formatters } from "@/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TbLogout2 } from "react-icons/tb";
 import { useNavigate, useParams } from "react-router-dom";
 
 function OrderEditPage() {
-    // const orderCookies = formatters.formatInputOrderSummary(getOrderCookies());
-    const orderCookies = getOrderCookies();
+    const { id } = useParams();
+    const data = JSON.parse(localStorage.getItem("orderDetail") || "{}");
+    const order = formatters.parseInputOrder(data);
+    console.log(order)
     const navigate = useNavigate();
-    const [showAlert, setShowAlert] = useState<boolean>(false);
-    const [alertMessage, setAlertMessage] = useState<string>("");
     const fieldRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const { id } = useParams();
-    let loadingTimer: NodeJS.Timeout | null = null;
 
     const {
         handleSubmit,
         control,
         watch,
-        clearErrors,
+        getValues,
+        setValue,
         formState: { errors },
     } = useForm<any>({
-        // resolver: zodResolver(updateOrderSummarySchema),
-        defaultValues: orderCookies,
+        resolver: zodResolver(orderSchema.update),
+        defaultValues: order,
     });
 
-    const onSubmit = async (data: UpdateOrderSummaryType) => {
-        console.log(data);
-        return false;
-
-        loadingTimer = setTimeout(() => {
-            setIsLoading(true);
-        }, 500);
+    const onSubmit = async (data: any) => {
+        setIsLoading(true);
         try {
             const formData = new FormData();
             for (const key in data) {
-                formData.append(key, (data as Record<string, any>)[key]);
+                const value = data[key];
+
+                if (key === "paymentProof" && Array.isArray(value)) {
+                    value.map((file) => {
+                        formData.append(key, file);
+                    });
+                } else if (typeof value === "object" && !(value instanceof File)) {
+                    formData.append(key, JSON.stringify(value));
+                } else {
+                    formData.append(key, value);
+                }
             }
+            await axiosInstance.put(`orders/admin/${id}/edit`, formData);
 
-            if (typeof data.paymentProof === "object" && !(data.paymentProof instanceof File))
-                formData.set("paymentProof", JSON.stringify(data.paymentProof));
-            const { data: updatedData } = await axiosInstance.put(`order-summaries/edit/${id}`, formData);
-
-            // Update order cookies if payment proof is changed
-            let updatedOrderCookies;
-            if (data.paymentProof instanceof File) {
-                updatedOrderCookies = { ...getOrderCookies(), ...updatedData.data, id };
-                // Delete order cookies if payment proof is deleted and payment method is not transfer
-            } else if (data.paymentProof === null) {
-                updatedOrderCookies = { ...getOrderCookies(), ...updatedData.data, id };
-                await axiosInstance.delete(`payment-proofs/${id}`);
-                // Update order cookies if payment proof is not a changed
-            } else if (typeof data.paymentProof === "object" && !(data.paymentProof instanceof File)) {
-                updatedOrderCookies = {
-                    ...getOrderCookies(),
-                    ...updatedData.data,
-                    id,
-                    paymentProof: data.paymentProof,
-                };
-            }
-            setOrderCookies(updatedOrderCookies);
-
-            loadingTimer = setTimeout(() => {
-                setIsLoading(true);
-            }, 500);
-            setIsLoading(false);
-
-            navigate(`/order-summary/${id}`, {
-                state: { alertMessage: "Perubahan pada pesanan telah berhasil disimpan" },
+            navigate("/orders", {
+                state: {
+                    message: `Pesanan berhasil diupdate`,
+                },
             });
         } catch (error: any) {
             if (error.response.status === 500) {
-                setShowAlert(true);
-                setAlertMessage("Oops! Server mengalami kendala teknis. Tim kami akan segera menanganinya");
+                navigate("/orders", {
+                    state: {
+                        message: "Oops! Server mengalami kendala teknis. Tim kami akan segera menanganinya",
+                    },
+                });
             } else {
-                setShowAlert(true);
-                setAlertMessage(error.response.data.message);
+                navigate("/orders", {
+                    state: {
+                        message: error.response.data.message,
+                    },
+                });
             }
         } finally {
-            if (loadingTimer) {
-                // clearTimeout(loadingTimer);
-                loadingTimer = null;
-            }
             setIsLoading(false);
         }
     };
@@ -108,13 +91,13 @@ function OrderEditPage() {
                 fieldRefs={fieldRefs}
                 control={control}
                 watch={watch}
-                clearErrors={clearErrors}
-                showAlert={showAlert}
-                setShowAlert={setShowAlert}
-                alertMessage={alertMessage}
-                isLoading={isLoading}
                 errors={errors}
+                getValues={getValues}
+                setValue={setValue}
             />
+
+            {/* Loading */}
+            {isLoading && <Loading />}
         </MainLayout>
     );
 }

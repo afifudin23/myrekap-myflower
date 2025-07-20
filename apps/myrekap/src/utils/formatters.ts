@@ -84,20 +84,23 @@ const formatters = {
             paymentProof: data.paymentProof === "null" ? null : data.paymentProof,
         };
     },
-    parseInputOrderSummary(data: any) {
+
+    parseInputOrder(data: any) {
         return {
-            customerName: this.formatCapital(data.customerName),
-            flowerCategory: this.parseCapital(data.flowerCategory),
-            quantity: Number(data.quantity),
-            greetingMessage: data.greetingMessage,
-            deliveryDate: new Date(data.deliveryDate),
-            deliveryAddress: data.deliveryAddress,
-            customerCategory: this.parseCapital(data.customerCategory),
-            price: Number(data.price),
-            shippingCost: Number(data.shippingCost),
-            isPaid: Boolean(data.isPaid),
-            paymentMethod: data.paymentMethod ? this.parseCapital(data.paymentMethod) : "Pending",
-            paymentProof: data.paymentProof === "null" ? null : data.paymentProof,
+            customerName: data.customerName,
+            customerCategory: this.formatCapital(data.customerCategory),
+            phoneNumber: data.phoneNumber,
+            items: data.items.map((item: any) => ({
+                id: item.id,
+                productId: item.productId,
+                quantity: item.quantity,
+                message: item.message || "",
+            })),
+            deliveryOption: this.formatCapital(data.deliveryOption),
+            deliveryAddress: data.deliveryAddress || "",
+            readyDate: new Date(data.readyDate),
+            paymentMethod: this.formatCapital(data.paymentMethod),
+            paymentProof: data.paymentProof === null ? [] : data.paymentProof,
         };
     },
 

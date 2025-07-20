@@ -1,16 +1,34 @@
 import { ButtonSmall } from "@/components/atoms";
-import { InputMonthYear, OrderPagination, TitlePage } from "@/components/molecules";
+import { AlertInfo, InputMonthYear, OrderPagination, TitlePage } from "@/components/molecules";
 import Search from "@/components/molecules/orders/OrderSearch";
 import MainLayout from "@/components/templates/MainLayout";
 import { useOrders } from "@/hooks";
 import { axiosInstance, filterCustomerCategory, filterOrderStatus, filterPaymenrtStatus, filterSearch } from "@/utils";
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 function OrderPage() {
     const [monthYear, setMonthYear] = useState<Date>(new Date());
     const { orders, setOrders } = useOrders(monthYear);
     const [_, setSearchParams] = useSearchParams();
+
+    // Alert
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [message, setMessage] = useState<string | null>(null);
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+
+    useEffect(() => {
+        const state = location.state as { message?: string };
+
+        if (state?.message) {
+            setMessage(state.message);
+            setShowAlert(true);
+            setTimeout(() => setShowAlert(false), 3000);
+            navigate(location.pathname, { replace: true });
+        }
+    }, []);
 
     // Filter
     const [searchTerm, setSearchTerm] = useState("");
@@ -62,10 +80,15 @@ function OrderPage() {
             />
 
             {filteredOrders.length > 0 ? (
-                <OrderPagination filteredOrders={filteredOrders} itemsPerPage={10} />
+                <OrderPagination orders={filteredOrders} itemsPerPage={10} />
             ) : (
                 <h1 className="text-center text-2xl my-16">Data Pesanan Tidak Ditemukan</h1>
             )}
+
+            {/* Alert */}
+            <AnimatePresence>
+                {showAlert && message && <AlertInfo message={message} handleAlert={() => setShowAlert(false)} />}
+            </AnimatePresence>
         </MainLayout>
     );
 }

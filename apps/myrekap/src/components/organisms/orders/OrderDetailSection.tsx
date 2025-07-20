@@ -1,5 +1,5 @@
 import { Badge, ButtonSmall } from "@/components/atoms";
-import { badgeColorOrderStatus, badgeColorPaymentStatus, formatters, getOrderCookies } from "@/utils";
+import { badgeColorOrderStatus, badgeColorPaymentStatus, formatters } from "@/utils";
 // import { PDFDownloadLink } from "@react-pdf/renderer";
 import { HiPhoto } from "react-icons/hi2";
 import { IoReceiptSharp } from "react-icons/io5";
@@ -7,41 +7,41 @@ import { RiEdit2Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
 function OrderDetailSection() {
-    const field = getOrderCookies();
+    const order = JSON.parse(localStorage.getItem("orderDetail") || "{}");
     const navigate = useNavigate();
     return (
         <>
             <div className="space-y-3">
                 <div className="flex justify-between items-start">
                     <p className="font-semibold text-base 2xl:text-xl px-4 py-1 rounded-md text-slate-50 bg-slate-800 bg-opacity-40">
-                        #{field.orderCode}
+                        #{order.orderCode}
                     </p>
                     <div className="flex gap-2 text-sm">
                         <Badge
                             className={`${badgeColorPaymentStatus(
-                                field.paymentStatus
+                                order.paymentStatus
                             )} text-sm text-white font-semibold`}
-                            field={field.paymentStatus}
+                            field={order.paymentStatus}
                             size="w-[90px]"
                         />
                         <Badge
-                            className={`${badgeColorOrderStatus(field.orderStatus)} text-sm text-white font-semibold`}
-                            field={field.orderStatus}
+                            className={`${badgeColorOrderStatus(order.orderStatus)} text-sm text-white font-semibold`}
+                            field={order.orderStatus}
                             size="w-[90px]"
                         />
                         <Badge
                             className="bg-[#609393] text-sm text-white font-semibold"
-                            field={field.customerCategory}
+                            field={order.customerCategory}
                             size="w-[90px]"
                         />
                     </div>
                 </div>
                 <div className="flex gap-2 text-sm items-center">
                     <p className="font-medium 2xl:font-semibold text-slate-500">
-                        {formatters.dateToString(field.orderDate)}
+                        {formatters.dateToString(order.orderDate)}
                     </p>
                     <p className="px-2 py-1 rounded-md bg-purple-400 font-medium 2xl:font-semibold text-slate-100">
-                        {formatters.formatSource(field.source)}
+                        {formatters.formatSource(order.source)}
                     </p>
                 </div>
             </div>
@@ -50,14 +50,14 @@ function OrderDetailSection() {
                 <div className="mt-5 p-8 rounded-xl bg-blue-50 bg-opacity-80 space-y-3">
                     <div>
                         <h1 className="text-xl font-semibold 2xl:text-2xl">
-                            {formatters.formatCapital(field.customerName)}{" "}
-                            <span className="text-lg font-medium capitalize">({field.phoneNumber})</span>
+                            {formatters.formatCapital(order.customerName)}{" "}
+                            <span className="text-lg font-medium capitalize">({order.phoneNumber})</span>
                         </h1>
                     </div>
                     <div className="space-y-2">
                         <h1 className="text-lg font-semibold 2xl:text-xl">Produk Terjual</h1>
                         <ul className="text-sm 2xl:text-base space-y-1 w-full border-b-[1px] pb-5 border-slate-700">
-                            {field.items.map((item: any, idx: number) => (
+                            {order.items.map((item: any, idx: number) => (
                                 <li key={idx} className="flex gap-3">
                                     <img
                                         src={item.product.images[0].secureUrl}
@@ -79,11 +79,11 @@ function OrderDetailSection() {
                         </ul>
                         <li className="flex justify-between">
                             <p>Biaya Pengiriman</p>
-                            <p>{formatters.formatRupiah(field.shippingCost)}</p>
+                            <p>{formatters.formatRupiah(order.shippingCost)}</p>
                         </li>
                         <li className="flex justify-between">
                             <p>Total Pembayaran</p>
-                            <p>{formatters.formatRupiah(field.totalPrice)}</p>
+                            <p>{formatters.formatRupiah(order.totalPrice + order.shippingCost)}</p>
                         </li>
                     </div>
                 </div>
@@ -91,27 +91,27 @@ function OrderDetailSection() {
                     <div>
                         <h1 className="text-lg font-semibold 2xl:text-xl">Detail Pembayaran</h1>
                         <p>
-                            Metode Pembayaran : <span className="font-medium">{field.paymentMethod?.split("_").join(" ") || "-"}</span>
+                            Metode Pembayaran :{" "}
+                            <span className="font-medium">{order.paymentMethod?.split("_").join(" ") || "-"}</span>
                         </p>
                         <p>
-                            Provider : <span className="font-medium">{field.paymentProvider || "-"}</span>
+                            Provider : <span className="font-medium">{order.paymentProvider || "-"}</span>
                         </p>
                     </div>
                     <div>
                         <h1 className="text-lg font-semibold 2xl:text-xl">Detail Pengiriman</h1>
                         <p>
-                            Opsi Pengiriman : <span className="font-medium">{field.deliveryOption}</span>
+                            Opsi Pengiriman : <span className="font-medium">{order.deliveryOption}</span>
                         </p>
                         <p>
-                            Alamat Pengiriman :{" "}
-                            <span className="font-medium">{field.deliveryAddress || "-"}</span>
+                            Alamat Pengiriman : <span className="font-medium">{order.deliveryAddress || "-"}</span>
                         </p>
                     </div>
                     <div>
                         <h1 className="text-lg font-semibold 2xl:text-xl">Waktu</h1>
                         <p>
                             Tanggal Siap :{" "}
-                            <span className="font-medium">{formatters.isoDateToStringDateTime(field.readyDate)}</span>
+                            <span className="font-medium">{formatters.isoDateToStringDateTime(order.readyDate)}</span>
                         </p>
                     </div>
                 </div>
@@ -119,7 +119,7 @@ function OrderDetailSection() {
             <div className="flex items-start mt-5 gap-4">
                 <ButtonSmall
                     className="bg-orange-400 hover:bg-orange-500 px-5 py-1 2xl:py-2 font-semibold"
-                    onClick={() => navigate(`/orders/${field.id}/edit`)}
+                    onClick={() => navigate(`/orders/${order.id}/edit`)}
                 >
                     <RiEdit2Fill />
                     Edit
@@ -133,8 +133,8 @@ function OrderDetailSection() {
 
                 <ButtonSmall className="bg-cyan-500 hover:bg-cyan-600 py-1 2xl:py-2 px-4 font-semibold">
                     {/* <PDFDownloadLink
-                            document={<Receipt data={field} />}
-                            fileName={`receipt-order-${field.orderCode}.pdf`}
+                            document={<Receipt data={order} />}
+                            fileName={`receipt-order-${order.orderCode}.pdf`}
                             className="flex items-center justify-center gap-1"
                         > */}
                     <IoReceiptSharp /> Kwitansi
