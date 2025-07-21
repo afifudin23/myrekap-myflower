@@ -19,6 +19,19 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
+export const registerCustomer = async (req: Request, res: Response, next: NextFunction) => {
+    authSchema.registerCustomer.parse(req.body);
+    try {
+        const data = await authService.registerCustomer(req.body);
+        res.status(201).json({
+            message: "User Customer registered successfully",
+            data,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
+
 export const verify = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         res.status(200).json({ message: "Verification successful" });

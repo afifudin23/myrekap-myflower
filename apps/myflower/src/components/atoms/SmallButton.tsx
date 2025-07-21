@@ -1,18 +1,11 @@
-import React from "react";
-
-function SmallButton({
-    className = "py-2 font-semibold rounded-md",
-    onClick,
-    type = "button",
-    children,
-    colors,
-}: {
-    className?: string;
-    onClick?: (e?: React.MouseEvent) => void;
-    type?: "submit" | "reset" | "button";
-    children?: React.ReactNode;
-    colors: { primary: string; hover: string };
-}) {
+// interface SmallButtonProps {
+//     className?: string;
+//     onClick?: (e?: React.MouseEvent) => void;
+//     type?: "submit" | "reset" | "button";
+//     children?: React.ReactNode;
+//     colors: { primary: string; hover: string };
+// }
+function SmallButton({ className = "py-2 font-semibold rounded-md", onClick, type = "button", children, colors }: any) {
     return (
         <button
             type={type}

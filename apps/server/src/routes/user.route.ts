@@ -8,7 +8,7 @@ const userRouter: Router = Router();
 userRouter.get("/admin", [authMiddleware, superadminMiddleware], errorHandler(userController.getAllAdmins));
 userRouter.get("/customer", [authMiddleware, superadminMiddleware], errorHandler(userController.getAllCustomers));
 userRouter.get("/:id", [authMiddleware, superadminMiddleware], errorHandler(userController.getUserById));
-userRouter.post("/customer", errorHandler(userController.createCustomer));
+
 userRouter.post(
     "/admin",
     [authMiddleware, superadminMiddleware, singleSuperadminMiddleware],

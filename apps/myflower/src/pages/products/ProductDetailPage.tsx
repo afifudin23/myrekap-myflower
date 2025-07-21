@@ -1,37 +1,34 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import MainLayout from "@/components/templates/MainLayout";
 import ProductDetailSection from "@/components/organisms/products/ProductDetailSection";
 import ProductReviewSection from "@/components/organisms/products/ProductReviewSection";
 import ReviewForm from "@/components/organisms/products/ReviewForm";
 import BackButton from "@/components/atoms/BackButton";
-interface Product {
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    price: number;
-    stock: number;
-}
+// interface Product {
+//     id: string;
+//     name: string;
+//     description: string;
+//     image: string;
+//     price: number;
+//     stock: number;
+// }
 
 function ProductDetailPage() {
-    const { id } = useParams<{ id: string }>();
-    const [product, setProduct] = useState<Product | null>(null);
+    const product = JSON.parse(localStorage.getItem("productDetail") || "{}");
+    
 
-    useEffect(() => {
-        // Simulasi fetch data
-        const fakeData: Product = {
-            id: "1",
-            name: "Bunga Mawar Merah",
-            description: "Bunga mawar merah segar dan harum untuk berbagai momen spesial.",
-            image: "/assets/images/test.jpg",
-            price: 50000,
-            stock: 10,
-        };
-        setProduct(fakeData);
-    }, [id]);
+    // useEffect(() => {
+    //     // Simulasi fetch data
+    //     const fakeData: any = {
+    //         id: "1",
+    //         name: "Bunga Mawar Merah",
+    //         description: "Bunga mawar merah segar dan harum untuk berbagai momen spesial.",
+    //         image: "/assets/images/test.jpg",
+    //         price: 50000,
+    //         stock: 10,
+    //     };
+    //     setProduct(fakeData);
+    // }, [id]);
 
-    if (!product) return <p>Loading...</p>;
 
     return (
         <MainLayout>

@@ -100,7 +100,12 @@ const formatters = {
             deliveryAddress: data.deliveryAddress || "",
             readyDate: new Date(data.readyDate),
             paymentMethod: this.formatCapital(data.paymentMethod),
-            paymentProof: data.paymentProof === null ? [] : data.paymentProof,
+            paymentProof:
+                data.paymentProof === null
+                    ? []
+                    : Array.isArray(data.paymentProof)
+                    ? data.paymentProof
+                    : [data.paymentProof],
         };
     },
 

@@ -57,15 +57,14 @@ export const create = z
         paymentMethod: z
             .string()
             .nonempty("Wajib pilih metode pembayaran")
-            .refine((val) => ["Cash", "Transfer"].includes(val), {
+            .refine((val) => ["Cash", "Bank Transfer"].includes(val), {
                 message: "Metode pembayaran tidak valid",
             })
-            .transform((value) => (value === "Transfer" ? "Bank Transfer" : value))
             .transform((value) => formatters.parseCapital(value)),
         paymentProof: z.array(z.instanceof(File)),
     })
     .superRefine((data, ctx) => {
-        if (data.paymentMethod === "Transfer" && !data.paymentProof) {
+        if (data.paymentMethod === "Bank Transfer" && !data.paymentProof) {
             ctx.addIssue({
                 path: ["paymentProof"],
                 code: z.ZodIssueCode.custom,
@@ -137,15 +136,15 @@ export const update = z
         paymentMethod: z
             .string()
             .nonempty("Wajib pilih metode pembayaran")
-            .refine((val) => ["Cash", "Transfer"].includes(val), {
+            .refine((val) => ["Cash", "Bank Transfer"].includes(val), {
                 message: "Metode pembayaran tidak valid",
             })
-            .transform((value) => (value === "Transfer" ? "Bank Transfer" : value))
             .transform((value) => formatters.parseCapital(value)),
         paymentProof: z.array(z.instanceof(File)),
+        publicIdsToDelete: z.array(z.string()).nullish(),
     })
     .superRefine((data, ctx) => {
-        if (data.paymentMethod === "Transfer" && !data.paymentProof) {
+        if (data.paymentMethod === "Bank Transfer" && !data.paymentProof) {
             ctx.addIssue({
                 path: ["paymentProof"],
                 code: z.ZodIssueCode.custom,

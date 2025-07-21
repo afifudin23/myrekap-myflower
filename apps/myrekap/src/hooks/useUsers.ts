@@ -10,6 +10,7 @@ function useUsers(role: "admin" | "customer") {
         const getAllUsers = async () => {
             try {
                 const response = await axiosInstance.get(`/users/${role}`);
+                console.log(response.data.data);
                 setUsers(response.data.data);
             } catch (error: any) {
                 setUsers(error.response.data);

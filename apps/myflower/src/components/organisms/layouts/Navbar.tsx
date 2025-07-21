@@ -12,7 +12,7 @@ const Navbar = memo(function () {
     const handleOrderClick = (e?: React.MouseEvent) => {
         e?.stopPropagation();
         navigate("/orders");
-    }
+    };
     const handleProfileClick = () => {
         navigate("/profile");
     };
@@ -31,14 +31,24 @@ const Navbar = memo(function () {
             </div>
 
             <div onClick={handleProfileClick} className="flex gap-3 items-center cursor-pointer">
-                <SmallButton type="button" colors={COLORS} className="text-lg rounded-lg py-1" onClick={handleOrderClick}>
+                <SmallButton
+                    type="button"
+                    colors={COLORS}
+                    className="text-lg rounded-lg py-1"
+                    onClick={handleOrderClick}
+                >
                     Pesanan
                 </SmallButton>
-                <SmallButton type="button" colors={COLORS} className="py-2 text-lg rounded-lg relative" onClick={handleCartClick}>
+                <SmallButton
+                    type="button"
+                    colors={COLORS}
+                    className="py-2 text-lg rounded-lg relative"
+                    onClick={handleCartClick}
+                >
                     <PiShoppingCartSimpleBold />
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center font-nunito font-bold rounded-full">
-                        9
-                    </span>
+                    {/* <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center font-nunito font-bold rounded-full">
+                        {cartItems.length}
+                    </span> */}
                 </SmallButton>
                 <div className="flex flex-col items-center">
                     <div className="text-lg font-nunito leading-none">zhanka</div>

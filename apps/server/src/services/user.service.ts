@@ -68,44 +68,6 @@ export const createAdmin = async (requestBody: any) => {
     return data;
 };
 
-export const createCustomer = async (requestBody: any) => {
-    const { fullName, username, email, phoneNumber, password, confPassword, role = "CUSTOMER" } = requestBody;
-
-    if (password !== confPassword) {
-        throw new BadRequestException("Password confirmation does not match", ErrorCode.PASSWORD_MISMATCH);
-    }
-    // check if the username or email is already taken
-    const existingUser = await prisma.user.findFirst({
-        where: { OR: [{ username }, { email }] },
-        select: { id: true },
-    });
-    if (existingUser) {
-        throw new BadRequestException("The username or email is already taken", ErrorCode.USER_ALREADY_EXISTS);
-    }
-    const users = await findAllAdmins();
-
-    // check if the first user is a superadmin
-    if (users.length === 0) {
-        if (role !== "SUPERADMIN") {
-            throw new BadRequestException("First user must be a superadmin", ErrorCode.FIRST_USER_MUST_BE_SUPERADMIN);
-        }
-    }
-
-    const hashPin = await argon2.hash(password);
-    const user = await prisma.user.create({
-        data: {
-            fullName,
-            username,
-            email,
-            phoneNumber,
-            password: hashPin,
-            role,
-        },
-    });
-    const { password: _remove, ...data } = user;
-    return data;
-};
-
 export const update = async (id: string, requestBody: any) => {
     const { username, email, password, confPassword } = requestBody;
 

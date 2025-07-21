@@ -98,7 +98,10 @@ export const update = z
             .nullish(),
         items: z
             .string()
-            .transform((val) => (Array.isArray(JSON.parse(val)) ? JSON.parse(val) : [JSON.parse(val)]))
+            .transform((val) => {
+                const parsed = JSON.parse(val);
+                return Array.isArray(parsed) ? parsed : [parsed];
+            })
             .pipe(z.array(itemSchema))
             .nullish(),
         deliveryOption: z.preprocess(
@@ -135,6 +138,14 @@ export const update = z
                     required_error: "Payment method is required",
                 })
             )
+            .nullish(),
+        publicIdsToDelete: z
+            .string()
+            .transform((val) => {
+                const parsed = JSON.parse(val);
+                return Array.isArray(parsed) ? parsed : [parsed];
+            })
+            .pipe(z.array(z.string()))
             .nullish(),
     })
     .superRefine((data, ctx) => {

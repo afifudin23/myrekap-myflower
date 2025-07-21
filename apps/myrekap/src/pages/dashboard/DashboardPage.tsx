@@ -9,6 +9,7 @@ import { OrderList } from "@/components/organisms/orders";
 function DashboardPage() {
     const [monthYear, setMonthYear] = useState<Date>(new Date());
     const { orders } = useOrders(monthYear);
+    console.log(orders)
 
     // Get 6 Orders, Refac Next Project
     const ordersSix = orders.slice(0, 6);

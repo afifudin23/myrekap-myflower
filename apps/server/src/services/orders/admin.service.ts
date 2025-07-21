@@ -9,7 +9,7 @@ export const getAllOrders = async (requestQuery: any) => {
     const { month, year, from_date, to_date, customer_category, payment_method, payment_status, order_status } =
         requestQuery;
     let orderDateFilter: { gte: Date | undefined; lte: Date | undefined };
-    let orderDateOrderBy: "asc" | "desc" = "asc";
+    let orderDateOrderBy: "asc" | "desc" = "desc";
     if (month && year) {
         const startDate = new Date(year, month - 1, 1, 0, 0, 0); // 1st day, 00:00:00
         const lastDay = new Date(year, month, 0).getDate(); // e.g. 28/30/31
@@ -90,6 +90,7 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
                 source: "MYREKAP",
                 userId,
                 totalPrice,
+                ...(["CASH", "BANK_TRANSFER"].includes(body.paymentMethod) && { paymentStatus: "PAID" }),
                 ...(body.deliveryOption === "DELIVERY" && { shippingCost }),
                 items: { create: orderItems },
             },
@@ -123,95 +124,105 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
 };
 
 export const update = async (id: string, body: any, file: Express.Multer.File) => {
-    // body.items.map((item: any) => {
-    //     console.log(item);
-    // });
-    // console.log({ id, body, file });
-    // return;
     // Check if order exists
     const existingOrder = await prisma.order.findUnique({ where: { id }, include: { items: true } });
     if (!existingOrder) throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
 
     // Check if orderItem wants to be updated
-    const incomingItems = body.items;
-    if (incomingItems) {
-        const products = await prisma.product.findMany();
+    try {
+        const incomingItems = body.items;
+        if (incomingItems) {
+            const products = await prisma.product.findMany();
 
-        const existingItemIds = existingOrder.items.map((item) => item.id);
-        const incomingItemIds: string[] = [];
+            const existingItemIds = existingOrder.items.map((item) => item.id);
+            const incomingItemIds: string[] = [];
 
-        // UPDATE OR CREATE
-        for (const item of incomingItems) {
-            const product = products.find((p) => p.id === item.productId);
-            if (!product) {
-                throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
+            // UPDATE OR CREATE
+            for (const item of incomingItems) {
+                const product = products.find((p) => p.id === item.productId);
+                if (!product) {
+                    throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
+                }
+
+                const baseData = {
+                    quantity: item.quantity,
+                    message: item.message,
+                    unitPrice: product.price,
+                    totalPrice: product.price * item.quantity,
+                    productId: item.productId,
+                    orderId: id,
+                };
+
+                // UPDATE EXISTING ITEM
+                if (item.id) {
+                    await prisma.orderItem.update({
+                        where: { id: item.id },
+                        data: baseData,
+                    });
+                    incomingItemIds.push(item.id);
+                } else {
+                    // CREATE NEW ITEM
+                    const created = await prisma.orderItem.create({ data: baseData });
+                    incomingItemIds.push(created.id);
+                }
             }
 
-            const baseData = {
-                quantity: item.quantity,
-                message: item.message,
-                unitPrice: product.price,
-                totalPrice: product.price * item.quantity,
-                productId: item.productId,
-                orderId: id,
-            };
-
-            // UPDATE EXISTING ITEM
-            if (item.id) {
-                await prisma.orderItem.update({
-                    where: { id: item.id },
-                    data: baseData,
+            // DELETE ORDER ITEM
+            const itemsToDelete = existingItemIds.filter((id) => !incomingItemIds.includes(id));
+            if (itemsToDelete.length > 0) {
+                await prisma.orderItem.deleteMany({
+                    where: { id: { in: itemsToDelete } },
                 });
-                incomingItemIds.push(item.id);
-            } else {
-                // CREATE NEW ITEM
-                const created = await prisma.orderItem.create({ data: baseData });
-                incomingItemIds.push(created.id);
             }
         }
+        if (body.publicIdsToDelete) {
+            await Promise.all(
+                body.publicIdsToDelete.map(async (publicId: string) => {
+                    await cloudinary.uploader.destroy(publicId).catch((error) => {
+                        console.error("❌ Failed to delete image:", publicId, error);
+                    });
+                })
+            );
+            await prisma.paymentProof.deleteMany({ where: { publicId: { in: body.publicIdsToDelete } } });
+        }
 
-        // DELETE ORDER ITEM
-        const itemsToDelete = existingItemIds.filter((id) => !incomingItemIds.includes(id));
-        if (itemsToDelete.length > 0) {
-            await prisma.orderItem.deleteMany({
-                where: { id: { in: itemsToDelete } },
+        // UPLOAD FILE IF EXISTS
+        if (file?.buffer) {
+            const existingProof = await prisma.paymentProof.findUnique({
+                where: { orderId: id },
+            });
+
+            if (existingProof) {
+                await cloudinary.uploader.destroy(existingProof.publicId);
+                await prisma.paymentProof.delete({ where: { id: existingProof.id } });
+            }
+
+            const result = await uploadFile(file, "myrekap-app/bukti-transfer");
+
+            await prisma.paymentProof.create({
+                data: {
+                    fileName: file.originalname,
+                    size: file.size,
+                    orderId: id,
+                    secureUrl: result.secure_url,
+                    publicId: result.public_id,
+                },
             });
         }
-    }
 
-    // UPLOAD FILE IF EXISTS
-    if (file?.buffer) {
-        const existingProof = await prisma.paymentProof.findUnique({
-            where: { orderId: id },
+        // UPDATE ORDER (EXCLUDE ORDER ITEM)
+        const { items, publicIdsToDelete, ...data } = body;
+        const updatedOrder = await prisma.order.update({
+            where: { id },
+            data,
+            include: { items: { include: { product: true } } },
         });
 
-        if (existingProof) {
-            await cloudinary.uploader.destroy(existingProof.publicId);
-            await prisma.paymentProof.delete({ where: { id: existingProof.id } });
-        }
-
-        const result = await uploadFile(file, "myrekap-app/bukti-transfer");
-
-        await prisma.paymentProof.create({
-            data: {
-                fileName: file.originalname,
-                size: file.size,
-                orderId: id,
-                secureUrl: result.secure_url,
-                publicId: result.public_id,
-            },
-        });
+        return updatedOrder;
+    } catch (error) {
+        console.log(error);
+        throw new InternalException("Something went wrong", ErrorCode.INTERNAL_EXCEPTION, error);
     }
-
-    // UPDATE ORDER (EXCLUDE ORDER ITEM)
-    const { items, ...data } = body;
-    const updatedOrder = await prisma.order.update({
-        where: { id },
-        data,
-        include: { items: { include: { product: true } } },
-    });
-
-    return updatedOrder;
 };
 
 export const printOrder = async (html: string) => {

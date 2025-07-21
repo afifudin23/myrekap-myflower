@@ -2,15 +2,17 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AxiosError } from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { registerFormSchema, type RegisterFormType } from "@/schemas/authSchema";
 import AuthTemplate from "@/components/templates/AuthTemplate";
-import { REGISTER_FIELDS } from "@/constants/authConstant";
 import { COLORS } from "@/constants/colorConstant";
 import AuthForm from "@/components/organisms/auth/AuthForm";
+import { REGISTER_FIELDS } from "@/components/organisms/auth/auth.constants";
+import { axiosInstance } from "@/utils";
 
 function Register() {
     const [errorMessage, setErrorMessage] = useState<string>("");
+    const navigate = useNavigate();
 
     const {
         register,
@@ -21,25 +23,22 @@ function Register() {
     });
     const onSubmit = async (data: RegisterFormType) => {
         try {
-            console.log(data);
-            // const response = await axiosInstance.post("auth/login", {
-            //     username: data.username,
-            //     pin: data.pin,
-            // });
-            // setUserCookies({ username: response.data.username, role: response.data.role });
-            // navigate("/beranda");
+            await axiosInstance.post("auth/register", data);
+            alert("Akun berhasil didaftarkan.");
+            navigate("/auth/login");
         } catch (error) {
             const axiosError = error as AxiosError;
             if (axiosError.code === "ERR_NETWORK") {
                 setErrorMessage("Tidak Dapat Terhubung Ke Server. Periksa Koneksi Internet Anda");
             }
             if (axiosError.response) {
-                setErrorMessage("Username atau PIN Yang Anda Masukan Salah");
+                setErrorMessage("Gagal Daftar Akun. Silahkan Periksa Kembali");
             }
         }
     };
     return (
         <AuthTemplate description="Daftar Akun, untuk memulai berbelanja di MyFlower">
+            <p className="text-red-500 ml-4 mb-5 text-center text-sm 2xl:text-lg">{errorMessage}</p>
             <AuthForm
                 fields={REGISTER_FIELDS}
                 errorMessage={errorMessage}

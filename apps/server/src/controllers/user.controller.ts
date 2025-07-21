@@ -43,19 +43,6 @@ export const createAdmin = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-export const createCustomer = async (req: Request, res: Response, next: NextFunction) => {
-    userSchema.createCustomer.parse(req.body);
-    try {
-        const data = await userService.createCustomer(req.body);
-        res.status(201).json({
-            message: "User created successfully",
-            data,
-        });
-    } catch (error) {
-        return next(error);
-    }
-};
-
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     userSchema.update.parse(req.body);
     try {

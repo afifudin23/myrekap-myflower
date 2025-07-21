@@ -27,9 +27,7 @@ function useOrders(now = new Date()) {
         const params = {
             month: searchParams.get("month"),
             year: searchParams.get("year"),
-            flower_category: searchParams.get("flower_category"),
             customer_category: searchParams.get("customer_category"),
-            payment_method: searchParams.get("payment_method"),
             payment_status: searchParams.get("payment_status"),
             order_status: searchParams.get("order_status"),
         };

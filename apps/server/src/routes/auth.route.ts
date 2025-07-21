@@ -6,6 +6,7 @@ import { errorHandler } from "@/utils";
 const authRouter: Router = Router();
 
 authRouter.post("/login", errorHandler(authController.loginUser));
+authRouter.post("/register", errorHandler(authController.registerCustomer));
 authRouter.get("/verify", authMiddleware, errorHandler(authController.verify));
 authRouter.post("/logout", authMiddleware, errorHandler(authController.logoutUser));
 

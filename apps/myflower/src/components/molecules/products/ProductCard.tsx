@@ -3,21 +3,16 @@ import Image from "@/components/atoms/Image";
 import SmallButton from "@/components/atoms/SmallButton";
 import { COLORS } from "@/constants/colorConstant";
 import { PiShoppingCartSimpleBold } from "react-icons/pi";
-import { useNavigate } from "react-router-dom";
 
-function ProductCard({ product }: any) {
-    const navigate = useNavigate();
-    const handleCardClick = () => {
-        navigate(`/products/${product.id}`);
-    };
-    const handleAddToCart = (e?: React.MouseEvent) => {
-        e?.stopPropagation();
-        console.log(123);
-    };
+function ProductCard({ product, handleAddToCart }: any) {
     return (
-        <Card className="group flex flex-col gap-3 cursor-default" onClick={handleCardClick}>
+        <Card className="group flex flex-col gap-3 cursor-default">
             <div className="overflow-hidden rounded-xl group">
-                <Image src={product.image} alt={product.name} className="w-full transition-all duration-300 ease-in-out group-hover:scale-110" />
+                <Image
+                    src={product.images[0].secureUrl}
+                    alt={product.name}
+                    className="w-full transition-all duration-300 ease-in-out group-hover:scale-110"
+                />
             </div>
             <div className="flex justify-between items-end gap-2">
                 <div className="font-semibold">

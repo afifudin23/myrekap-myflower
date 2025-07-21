@@ -3,12 +3,14 @@ import Button from "@/components/atoms/Button";
 import ProfileField from "@/components/atoms/ProfileField";
 import SectionTitle from "@/components/atoms/SectionTitle";
 import MainLayout from "@/components/templates/MainLayout";
+import { axiosInstance } from "@/utils";
 import { useNavigate } from "react-router-dom";
 
 function ProfilePage() {
     const navigate = useNavigate();
 
     const handleLogout= () => {
+        axiosInstance.post("auth/logout");
         navigate("/auth/login");
     }
     return (

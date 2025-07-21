@@ -14,7 +14,6 @@ function OrderEditPage() {
     const { id } = useParams();
     const data = JSON.parse(localStorage.getItem("orderDetail") || "{}");
     const order = formatters.parseInputOrder(data);
-    console.log(order)
     const navigate = useNavigate();
     const fieldRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,8 +29,9 @@ function OrderEditPage() {
         resolver: zodResolver(orderSchema.update),
         defaultValues: order,
     });
-
+    console.log(errors)
     const onSubmit = async (data: any) => {
+        console.log(data)
         setIsLoading(true);
         try {
             const formData = new FormData();

@@ -10,16 +10,6 @@ export const createAdmin = object({
     role: z.enum(["ADMIN", "SUPERADMIN"]).default("ADMIN"),
 });
 
-export const createCustomer = object({
-    fullName: string(),
-    username: string(),
-    email: string().email(),
-    phoneNumber: string(),
-    password: string().min(5),
-    confPassword: string().min(5),
-    role: z.enum(["CUSTOMER"]).default("CUSTOMER"),
-});
-
 export const update = object({
     username: string().optional(),
     email: string().email().optional(),

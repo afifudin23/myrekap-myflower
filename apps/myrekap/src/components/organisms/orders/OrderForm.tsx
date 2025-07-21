@@ -107,7 +107,7 @@ function OrderForm({ onSubmit, fieldRefs, control, watch, errors, getValues, set
                                 name={item.name}
                                 control={control}
                                 ref={(el) => (fieldRefs.current[item.name] = el)}
-                                disabled={paymentMethod !== "Transfer"}
+                                disabled={paymentMethod !== "Bank Transfer"}
                                 error={getErrorMessage(item.name, errors)}
                                 getValues={getValues}
                                 setValue={setValue}
