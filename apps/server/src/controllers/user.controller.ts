@@ -31,9 +31,9 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const createAdmin = async (req: Request, res: Response, next: NextFunction) => {
-    userSchema.createAdmin.parse(req.body);
+    const body = userSchema.create.parse(req.body);
     try {
-        const data = await userService.createAdmin(req.body);
+        const data = await userService.create(body);
         res.status(201).json({
             message: "User created successfully",
             data,
@@ -43,10 +43,24 @@ export const createAdmin = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
-    userSchema.update.parse(req.body);
+export const updateUserProfile = async (req: Request, res: Response, next: NextFunction) => {
+    const body = userSchema.updateProfile.parse(req.body);
     try {
-        const data = await userService.update(req.params.id, req.body);
+        const userId = (req as any).user.id;
+        const data = await userService.updateProfile(userId, body);
+        res.status(200).json({
+            message: "User updated successfully",
+            data,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const updateAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    const body = userSchema.update.parse(req.body);
+    try {
+        const data = await userService.update(req.params.id, body);
         res.status(200).json({
             message: "User updated successfully",
             data,

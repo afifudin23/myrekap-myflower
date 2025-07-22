@@ -26,7 +26,8 @@ function Register() {
             await axiosInstance.post("auth/register", data);
             alert("Akun berhasil didaftarkan.");
             navigate("/auth/login");
-        } catch (error) {
+        } catch (error: any) {
+            console.log(error.response.data)
             const axiosError = error as AxiosError;
             if (axiosError.code === "ERR_NETWORK") {
                 setErrorMessage("Tidak Dapat Terhubung Ke Server. Periksa Koneksi Internet Anda");

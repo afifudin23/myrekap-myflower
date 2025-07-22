@@ -1,5 +1,10 @@
 export const USER_FORM_ITEMS = [
     {
+        label: "Nama Lengkap",
+        name: "fullName",
+        type: "text",
+    },
+    {
         label: "Username",
         name: "username",
         type: "text",
@@ -26,6 +31,7 @@ export const USER_FORM_ITEMS = [
     },
 ];
 export const defaultValueInputUser = {
+    fullName: "",
     username: "",
     phoneNumber: "",
     email: "",

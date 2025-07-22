@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from "express";
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     const body = ordersCustomerSchema.create.parse(req.body);
+    console.log(body)
     try {
         const user = (req as any).user;
         const data = await ordersCustomerService.create(user, body);

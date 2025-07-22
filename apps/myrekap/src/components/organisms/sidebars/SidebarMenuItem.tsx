@@ -3,10 +3,9 @@ import { NavLink } from "react-router-dom";
 
 export function SidebarMenuItem({ name, path, icons }: any) {
     const user = getUserCookies();
-
     return (
         <>
-            {path === "administrator" && user.role === "ADMIN" ? (
+            {path === "users/admin" && user.role === "ADMIN" ? (
                 <p className="flex gap-3 w-fit items-center text-gray-400">
                     {icons.inactive}
                     <button className={`cursor-not-allowed`}>{name}</button>

@@ -1,12 +1,12 @@
-type ButtonProps = {
-    type: "submit" | "reset" | "button";
-    className?: string;
-    children: React.ReactNode;
-    onClick?: (e?: React.MouseEvent) => void;
-    colors: { primary: string; hover: string };
-};
+// type ButtonProps = {
+//     type: "submit" | "reset" | "button";
+//     className?: string;
+//     children: React.ReactNode;
+//     onClick?: (e?: React.MouseEvent) => void;
+//     colors: { primary: string; hover: string };
+// };
 
-export default function Button({ type, className, children, onClick, colors }: ButtonProps) {
+export default function Button({ type, className, children, onClick, colors }: any) {
     return (
         <button
             type={type}

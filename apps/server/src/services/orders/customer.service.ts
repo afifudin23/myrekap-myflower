@@ -10,22 +10,22 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
         throw new BadRequestException("Cart must contain at least one item", ErrorCode.ORDER_MUST_CONTAIN_ITEMS);
     }
 
-    const orderItems = cartItems.map((item) => {
-        const message = data.messages.find((m) => m.productId === item.productId);
-        if (!message) throw new NotFoundException(`Product not found `, ErrorCode.PRODUCT_NOT_FOUND);
+    const orderItems = cartItems.map((cartItem) => {
+        const item = data.items.find((m) => m.productId === cartItem.productId);
+        if (!item) throw new NotFoundException(`Product not found `, ErrorCode.PRODUCT_NOT_FOUND);
 
         return {
-            product: { connect: { id: item.productId } },
-            quantity: item.quantity,
-            message: message?.message,
-            unitPrice: item.product.price,
-            totalPrice: item.product.price * item.quantity,
+            product: { connect: { id: cartItem.productId } },
+            quantity: cartItem.quantity,
+            message: item?.message,
+            unitPrice: cartItem.product.price,
+            totalPrice: cartItem.product.price * cartItem.quantity,
         };
     });
     try {
         const totalPrice = orderItems.reduce((total, item) => total + item.totalPrice, 0);
         const shippingCost = totalPrice * 0.1;
-        const { messages, ...orderData } = data;
+        const { items, ...orderData } = data;
 
         const order = await prisma.order.create({
             data: {

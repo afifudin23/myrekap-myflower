@@ -3,9 +3,9 @@ import { authService } from "@/services";
 import { authSchema } from "@/schemas";
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
-    const { username, password } = authSchema.loginUserSchema.parse(req.body);
+    const body = authSchema.loginUserSchema.parse(req.body);
     try {
-        const { data, token } = await authService.loginUser(username, password);
+        const { data, token } = await authService.loginUser(body);
         res.cookie("token", token, {
             httpOnly: true, // Tidak dapat diakses oleh JavaScript
             secure: true, // Hanya dikirim melalui HTTPS (penting untuk production)
@@ -20,9 +20,9 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 };
 
 export const registerCustomer = async (req: Request, res: Response, next: NextFunction) => {
-    authSchema.registerCustomer.parse(req.body);
+    const body = authSchema.registerCustomer.parse(req.body);
     try {
-        const data = await authService.registerCustomer(req.body);
+        const data = await authService.registerCustomer(body);
         res.status(201).json({
             message: "User Customer registered successfully",
             data,

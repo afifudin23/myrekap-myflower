@@ -48,6 +48,7 @@ function AdminCreatePage() {
                 },
             });
         } catch (error: any) {
+            console.log(error.response.data);
             if (error.response.status === 500) {
                 navigate("/users/admin", {
                     state: {

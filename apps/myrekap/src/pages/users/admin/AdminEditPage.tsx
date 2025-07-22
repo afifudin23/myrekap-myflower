@@ -18,7 +18,14 @@ function AdminEditPage() {
         handleSubmit,
         formState: { errors },
     } = useForm<any>({
-        defaultValues: userCookies,
+        defaultValues: {
+            fullName: userCookies.fullName,
+            username: userCookies.username,
+            phoneNumber: userCookies.phoneNumber,
+            email: userCookies.email,
+            password: "",
+            confPassword: "",
+        },
     });
 
     useEffect(() => {
@@ -44,6 +51,7 @@ function AdminEditPage() {
             });
             removeUserDetailCookies();
         } catch (error: any) {
+            console.log(error.response.data);
             if (error.response.status === 500) {
                 navigate("/users/admin", {
                     state: {

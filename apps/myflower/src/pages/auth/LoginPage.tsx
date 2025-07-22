@@ -27,8 +27,7 @@ function Login() {
                 username: data.username,
                 password: data.password,
             });
-            const user = { username: response.data.username, role: response.data.role };
-            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("user", JSON.stringify(response.data));
             // setUserCookies({ username: response.data.username, role: response.data.role });
             navigate("/products");
         } catch (error) {

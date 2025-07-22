@@ -10,7 +10,8 @@ const CartPage = () => {
     const { cartItems, setCartItems } = useCartItems();
     const totalPrice = cartItems.reduce((total, item: any) => total + item.product.price * item.quantity, 0);
     const handleCheckout = () => {
-        navigate("/checkout");
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+        navigate("/orders/checkout");
     };
     return (
         <MainLayout className="space-y-10 w-7/12">

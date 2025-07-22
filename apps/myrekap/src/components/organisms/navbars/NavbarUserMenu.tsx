@@ -1,16 +1,18 @@
-interface NavbarUserMenuProps {
-    username: string;
-    role: string;
-}
+import { badgeColorUser } from "@/utils";
 
-function NavbarUserMenu({ username, role }: NavbarUserMenuProps) {
+// interface NavbarUserMenuProps {
+//     username: string;
+//     role: string;
+// }
+
+function NavbarUserMenu({ username, role }: any) {
     return (
         <div className=" flex gap-1 items-center cursor-default">
             <div className="flex flex-col items-center">
                 <div className="text-lg font-nunito leading-none">{username}</div>
                 <div
                     className={`text-sm relative font-semibold capitalize tracking-wide px-3 rounded-lg bg-opacity-40 ${
-                        role === "ADMIN" ? "text-blue-600 bg-blue-300" : "text-yellow-700 bg-yellow-400"
+                        badgeColorUser(role)
                     }`}
                 >
                     {role}

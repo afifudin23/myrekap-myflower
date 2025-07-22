@@ -1,5 +1,6 @@
 import SmallButton from "@/components/atoms/SmallButton";
 import { COLORS } from "@/constants/colorConstant";
+import { badgeColorUser } from "@/utils/colors";
 import { memo } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { PiShoppingCartSimpleBold } from "react-icons/pi";
@@ -8,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar = memo(function () {
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
 
     const handleOrderClick = (e?: React.MouseEvent) => {
         e?.stopPropagation();
@@ -51,11 +53,11 @@ const Navbar = memo(function () {
                     </span> */}
                 </SmallButton>
                 <div className="flex flex-col items-center">
-                    <div className="text-lg font-nunito leading-none">zhanka</div>
+                    <div className="text-lg font-nunito leading-none">{user.username}</div>
                     <div
-                        className={`text-sm relative font-semibold capitalize tracking-wide px-3 rounded-lg bg-opacity-30 text-[#8a50db] bg-[#aa71ef] `}
+                        className={`text-sm relative font-semibold capitalize tracking-wide px-3 rounded-lg bg-opacity-30 ${badgeColorUser(user.role)} `}
                     >
-                        CUSTOMER
+                        {user.role}
                     </div>
                 </div>
                 <FaRegUserCircle size={35} />

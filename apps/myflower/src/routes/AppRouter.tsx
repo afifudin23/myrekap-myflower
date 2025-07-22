@@ -2,11 +2,13 @@ import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
 import Login from "@/pages/auth/LoginPage";
 import Register from "@/pages/auth/RegisterPage";
 import CartPage from "@/pages/carts/CartPage";
-import CheckoutPage from "@/pages/orders/CheckoutPage";
+import OrderCheckoutPage from "@/pages/orders/OrderCheckoutPage";
 import OrderDetailPage from "@/pages/orders/OrderDetailPage";
-import OrdersPage from "@/pages/orders/OrdersPage";
+import OrdersPage from "@/pages/orders/OrderPage";
+import PaymentFailedPage from "@/pages/orders/PaymentFailedPage";
+import PaymentSuccessPage from "@/pages/orders/PaymentSuccessPage";
 import ProductDetailPage from "@/pages/products/ProductDetailPage";
-import ProductsPage from "@/pages/products/ProductsPage";
+import ProductsPage from "@/pages/products/ProductPage";
 import ProfilePage from "@/pages/profiles/ProfilePage";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
@@ -29,11 +31,13 @@ function AppRouter() {
 
                 <Route path="/carts" element={<CartPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/checkout" element={<CheckoutPage />} />
 
                 <Route path="/orders">
                     <Route index element={<OrdersPage />} />
                     <Route path=":id" element={<OrderDetailPage />} />
+                    <Route path="checkout" element={<OrderCheckoutPage />} />
+                    <Route path="payment-success" element={<PaymentSuccessPage />} />
+                    <Route path="payment-failed" element={<PaymentFailedPage />} />
                 </Route>
 
                 <Route path="*" element={<h1>Not Found</h1>} />

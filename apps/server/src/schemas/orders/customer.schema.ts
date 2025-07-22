@@ -16,14 +16,14 @@ export const create = z
                 return delivery >= today;
             },
             {
-                message: "Delivery date minimum is today",
+                message: "Ready date minimum is tomorrow",
             }
         ),
         paymentMethod: z
             .preprocess((val) => (typeof val === "string" ? val.toUpperCase() : val), z.enum(["COD", "OTHERS"]))
-            .nullable()
-            .transform((val) => (val === "OTHERS" ? null : val)),
-        messages: z.array(
+            .transform((val) => (val === "OTHERS" ? null : val))
+            .nullable(),
+        items: z.array(
             z.object({
                 productId: z.string(),
                 message: z.string().nullish(),

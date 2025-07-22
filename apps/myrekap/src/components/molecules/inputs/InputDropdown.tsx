@@ -51,7 +51,7 @@ const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
                         return (
                             <div className="relative inline-block w-full" ref={dropdownRef}>
                                 <div
-                                    className={`bg-gray-700 mb-1 ${className}  flex items-center justify-between text-white rounded-lg ${
+                                    className={`bg-gray-700 mb-1 ${className} flex items-center justify-between text-white rounded-lg ${
                                         disabled ? "cursor-not-allowed opacity-80" : "cursor-pointer"
                                     }`}
                                     onClick={() => {
