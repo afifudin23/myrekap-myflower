@@ -4,15 +4,14 @@ import path from "path";
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd());
-    console.log(env.VITE_ALLOWED_HOST);
-    
+
     return {
         plugins: [react()],
-            resolve: {
-                alias: {
-                    "@": path.resolve(__dirname, "./src"),
-                },
+        resolve: {
+            alias: {
+                "@": path.resolve(__dirname, "./src"),
             },
+        },
         server: {
             allowedHosts: [env.VITE_ALLOWED_HOST],
         },

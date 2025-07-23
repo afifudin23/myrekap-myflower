@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
+    "@react-pdf/renderer": "^4.3.0",
     "axios": "^1.10.0",
+    "buffer": "^6.0.3",
     "date-fns": "^4.1.0",
     "install": "^0.13.0",
     "npm": "^11.4.2",
