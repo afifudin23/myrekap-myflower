@@ -7,15 +7,16 @@ function useCartItems() {
     useEffect(() => {
         if (hasFetched.current) return;
         hasFetched.current = true;
-        const getAllCartItems = async () => {
+        const getAllData = async () => {
             try {
                 const response = await axiosInstance.get(`/carts`);
                 setCartItems(response.data.data);
+                localStorage.setItem("cartItems", JSON.stringify(response.data.data));
             } catch (error: any) {
                 setCartItems(error.response.data);
             }
         };
-        getAllCartItems();
+        getAllData();
     }, []);
 
     return { cartItems, setCartItems };

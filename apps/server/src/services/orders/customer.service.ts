@@ -45,8 +45,7 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
         });
 
         // Off during testing
-        // await prisma.cartItem.deleteMany({ where: { userId: user.id } });
-
+        await prisma.cartItem.deleteMany({ where: { userId: user.id } });
         return order;
     } catch (error: any) {
         console.log(error.message);

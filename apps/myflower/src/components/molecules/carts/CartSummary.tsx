@@ -16,7 +16,7 @@ function CartSummary({ totalPrice, onClick }: CartSummaryProps) {
                     <p>Total Harga:</p>
                     <p>Rp {totalPrice.toLocaleString()}</p>
                 </div>
-                <Button type="button" colors={COLORS} onClick={onClick} className="px-10 py-2 w-full">
+                <Button type="button" colors={COLORS} onClick={onClick} className="px-10 py-2 w-full" disabled={totalPrice === 0}>
                     Checkout
                 </Button>
             </div>

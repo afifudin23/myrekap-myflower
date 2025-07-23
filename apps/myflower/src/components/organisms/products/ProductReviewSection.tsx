@@ -3,19 +3,19 @@ import SectionTitle from "@/components/atoms/SectionTitle";
 import ReviewItem from "@/components/molecules/ReviewItem";
 import StarRating from "@/components/molecules/StarRating";
 
-interface Review {
-    id: string;
-    user: string;
-    rating: number;
-    comment: string;
-}
+// interface Review {
+//     id: string;
+//     user: string;
+//     rating: number;
+//     comment: string;
+// }
 
-interface ProductReviewSectionProps {
-    reviews: Review[];
-}
+// interface ProductReviewSectionProps {
+//     reviews: Review[];
+// }
 
-const ProductReviewSection = ({ reviews }: ProductReviewSectionProps) => {
-    const averageRating = reviews.length > 0 ? reviews.reduce((total, review) => total + review.rating, 0) / reviews.length : 0;
+const ProductReviewSection = ({ reviews }: any) => {
+    const averageRating = reviews.length > 0 ? reviews.reduce((total: number, review: any) => total + review.rating, 0) / reviews.length : 0;
     return (
         <section className="space-y-6">
             <div>
@@ -33,7 +33,7 @@ const ProductReviewSection = ({ reviews }: ProductReviewSectionProps) => {
                 {reviews.length === 0 ? (
                     <p className="text-base text-gray-700">Belum ada ulasan.</p>
                 ) : (
-                    reviews.map((review) => (
+                    reviews.map((review: any) => (
                         <ReviewItem
                             key={review.id}
                             id={review.id}

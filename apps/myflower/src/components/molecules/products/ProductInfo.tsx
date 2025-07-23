@@ -14,7 +14,7 @@ const ProductInfo = ({ product }: any) => {
     return (
         <div className="space-y-2">
             <SectionTitle className="text-2xl md:text-3xl font-bold text-gray-800">{product.name}</SectionTitle>
-            <p className="text-xl font-semibold text-purple-700">Rp {product.price.toLocaleString()}</p>
+            <p className="text-xl font-semibold text-purple-700">Rp {product.price?.toLocaleString()}</p>
             <p className="text-sm text-gray-500">Stok tersedia: {product.stock}</p>
             {product.description && (
                 <>

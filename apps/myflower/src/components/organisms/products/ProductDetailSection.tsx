@@ -15,8 +15,8 @@ import { PiShoppingCartSimpleBold } from "react-icons/pi";
 
 const ProductDetailSection = ({ product }: any) => {
     return (
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-            <Image src={product.images[0].secureUrl} alt={product.name} />
+        <section className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-start">
+            <Image src={product.images?.[0]?.secureUrl} alt={product.name} className="w-80 h-80" />
             <div className="flex flex-col gap-5">
                 <ProductInfo product={product} />
                 <Button type="button" colors={{ primary: "#8f40f6", hover: "#773dc4" }} className="w-[15rem] p-1">

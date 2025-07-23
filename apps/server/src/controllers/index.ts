@@ -1,4 +1,3 @@
-
 export * as authController from "@/controllers/auth.controller";
 export * as finishedProductController from "@/controllers/finished-product.controller";
 export * as paymentProofController from "@/controllers/payment-proof.controller";
@@ -8,3 +7,4 @@ export * as cartItemController from "@/controllers/cart-item.controller";
 export * as ordersAdminController from "@/controllers/orders/admin.controller";
 export * as ordersCustomerController from "@/controllers/orders/customer.controller";
 export * as transactionController from "@/controllers/transaction.controller";
+export * as reviewController from "@/controllers/review.controller";

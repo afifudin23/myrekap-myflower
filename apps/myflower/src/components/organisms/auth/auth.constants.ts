@@ -32,6 +32,11 @@ export const REGISTER_FIELDS = [
         placeholder: "Input Nomor Telepon",
         type: "text",
     },
+    // {
+    //     name: "customerCategory",
+    //     placeholder: "Input Nomor Telepon",
+    //     type: "text",
+    // },
     {
         name: "password",
         placeholder: "Input Password",

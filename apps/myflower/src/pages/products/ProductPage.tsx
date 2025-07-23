@@ -1,5 +1,5 @@
 import ProductList from "@/components/organisms/products/ProductList";
-import ProductSearch from "@/components/organisms/products/ProductSearch";
+// import ProductSearch from "@/components/organisms/products/ProductSearch";
 import MainLayout from "@/components/templates/MainLayout";
 import { useProducts } from "@/hooks";
 
@@ -8,7 +8,7 @@ function ProductsPage() {
     return (
         <MainLayout>
             <div className="flex flex-col gap-10">
-                <ProductSearch />
+                {/* <ProductSearch /> */}
                 <ProductList products={products} />
             </div>
         </MainLayout>
