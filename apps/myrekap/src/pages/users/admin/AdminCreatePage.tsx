@@ -17,6 +17,7 @@ function AdminCreatePage() {
         formState: { errors },
     } = useForm<any>({
         defaultValues: {
+            fullName: "",
             username: "",
             phoneNumber: "",
             email: "",

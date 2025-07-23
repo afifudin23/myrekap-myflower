@@ -28,7 +28,7 @@ const Search = ({
                 />
                 <ButtonSmall
                     onClick={() => setIsOpenFilter(!isOpenFilter)} 
-                    className="bg-blue-600 text-white py-1 px-1 2xl:py-2 2xl:px-4 font-semibold rounded-lg hover:bg-blue-700 transition font-fredoka gap-2"
+                    className="bg-blue-600 text-white py-1 px-2 2xl:py-2 2xl:px-4 font-semibold rounded-lg hover:bg-blue-700 transition font-fredoka gap-2"
                 >
                     <IoFilterSharp />
                 </ButtonSmall>

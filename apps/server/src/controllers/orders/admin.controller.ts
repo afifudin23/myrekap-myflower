@@ -26,7 +26,11 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     const file = req.file as Express.Multer.File;
     const body = ordersAdminSchema.create.parse(req.body);
     if (body.paymentMethod === "BANK_TRANSFER" && !file) {
-        throw new UnprocessableUntityException("Payment proof is required for bank transfer", ErrorCode.UNPROCESSABLE_ENTITY, null);
+        throw new UnprocessableUntityException(
+            "Payment proof is required for bank transfer",
+            ErrorCode.UNPROCESSABLE_ENTITY,
+            null
+        );
     }
     try {
         const userId = (req as AuthReq).user.id;
@@ -50,7 +54,6 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
 
 export const printOrder = async (req: Request, res: Response, next: NextFunction) => {
     const { html } = req.body;
-
     try {
         const data = await ordersAdminService.printOrder(html);
         res.set({
@@ -69,9 +72,19 @@ export const printOrder = async (req: Request, res: Response, next: NextFunction
     }
 };
 export const updateOrderStatus = async (req: Request, res: Response, next: NextFunction) => {
+    const body = ordersAdminSchema.updateOrderStatus.parse(req.body);
     try {
-        const data = await ordersAdminService.updateOrderStatus(req.params.id, req.body.orderStatus);
-        res.json({ message: "Order canceled successfully", data });
+        const data = await ordersAdminService.updateOrderStatus(req.params.id, body.orderStatus);
+        res.json({ message: "Update order status successfully", data });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const addFinishedProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const data = await ordersAdminService.upload(req.params.orderId, req.file);
+        res.json({ message: "Finished product added successfully", data });
     } catch (error) {
         return next(error);
     }

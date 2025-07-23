@@ -1,16 +1,26 @@
 import { Badge, ButtonSmall } from "@/components/atoms";
+import { InputDropdown } from "@/components/molecules";
+import OrderReceipt from "@/components/organisms/orders/OrderReceipt";
+import { ORDER_STATUS_ITEMS } from "@/constants/category";
 import { badgeColorOrderStatus, badgeColorPaymentStatus, formatters } from "@/utils";
-// import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import { HiPhoto } from "react-icons/hi2";
 import { IoReceiptSharp } from "react-icons/io5";
 import { RiEdit2Fill } from "react-icons/ri";
+import { TbReceiptFilled } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
-function OrderDetailSection() {
-    const order = JSON.parse(localStorage.getItem("orderDetail") || "{}");
+function OrderDetailSection({
+    order,
+    control,
+    isOpenFinishedProduct,
+    setIsOpenFinishedProduct,
+    setIsOpenPaymentProof,
+}: any) {
     const navigate = useNavigate();
+    const disabled = order.source === "MYFLOWER";
     return (
-        <>
+        <div className="mb-44">
             <div className="space-y-5">
                 <div className="flex justify-between items-start">
                     <p className="font-semibold text-base 2xl:text-xl px-4 py-1 rounded-md text-slate-50 bg-slate-800 bg-opacity-40">
@@ -24,7 +34,9 @@ function OrderDetailSection() {
                             field={order.paymentStatus}
                         />
                         <Badge
-                            className={`${badgeColorOrderStatus(order.orderStatus)} w-[100px] py-1 text-sm text-white font-semibold`}
+                            className={`${badgeColorOrderStatus(
+                                order.orderStatus
+                            )} w-[100px] py-1 text-sm text-white font-semibold`}
                             field={order.orderStatus}
                         />
                         <Badge
@@ -91,8 +103,20 @@ function OrderDetailSection() {
                             Metode Pembayaran :{" "}
                             <span className="font-medium">{order.paymentMethod?.split("_").join(" ") || "-"}</span>
                         </p>
-                        <p>
-                            Provider : <span className="font-medium">{order.paymentProvider || "-"}</span>
+                        <p className="flex items-center gap-1">
+                            Provider :{" "}
+                            <span className="font-medium">
+                                {order.paymentProvider}{" "}
+                                {order.paymentMethod === "BANK_TRANSFER" && order.paymentProof && (
+                                    <button
+                                        className="inline-flex text-blue-600 items-center gap-1 font-medium"
+                                        onClick={() => setIsOpenPaymentProof(true)}
+                                    >
+                                        <TbReceiptFilled />
+                                        Bukti Pembayaran
+                                    </button>
+                                )}
+                            </span>
                         </p>
                     </div>
                     <div>
@@ -115,40 +139,48 @@ function OrderDetailSection() {
             </div>
             <div className="flex items-start mt-5 gap-4">
                 <ButtonSmall
-                    className="bg-orange-400 hover:bg-orange-500 px-5 py-1 2xl:py-2 font-semibold"
-                    onClick={() => navigate(`/orders/${order.id}/edit`)}
+                    className={`${
+                        disabled ? "bg-orange-400" : "bg-orange-400 hover:bg-orange-500"
+                    } px-5 py-1 2xl:py-2 font-semibold`}
+                    onClick={() => {
+                        if (disabled) return;
+                        navigate(`/orders/${order.id}/edit`);
+                    }}
+                    disabled={disabled}
                 >
                     <RiEdit2Fill />
                     Edit
                 </ButtonSmall>
                 <ButtonSmall
                     className="bg-blue-600 hover:bg-blue-700 py-1 2xl:py-2 px-4 font-semibold"
-                    // onClick={() => setIsOpenFinishedProduct(!isOpenFinishedProduct)}
+                    onClick={() => setIsOpenFinishedProduct(!isOpenFinishedProduct)}
                 >
                     <HiPhoto /> Produk
                 </ButtonSmall>
 
                 <ButtonSmall className="bg-cyan-500 hover:bg-cyan-600 py-1 2xl:py-2 px-4 font-semibold">
-                    {/* <PDFDownloadLink
-                            document={<Receipt data={order} />}
-                            fileName={`receipt-order-${order.orderCode}.pdf`}
-                            className="flex items-center justify-center gap-1"
-                        > */}
-                    <IoReceiptSharp /> Kwitansi
-                    {/* </PDFDownloadLink> */}
+                    <PDFDownloadLink
+                        document={<OrderReceipt data={order} />}
+                        fileName={`receipt-order-${order.orderCode}.pdf`}
+                        className="flex items-center justify-center gap-1"
+                    >
+                        <IoReceiptSharp /> Nota
+                    </PDFDownloadLink>
                 </ButtonSmall>
 
-                {/* <InputDropdown
+                <div className="w-64">
+                    <InputDropdown
                         label="Status Pesanan"
                         name="orderStatus"
                         control={control}
                         formInput={false}
-                        width="w-52"
                         className="py-1 2xl:py-2 px-4 text-base 2xl:text-xl"
-                        options={DataOrderStatus.filter((item) => item !== "Semua")}
-                    /> */}
+                        options={ORDER_STATUS_ITEMS.filter((item) => item !== "Semua")}
+                        disabled={disabled}
+                    />
+                </div>
             </div>
-        </>
+        </div>
     );
 }
 

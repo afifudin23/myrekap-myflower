@@ -160,3 +160,13 @@ export const update = z
             data.deliveryAddress = null;
         }
     });
+
+export const updateOrderStatus = z.object({
+    orderStatus: z.preprocess(
+        (value) => (typeof value === "string" ? formatters.parseCapital(value) : value),
+        z.enum(["COMPLETED", "IN_PROCESS", "CANCELED"], {
+            required_error: "Order status is required",
+            invalid_type_error: "Order status must be a valid enum value",
+        })
+    ),
+});

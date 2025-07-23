@@ -1,7 +1,6 @@
 import { Router } from "express";
 import authRouter from "@/routes/auth.route";
 import paymentProofRouter from "@/routes/payment-proof.route";
-import finishedProductRouter from "@/routes/finished-product.route";
 import productRouter from "@/routes/product.route";
 import cartItemRouter from "@/routes/cart-item.route";
 import transactionRouter from "@/routes/transaction.route";
@@ -20,7 +19,6 @@ rootRouter.use("/carts", cartItemRouter);
 rootRouter.use("/orders/admin", ordersAdminRouter);
 rootRouter.use("/orders/customer", ordersCustomerRouter);
 rootRouter.use("/payment-proofs", paymentProofRouter);
-rootRouter.use("/finished-products", finishedProductRouter);
 rootRouter.use("/transactions", transactionRouter);
 
 export default rootRouter;

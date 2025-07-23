@@ -11,7 +11,7 @@ function AdminEditPage() {
     const navigate = useNavigate();
     const userCookies = getUserDetailCookies();
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    if (!userCookies) return <h1 className="text-4xl font-semibold text-center mt-20">Data Tidak Ditemukan</h1>;
+    // if (!userCookies) return <h1 className="text-4xl font-semibold text-center mt-20">Data Tidak Ditemukan</h1>;
     const fieldRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const {
         control,
@@ -19,10 +19,10 @@ function AdminEditPage() {
         formState: { errors },
     } = useForm<any>({
         defaultValues: {
-            fullName: userCookies.fullName,
-            username: userCookies.username,
-            phoneNumber: userCookies.phoneNumber,
-            email: userCookies.email,
+            fullName: userCookies?.fullName,
+            username: userCookies?.username,
+            phoneNumber: userCookies?.phoneNumber,
+            email: userCookies?.email,
             password: "",
             confPassword: "",
         },
@@ -42,7 +42,6 @@ function AdminEditPage() {
     }, [errors]);
 
     const onSubmit = async (data: any) => {
-        console.log(data);
         setIsLoading(true);
         try {
             await axiosInstance.put(`users/${userCookies.id}`, data);

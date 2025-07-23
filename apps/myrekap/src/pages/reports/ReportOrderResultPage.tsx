@@ -26,7 +26,6 @@ function ReportOrderResultPage() {
         const getOrderFilter = async () => {
             try {
                 const response = await axiosInstance.get("/orders/admin", { params });
-                console.log(response.data.data);
                 const data = response.data.data.map((order: any) => formatters.formatReportOrder(order));
                 setOrderFilter(data);
             } catch (error) {
@@ -60,7 +59,7 @@ function ReportOrderResultPage() {
                 </html>
             `;
 
-            const response = await axiosInstance.post("/admin/orders/pdf", { html }, { responseType: "blob" });
+            const response = await axiosInstance.post("/orders/admin/pdf", { html }, { responseType: "blob" });
             const blob = new Blob([response.data], { type: "application/pdf" });
             const url = window.URL.createObjectURL(blob);
 
@@ -79,8 +78,8 @@ function ReportOrderResultPage() {
             link.download = fileName;
             link.click();
             window.URL.revokeObjectURL(url);
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            console.log(error.response.data);
         }
     };
 

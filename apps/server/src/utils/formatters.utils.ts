@@ -75,19 +75,18 @@ export const formatRupiah = (data: number) => {
     }).format(data);
 };
 
-export const generatedTextLink = (
-    customerName: string,
-    flowerCategory: string,
-    total: number,
-    deliveryAddress: string,
-    deliveryDate: string
-) => {
+export const generatedTextLink = (data: any) => {
     return encodeURIComponent(`💐 Halo Mas Afif, Ada Pesanan Baru! 📦
-Nama: ${formatCapital(customerName)}
-Kategori Bunga: ${formatCapital(flowerCategory)}
-Total: ${formatRupiah(total)}
-Alamat: ${formatCapital(deliveryAddress)}
-Dikirim: ${isoDateToStringDateTime(deliveryDate)} WIB`);
+Nama: ${formatCapital(data.customerName)}
+Total: ${formatRupiah(data.totalPrice + data.shippingCost)}
+Opsi Pengiriman: ${formatCapital(data.deliveryOption)}
+Alamat: ${data.deliveryAddress ? formatCapital(data.deliveryAddress) : "-"}
+Deadline: ${isoDateToStringDateTime(data.readyDate)} WIB
+Items:
+${data.items
+    .map((item: any, index: number) => `${index + 1}. ${formatCapital(item.product?.name)} x${item.quantity}`)
+    .join("\n")}
+`);
 };
 
 export const generateItemDetails = (orderItems: any[]) => {

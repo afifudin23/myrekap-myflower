@@ -7,7 +7,6 @@ function ReportOrderTable({ orderFilter }: any) {
     const fromDate = formatters.isoDateToStringDate(searchParams.get("from_date"));
     const toDate = formatters.isoDateToStringDate(searchParams.get("to_date"));
     const totalRevenue = orderFilter.reduce((acc: number, order: any) => acc + order.totalPrice, 0);
-    console.log(totalRevenue)
     return (
         <div
             id="table-report-orders"

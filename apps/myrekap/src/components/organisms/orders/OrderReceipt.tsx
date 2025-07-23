@@ -50,14 +50,12 @@ const styles = StyleSheet.create({
 });
 
 const OrderReceipt = ({ data }: any) => {
-    const total =
-        (Number(data.price.replace(/[^0-9]/g, "")) + Number(data.shippingCost.replace(/[^0-9]/g, ""))) *
-        Number(data.quantity);
     return (
         <Document>
             <Page size="A4" style={styles.page}>
                 <Image src="/assets/images/background.jpg" style={styles.background} fixed />
 
+                {/* Header */}
                 <View
                     style={{
                         flexDirection: "row",
@@ -68,36 +66,16 @@ const OrderReceipt = ({ data }: any) => {
                 >
                     <Image
                         src="/assets/images/logo.jpg"
-                        style={{
-                            width: 70,
-                            height: 70,
-                            marginBottom: 10,
-                            borderRadius: 50,
-                        }}
+                        style={{ width: 70, height: 70, marginBottom: 10, borderRadius: 50 }}
                     />
-                    <View
-                        style={{
-                            flexDirection: "column",
-                            alignItems: "flex-end",
-                        }}
-                    >
-                        <Text style={styles.title}>Receipt</Text>
-                        <Text style={styles.title}>Pembayaran</Text>
+                    <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
+                        <Text style={styles.title}>Order Receipt</Text>
+                        <Text style={{ fontSize: 14 }}>No: {data.orderCode}</Text>
+                        <Text style={{ fontSize: 12 }}>Date: {formatters.isoDateToStringDateTime(new Date())}</Text>
                     </View>
                 </View>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        fontSize: 14,
-                        fontFamily: "Roboto Mono SemiBold",
-                        justifyContent: "space-between",
-                        marginBottom: 10,
-                    }}
-                >
-                    <Text style={{paddingLeft: 30}}>No: {data.invoiceNumber}</Text>
-                    <Text>Date: {formatters.isoDateToStringDateTime(new Date())}</Text>
-                </View>
 
+                {/* Table Header */}
                 <View
                     style={{
                         marginHorizontal: 30,
@@ -115,66 +93,57 @@ const OrderReceipt = ({ data }: any) => {
                             gap: 10,
                             paddingVertical: 10,
                             borderBottom: "1px solid black",
-                            fontSize: 16,
+                            fontSize: 14,
                             fontFamily: "Roboto Mono SemiBold",
                         }}
                     >
-                        <Text style={styles.textRow}>Item</Text>
-                        <Text style={styles.textRow}>Keterangan</Text>
+                        <Text style={styles.textRow}>Product</Text>
+                        <Text style={styles.textRow}>Qty</Text>
+                        <Text style={styles.textRow}>Message</Text>
+                        <Text style={styles.textRow}>Price</Text>
                     </View>
 
-                    <View style={styles.viewRow}>
-                        <Text style={styles.textRow}>Nama Customer</Text>
-                        <Text style={styles.textRow}>{formatters.formatCustomerNameReceipt(data.customerName)}</Text>
-                    </View>
-                    <View style={styles.viewRow}>
-                        <Text style={styles.textRow}>Kategori Customer</Text>
-                        <Text style={styles.textRow}>{data.customerCategory}</Text>
-                    </View>
-                    <View style={styles.viewRow}>
-                        <Text style={styles.textRow}>Kategori Bunga</Text>
-                        <Text style={styles.textRow}>{data.flowerCategory}</Text>
-                    </View>
-                    <View style={styles.viewRow}>
-                        <Text style={styles.textRow}>Pesan Ucapan</Text>
-                        <Text style={styles.textRow}>{data.greetingMessage}</Text>
-                    </View>
-                    <View style={styles.viewRow}>
-                        <Text style={styles.textRow}>Tanggal Pengiriman</Text>
-                        <Text style={styles.textRow}>{data.deliveryDate}</Text>
-                    </View>
-                    <View style={styles.viewRow}>
-                        <Text style={styles.textRow}>Harga</Text>
-                        <Text style={styles.textRow}>
-                            {data.price} ({data.quantity}x)
+                    {/* Table Rows */}
+                    {data.items.map((item: any) => (
+                        <View key={item.id} style={styles.viewRow}>
+                            <Text style={styles.textRow}>{item.product.name}</Text>
+                            <Text style={styles.textRow}>{item.quantity}</Text>
+                            <Text style={styles.textRow}>{item.message || "-"}</Text>
+                            <Text style={styles.textRow}>{formatters.formatRupiah(item.totalPrice)}</Text>
+                        </View>
+                    ))}
+                </View>
+
+                {/* Summary */}
+                <View style={{ gap: 5, marginBottom: 70 }}>
+                    <View style={{ ...styles.viewBottom, fontSize: 16 }}>
+                        <Text style={styles.textBottom}>Total Price</Text>
+                        <Text style={{ ...styles.textBottomItem, fontSize: 25 }}>
+                            {formatters.formatRupiah(data.totalPrice)}
                         </Text>
                     </View>
-                    <View style={styles.viewRow}>
-                        <Text style={styles.textRow}>Biaya Pengiriman</Text>
-                        <Text style={styles.textRow}>{data.shippingCost}</Text>
+                    <View style={styles.viewBottom}>
+                        <Text style={styles.textBottom}>Payment Status</Text>
+                        <Text style={{ ...styles.textBottomItem }}>{data.paymentStatus}</Text>
+                    </View>
+                    <View style={styles.viewBottom}>
+                        <Text style={styles.textBottom}>Payment Method</Text>
+                        <Text style={{ ...styles.textBottomItem }}>
+                            {data.paymentMethod?.split("_").join(" ") || "-"}
+                        </Text>
+                    </View>
+                    <View style={styles.viewBottom}>
+                        <Text style={styles.textBottom}>Provider</Text>
+                        <Text style={{ ...styles.textBottomItem }}>
+                            {data.paymentProvider?.split("_").join(" ") || "-"}
+                        </Text>
                     </View>
                 </View>
 
-                <View style={{ gap: 5, marginBottom: 70 }}>
-                    <View
-                        style={{
-                            ...styles.viewBottom,
-                            fontSize: 16,
-                        }}
-                    >
-                        <Text style={styles.textBottom}>Total</Text>
-                        <Text style={{ ...styles.textBottomItem, fontSize: 25 }}>{formatters.formatRupiah(total)}</Text>
-                    </View>
-                    <View style={styles.viewBottom}>
-                        <Text style={styles.textBottom}>Status Pembayaran</Text>
-                        <Text style={{ ...styles.textBottomItem, fontSize: 14 }}>{data.paymentStatus}</Text>
-                    </View>
-                    <View style={styles.viewBottom}>
-                        <Text style={styles.textBottom}>Metode Pembayaran</Text>
-                        <Text style={{ ...styles.textBottomItem, fontSize: 14 }}>{data.paymentMethod}</Text>
-                    </View>
-                </View>
+                {/* Spacer to push signature to bottom */}
+                <View style={{ flexGrow: 1 }} />
 
+                {/* Signature */}
                 <View
                     style={{
                         flexDirection: "row",
@@ -185,21 +154,18 @@ const OrderReceipt = ({ data }: any) => {
                 >
                     <View style={{ flexDirection: "column", gap: 10, alignItems: "center" }}>
                         <Text>Owner,</Text>
-                        <Image src="/assets/images/ttd-owner.png" style={{ width: 60, height: 60 }}></Image>
+                        <Image src="/assets/images/ttd-owner.png" style={{ width: 60, height: 60 }} />
                         <Text>Fahri Septa M.</Text>
                     </View>
-                    <View style={{ flexDirection: "column", gap: 75, alignItems: "center" }}>
+                    <View style={{ flexDirection: "column", gap: 10, alignItems: "center" }}>
                         <Text>Customer,</Text>
+                        <Image src="/assets/images/ttd-customer.png" style={{ width: 60, height: 60 }} />
                         <Text>{formatters.formatCustomerNameReceipt(data.customerName)}</Text>
                     </View>
                 </View>
 
-                <View
-                    style={{
-                        textAlign: "center",
-                        marginTop: 45,
-                    }}
-                >
+                {/* Footer */}
+                <View style={{ textAlign: "center", marginTop: 45 }}>
                     <Text
                         style={{ borderBottom: "1px solid black", marginBottom: 10, paddingBottom: 10, fontSize: 14 }}
                     >

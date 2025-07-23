@@ -14,7 +14,6 @@ export type InputDropdownProps = {
     name: string;
     error?: string;
     control: Control<any>;
-    width?: string;
     className?: string;
     formInput?: boolean;
     disabled?: boolean;

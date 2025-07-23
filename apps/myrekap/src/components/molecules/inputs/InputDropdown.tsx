@@ -12,7 +12,6 @@ const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
             name,
             error,
             control,
-            width = "w-full",
             className = "py-2 2xl:py-4 px-4 2xl:px-6 text-base 2xl:text-xl",
             formInput = true,
             disabled,
@@ -32,7 +31,7 @@ const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
             return () => document.removeEventListener("mousedown", handleClickOutside);
         }, []);
         return (
-            <div className={`input-dropdown ${width}`} ref={ref}>
+            <div className="w-full" ref={ref}>
                 {formInput && <Label id={name} children={label} />}
                 <Controller
                     name={name as any}

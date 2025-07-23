@@ -1,21 +1,22 @@
+import { enqueueWhatsAppMessage } from "@/config";
 import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
 import { ordersCustomerSchema } from "@/schemas";
 import { formatters } from "@/utils";
+import { generatedTextLink } from "@/utils/formatters.utils";
 
 export const create = async (user: any, data: ordersCustomerSchema.CreateType) => {
     const cartItems = await prisma.cartItem.findMany({ where: { userId: user.id }, include: { product: true } });
     if (cartItems.length === 0) {
         throw new BadRequestException("Cart must contain at least one item", ErrorCode.ORDER_MUST_CONTAIN_ITEMS);
     }
-
     const orderItems = cartItems.map((cartItem) => {
         const item = data.items.find((m) => m.productId === cartItem.productId);
         if (!item) throw new NotFoundException(`Product not found `, ErrorCode.PRODUCT_NOT_FOUND);
 
         return {
-            product: { connect: { id: cartItem.productId } },
+            productId: cartItem.productId,
             quantity: cartItem.quantity,
             message: item?.message,
             unitPrice: cartItem.product.price,
@@ -41,8 +42,20 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
                 shippingCost, // Fixed shipping cost next time
                 items: { create: orderItems },
             },
-            include: { items: true },
+            include: { items: { include: { product: true } } },
         });
+
+        // Send Notification Whatsapp
+        const message = generatedTextLink(order);
+        enqueueWhatsAppMessage(message);
+
+        // Decrement Stock Product
+        for (const item of orderItems) {
+            await prisma.product.update({
+                where: { id: item.productId },
+                data: { stock: { decrement: item.quantity } },
+            });
+        }
 
         // Off during testing
         await prisma.cartItem.deleteMany({ where: { userId: user.id } });
@@ -56,6 +69,7 @@ export const findAllByUser = async (userId: string) => {
     return await prisma.order.findMany({
         where: { userId },
         include: { items: { include: { product: { include: { images: true } } } } },
+        orderBy: { orderDate: "desc" },
     });
 };
 export const findByIdAndUser = async (userId: string, orderId: string) => {

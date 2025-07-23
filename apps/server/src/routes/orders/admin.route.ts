@@ -7,7 +7,12 @@ const ordersAdminRouter: Router = Router();
 
 ordersAdminRouter.get("/", [authMiddleware], errorHandler(ordersAdminController.getAllOrders));
 ordersAdminRouter.get("/:id", [authMiddleware], errorHandler(ordersAdminController.getOrderById));
-ordersAdminRouter.post("/", [authMiddleware], upload.single("paymentProof"), errorHandler(ordersAdminController.createOrder));
+ordersAdminRouter.post(
+    "/",
+    [authMiddleware],
+    upload.single("paymentProof"),
+    errorHandler(ordersAdminController.createOrder)
+);
 ordersAdminRouter.put(
     "/:id/edit",
     [authMiddleware],
@@ -15,6 +20,13 @@ ordersAdminRouter.put(
     errorHandler(ordersAdminController.updateOrder)
 );
 ordersAdminRouter.post("/pdf", [authMiddleware], errorHandler(ordersAdminController.printOrder));
-ordersAdminRouter.put("/:id/order-status", [authMiddleware], errorHandler(ordersAdminController.updateOrderStatus));
+ordersAdminRouter.patch("/:id/order-status", [authMiddleware], errorHandler(ordersAdminController.updateOrderStatus));
+
+ordersAdminRouter.post(
+    "/:orderId/finished-product",
+    [authMiddleware],
+    upload.single("finishedProduct"),
+    errorHandler(ordersAdminController.addFinishedProduct)
+);
 
 export default ordersAdminRouter;

@@ -1,9 +1,9 @@
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
-import { cloudinary, prisma, uploadFile } from "@/config";
+import { cloudinary, enqueueWhatsAppMessage, prisma, uploadFile } from "@/config";
 // import enqueueWhatsAppMessage from "@/utils/queue-wa-message.util";
 import puppeteer from "puppeteer";
-import { generateOrderCode } from "@/utils/formatters.utils";
+import { generatedTextLink, generateOrderCode } from "@/utils/formatters.utils";
 
 export const getAllOrders = async (requestQuery: any) => {
     const { month, year, from_date, to_date, customer_category, payment_method, payment_status, order_status } =
@@ -73,7 +73,7 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
         const product = products.find((product) => product.id === item.productId);
         if (!product) throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
         return {
-            product: { connect: { id: item.productId } },
+            productId: item.productId,
             quantity: item.quantity,
             message: item.message,
             unitPrice: product?.price,
@@ -94,6 +94,7 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
                 ...(body.deliveryOption === "DELIVERY" && { shippingCost }),
                 items: { create: orderItems },
             },
+            include: { items: { include: { product: true } } },
         });
 
         if (file && body.paymentMethod === "BANK_TRANSFER") {
@@ -108,14 +109,18 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
                 },
             });
         }
-        // const message = generatedTextLink(
-        //     data.customerName,
-        //     data.flowerCategory,
-        //     (data.price + data.shippingCost) * data.quantity,
-        //     data.deliveryAddress,
-        //     data.deliveryDate.toISOString()
-        // );
-        // enqueueWhatsAppMessage(message);
+        // Send Notification to WhatsApp
+        const message = generatedTextLink(data);
+        enqueueWhatsAppMessage(message);
+        
+        // Decrement Stock Product
+        for (const item of orderItems) {
+            await prisma.product.update({
+                where: { id: item.productId },
+                data: { stock: { decrement: item.quantity } },
+            });
+        }
+
         return data;
     } catch (error) {
         console.log(error);
@@ -197,7 +202,7 @@ export const update = async (id: string, body: any, file: Express.Multer.File) =
                 await prisma.paymentProof.delete({ where: { id: existingProof.id } });
             }
 
-            const result = await uploadFile(file, "myrekap-app/bukti-transfer");
+            const result = await uploadFile(file, "myflower-myrekap/bukti-transfer");
 
             await prisma.paymentProof.create({
                 data: {
@@ -255,24 +260,22 @@ export const printOrder = async (html: string) => {
     }
 };
 
-export const updateOrderStatus = async (id: string, orderStatus: "TERKIRIM" | "IN_PROCESS" | "DIBATALKAN") => {
-    const orderSummaryById = await prisma.order.findUnique({ where: { id } });
-    if (!orderSummaryById) {
-        throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_NOT_FOUND);
-    }
+export const updateOrderStatus = async (id: string, orderStatus: "COMPLETED" | "IN_PROCESS" | "CANCELED") => {
+    const order = await prisma.order.findUnique({ where: { id } });
+    if (!order) throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_NOT_FOUND);
 
     let dataOrderStatus: any = { orderStatus };
-    if (orderStatus === "DIBATALKAN") {
+    if (orderStatus === "CANCELED") {
         dataOrderStatus = {
             orderStatus,
-            paymentStatus: "BATAL",
-            previousPaymentStatus: orderSummaryById.paymentStatus,
+            paymentStatus: "CANCELED",
+            previousPaymentStatus: order.paymentStatus,
         };
-    } else if (orderStatus === "TERKIRIM" || orderStatus === "IN_PROCESS") {
-        if (orderSummaryById.paymentStatus === "CANCELED" && orderSummaryById.previousPaymentStatus) {
+    } else if (orderStatus === "COMPLETED" || orderStatus === "IN_PROCESS") {
+        if (order.paymentStatus === "CANCELED" && order.previousPaymentStatus) {
             dataOrderStatus = {
                 orderStatus,
-                paymentStatus: orderSummaryById.previousPaymentStatus,
+                paymentStatus: order.previousPaymentStatus,
                 previousPaymentStatus: null,
             };
         }
@@ -285,5 +288,32 @@ export const updateOrderStatus = async (id: string, orderStatus: "TERKIRIM" | "I
         return data;
     } catch (_error) {
         throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_NOT_FOUND);
+    }
+};
+
+export const upload = async (orderId: string, finishedProduct: any) => {
+    try {
+        const existingFinishedProduct = await prisma.finishedProduct.findUnique({ where: { orderId } });
+
+        if (existingFinishedProduct) {
+            await prisma.finishedProduct.delete({ where: { orderId } });
+            await cloudinary.uploader.destroy(existingFinishedProduct.publicId);
+        }
+        if (!finishedProduct)
+            throw new BadRequestException("Finished product not found", ErrorCode.FINISHED_PRODUCT_NOT_FOUND);
+
+        const result = await uploadFile(finishedProduct, "myflower-myrekap/produk-selesai");
+        const data = await prisma.finishedProduct.create({
+            data: {
+                fileName: finishedProduct.originalname,
+                size: finishedProduct.size,
+                orderId,
+                secureUrl: result.secure_url,
+                publicId: result.public_id,
+            },
+        });
+        return data;
+    } catch (error) {
+        throw new InternalException("Failed to add finished product", ErrorCode.FINISHED_PRODUCT_ADD_FAILED, error);
     }
 };
