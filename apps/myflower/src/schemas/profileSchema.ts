@@ -1,3 +1,4 @@
+import { formatters } from "@/utils";
 import { z } from "zod";
 
 export const profileFormSchema = z
@@ -11,6 +12,7 @@ export const profileFormSchema = z
         phoneNumber: z
             .string({ required_error: "Nomor Telepon Harus Diisi" })
             .nonempty({ message: "Nomor Telepon Harus Diisi" }),
+        customerCategory: z.string().transform((val) => formatters.formatCapital(val)),
         oldPassword: z.string().nullish(),
         newPassword: z.string().nullish(),
         confPassword: z.string().nullish(),

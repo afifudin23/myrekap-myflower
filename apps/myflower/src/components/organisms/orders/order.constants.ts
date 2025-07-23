@@ -11,7 +11,7 @@ export const ORDER_FORM_ITEMS = [
         name: "deliveryAddress",
     },
     {
-        label: "Tanggal Siap",
+        label: "Tanggal Produk Jadi",
         type: "date",
         name: "readyDate",
     },

@@ -20,6 +20,12 @@ export const PROFILE_FORM_ITEMS = [
         name: "phoneNumber",
     },
     {
+        name: "customerCategory",
+        type: "dropdown",
+        label: "Kategori Pelanggan",
+        options: ["Umum", "Pemda", "Akademik", "Rumah Sakit", "Polisi/Militer", "Perbankan"],
+    },
+    {
         label: "Password Lama",
         type: "password",
         name: "oldPassword",

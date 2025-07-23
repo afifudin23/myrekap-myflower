@@ -107,8 +107,8 @@ function OrderCheckoutPage() {
                     <div className="bg-gray-50 p-4 rounded-md shadow-sm space-y-2">
                         <div>
                             {fields.map((field: any, index: number) => (
-                                <div key={field.id} className="">
-                                    <p className="text-sm flex justify-between">
+                                <div key={field.id} className="flex flex-col gap-2">
+                                    <p className="flex justify-between">
                                         <span className="font-medium">
                                             {cartItems[index]?.product?.name} ({cartItems[index]?.quantity})
                                         </span>
@@ -124,11 +124,11 @@ function OrderCheckoutPage() {
                                 </div>
                             ))}
                         </div>
-                        <div className="flex justify-between text-sm">
+                        <div className="flex justify-between">
                             <span>Total Item</span>
                             <span>{totalItem}</span>
                         </div>
-                        <div className="flex justify-between text-sm font-semibold">
+                        <div className="flex justify-between font-semibold">
                             <span>Total Harga</span>
                             <span>Rp. {totalPrice.toLocaleString()}</span>
                         </div>

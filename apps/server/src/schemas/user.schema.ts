@@ -1,3 +1,4 @@
+import { formatters } from "@/utils";
 import z, { object, string } from "zod";
 
 export const create = object({
@@ -25,7 +26,13 @@ export const updateProfile = object({
     username: string().nullish(),
     email: string().email().nullish(),
     phoneNumber: string().nullish(),
-
+    customerCategory: z.preprocess(
+        (value) => (typeof value === "string" ? formatters.parseCapital(value) : value),
+        z.enum(["UMUM", "PEMDA", "AKADEMIK", "RUMAH_SAKIT", "POLISI_MILITER", "PERBANKAN"], {
+            required_error: "Customer category is required",
+            invalid_type_error: "Customer category must be a valid enum value",
+        })
+    ),
     oldPassword: string().nullish(),
     newPassword: string().nullish(),
     confPassword: string().nullish(),

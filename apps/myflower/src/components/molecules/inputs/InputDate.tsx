@@ -8,7 +8,7 @@ registerLocale("id", id);
 
 const InputDate = ({ label, name, error, control }: any) => {
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
             <Label id={label} children={label} />
             <Controller
                 name={name as any}
@@ -24,7 +24,7 @@ const InputDate = ({ label, name, error, control }: any) => {
                         placeholderText={`Pilih ${label}`}
                         locale={"id"}
                         preventOpenOnFocus={true}
-                        className="border py-2 2xl:py-4 px-4 2xl:px-6 rounded-lg w-[350px] 2xl:w-full text-base 2xl:text-xl"
+                        className="border py-2 2xl:py-3 px-4 2xl:px-5 rounded-lg w-[350px] 2xl:w-full text-base 2xl:text-xl"
                     />
                 )}
             />

@@ -50,7 +50,7 @@ export const create = z
                     return date > today;
                 },
                 {
-                    message: "Ready date minimum is today",
+                    message: "Tanggal produk jadi minimal besok hari",
                 }
             )
             .transform((date) => date.toISOString()),

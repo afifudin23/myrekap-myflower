@@ -16,13 +16,11 @@ const OrderCard = ({ order }: any) => {
                 </p>
                 <div className="flex gap-2">
                     <Badge
-                        className={`${badgeColorPaymentStatus(order.paymentStatus)} text-xs text-white font-semibold`}
-                        size="w-[90px]"
+                        className={`${badgeColorPaymentStatus(order.paymentStatus)} w-[90px] py-1 text-xs text-white font-semibold`}
                         field={order.paymentStatus}
                     />
                     <Badge
-                        className={`${badgeColorOrderStatus(order.orderStatus)} text-xs text-white font-semibold`}
-                        size="w-[90px]"
+                        className={`${badgeColorOrderStatus(order.orderStatus)} w-[90px] py-1 text-xs text-white font-semibold`}
                         field={order.orderStatus}
                     />
                 </div>
@@ -64,8 +62,7 @@ const OrderCard = ({ order }: any) => {
                     </p>
                 </div>
                 <Badge
-                    className="bg-[#609393] text-white text-xs font-semibold"
-                    size="w-[90px]"
+                    className="bg-[#609393] w-[100px] py-1 text-white text-xs font-semibold"
                     field={order.customerCategory}
                 />
             </div>

@@ -32,11 +32,12 @@ export const REGISTER_FIELDS = [
         placeholder: "Input Nomor Telepon",
         type: "text",
     },
-    // {
-    //     name: "customerCategory",
-    //     placeholder: "Input Nomor Telepon",
-    //     type: "text",
-    // },
+    {
+        name: "customerCategory",
+        placeholder: "Input Kategori Pelanggan",
+        type: "dropdown",
+        options: ["Umum", "Pemda", "Akademik", "Rumah Sakit", "Polisi/Militer", "Perbankan"],
+    },
     {
         name: "password",
         placeholder: "Input Password",

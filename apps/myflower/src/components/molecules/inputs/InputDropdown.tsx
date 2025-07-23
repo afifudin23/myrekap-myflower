@@ -9,7 +9,7 @@ const InputDropdown = ({
     name,
     error,
     control,
-    className = "py-2 2xl:py-4 px-4 2xl:px-6 text-base 2xl:text-xl",
+    className = "py-2 2xl:py-3 px-4 2xl:px-5 text-base 2xl:text-xl",
     disabled,
 }: any) => {
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -25,7 +25,7 @@ const InputDropdown = ({
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
     return (
-        <div className={`input-dropdown w-full`}>
+        <div className="flex flex-col gap-2">
             <Label id={name} children={label} />
             <Controller
                 name={name as any}
@@ -64,7 +64,7 @@ const InputDropdown = ({
                                         value === null && "bg-slate-500"
                                     }`}
                                     onClick={() => {
-                                        onChange(null);
+                                        onChange(undefined);
                                         setIsOpen(false);
                                     }}
                                 >

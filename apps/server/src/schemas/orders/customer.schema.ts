@@ -13,7 +13,7 @@ export const create = z
                 const today = new Date();
                 today.setHours(0, 0, 0, 0); // Reset to midnight
 
-                return delivery >= today;
+                return delivery > today;
             },
             {
                 message: "Ready date minimum is tomorrow",

@@ -11,7 +11,7 @@ function OrderDetailSection() {
     const navigate = useNavigate();
     return (
         <>
-            <div className="space-y-3">
+            <div className="space-y-5">
                 <div className="flex justify-between items-start">
                     <p className="font-semibold text-base 2xl:text-xl px-4 py-1 rounded-md text-slate-50 bg-slate-800 bg-opacity-40">
                         #{order.orderCode}
@@ -20,23 +20,20 @@ function OrderDetailSection() {
                         <Badge
                             className={`${badgeColorPaymentStatus(
                                 order.paymentStatus
-                            )} text-sm text-white font-semibold`}
+                            )} w-[90px] py-1 text-sm text-white font-semibold`}
                             field={order.paymentStatus}
-                            size="w-[90px]"
                         />
                         <Badge
-                            className={`${badgeColorOrderStatus(order.orderStatus)} text-sm text-white font-semibold`}
+                            className={`${badgeColorOrderStatus(order.orderStatus)} w-[100px] py-1 text-sm text-white font-semibold`}
                             field={order.orderStatus}
-                            size="w-[90px]"
                         />
                         <Badge
-                            className="bg-[#609393] text-sm text-white font-semibold"
+                            className="bg-[#609393] w-[120px] py-1 text-sm text-white font-semibold"
                             field={order.customerCategory}
-                            size="w-[90px]"
                         />
                     </div>
                 </div>
-                <div className="flex gap-2 text-sm items-center">
+                <div className="flex gap-2 items-center">
                     <p className="font-medium 2xl:font-semibold text-slate-500">
                         {formatters.dateToString(order.orderDate)}
                     </p>

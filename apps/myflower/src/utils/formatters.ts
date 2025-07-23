@@ -8,3 +8,16 @@ export const isoDateToStringDateTime = (isoDate: any) => {
 
     return `${day}-${month}-${year} ${hours}:${minutes}`;
 };
+
+export const formatCapital = (data: string = "") => {
+    if (data === "POLISI_MILITER") {
+    return data
+        .toLowerCase() // change to lowercase
+        .replace(/_/g, " ") // change underscore to space
+        .replace(/\b\w/g, (char) => char.toUpperCase()); // cpitalize each word
+    }
+    return data
+        .toLowerCase() // change to lowercase
+        .replace(/_/g, " ") // change underscore to space
+        .replace(/\b\w/g, (char) => char.toUpperCase()); // cpitalize each word
+};

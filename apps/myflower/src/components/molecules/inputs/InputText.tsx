@@ -9,7 +9,7 @@ import { Controller } from "react-hook-form";
 
 function InputText({ formInput = true, name, label, type, control, error, disabled }: any) {
     return (
-        <div>
+        <div className="flex flex-col gap-2">
             {formInput && <Label id={name} children={label} />}
             <Controller
                 name={name as any}
@@ -19,7 +19,7 @@ function InputText({ formInput = true, name, label, type, control, error, disabl
                         id={name}
                         type={type}
                         placeholder={`Masukan ${label}`}
-                        className={`border py-2 px-4 rounded-lg w-full text-base 2xl:text-xl ${
+                        className={`border py-2 2xl:py-3 px-4 rounded-lg w-full text-base 2xl:text-xl ${
                             disabled ? "opacity-50 cursor-not-allowed" : ""
                         }`}
                         onChange={onChange}
