@@ -47,7 +47,7 @@ const OrderCard = ({ order }: any) => {
                         )}
                         {order.items.length > 2 && <li className="italic text-gray-500">Tampilkan lebih banyak</li>}
                     </ul>
-                    <p className="text-xl font-bold text-right">{formatters.formatRupiah(order.totalPrice)}</p>
+                    <p className="text-xl font-bold text-right">{formatters.formatRupiah(order.totalPrice + order.shippingCost)}</p>
                 </div>
             </div>
 

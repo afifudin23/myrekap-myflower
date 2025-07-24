@@ -104,7 +104,7 @@ export const create = async (user: any, orderCode: string) => {
         const parameter = {
             transaction_details: {
                 order_id: orderCode,
-                gross_amount: order.totalPrice,
+                gross_amount: order.totalPrice + order.shippingCost,
             },
             credit_card: {
                 secure: true,
@@ -116,7 +116,15 @@ export const create = async (user: any, orderCode: string) => {
                 first_name: order.customerName,
                 email: user.email, // Isi sesuai data
             },
-            item_details: formatters.generateItemDetails(order.items),
+            item_details: [
+                ...formatters.generateItemDetails(order.items),
+                {
+                    id: "ONGKIR",
+                    name: "Biaya Pengiriman",
+                    price: order.shippingCost,
+                    quantity: 1,
+                },
+            ],
             enabled_payments: [
                 "qris",
                 "bank_transfer",

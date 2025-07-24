@@ -44,10 +44,10 @@ function OrderDetailPage() {
     };
 
     return (
-        <MainLayout className="w-full space-y-10 max-w-7xl mx-auto">
+        <MainLayout className="w-full space-y-3 2xl:space-y-10 max-w-4xl 2xl:max-w-7xl mx-auto">
             <BackButton to="/orders">Kembali ke Pesanan</BackButton>
             <div className="">
-                <SectionTitle className="text-3xl font-bold">Detail Pesanan</SectionTitle>
+                <SectionTitle className="text-2xl 2xl:text-3xl font-bold">Detail Pesanan</SectionTitle>
                 <h3 className="text-lg font-semibold text-slate-500">#{order?.orderCode}</h3>
             </div>
 

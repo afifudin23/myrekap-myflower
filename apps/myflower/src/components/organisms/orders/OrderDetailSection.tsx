@@ -13,8 +13,8 @@ function OrderDetailSection({ order }: any) {
 
     return (
         <div className="grid md:grid-cols-2 gap-5">
-            <div className="space-y-3 bg-slate-50 p-4 rounded-md shadow-sm text-xl">
-                <SectionTitle className="text-3xl font-semibold">Informasi Pesanan</SectionTitle>
+            <div className="space-y-3 bg-slate-50 p-4 rounded-md shadow-sm text-sm 2xl:text-xl">
+                <SectionTitle className="text-xl 2xl:text-3xl font-semibold">Informasi Pesanan</SectionTitle>
                 <div className="">Status: {order.orderStatus?.split("_").join(" ")}</div>
                 <div className="">Nama Penerima: {order.customerName}</div>
                 <div className="">Opsi Pengiriman: {order.deliveryOption}</div>
@@ -25,8 +25,8 @@ function OrderDetailSection({ order }: any) {
                 <div className="">Provider: {order.paymentProvider?.split("_").join(" ") || "-"}</div>
             </div>
 
-            <div className="space-y-3 bg-gray-50 p-4 rounded-md shadow-sm text-xl">
-                <SectionTitle className="text-3xl font-semibold">Daftar Pesanan</SectionTitle>
+            <div className="space-y-3 bg-gray-50 p-4 rounded-md shadow-sm text-sm 2xl:text-xl">
+                <SectionTitle className="text-xl 2xl:text-3xl font-semibold">Daftar Pesanan</SectionTitle>
                 {order.items?.map((item: any, index: number) => (
                     <div key={item.id}>
                         <div className="flex justify-between">

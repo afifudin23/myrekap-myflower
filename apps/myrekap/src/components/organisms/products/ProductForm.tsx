@@ -1,4 +1,4 @@
-import { InputFile, InputText } from "@/components/molecules";
+import { InputFile, InputMoney, InputText } from "@/components/molecules";
 import { Button, Loading } from "@/components/atoms";
 import { PRODUCT_FORM_ITEMS } from ".";
 
@@ -15,6 +15,17 @@ function ProductForm({ control, onSubmit, errors, fieldRefs, isLoading, setValue
                         case "text":
                             return (
                                 <InputText
+                                    key={item.name}
+                                    label={item.label}
+                                    name={item.name}
+                                    ref={(el) => (fieldRefs.current[item.name] = el)}
+                                    error={errors[item.name as any]?.message}
+                                    control={control}
+                                />
+                            );
+                        case "money":
+                            return (
+                                <InputMoney
                                     key={item.name}
                                     label={item.label}
                                     name={item.name}

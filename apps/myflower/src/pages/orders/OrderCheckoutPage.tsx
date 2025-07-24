@@ -5,7 +5,7 @@ import InputText from "@/components/molecules/inputs/InputText";
 import OrderForm from "@/components/organisms/orders/OrderForm";
 import MainLayout from "@/components/templates/MainLayout";
 import { orderFormSchema } from "@/schemas/orderSchema";
-import { axiosInstance } from "@/utils";
+import { axiosInstance, formatters } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AxiosError } from "axios";
 import { useEffect } from "react";
@@ -17,7 +17,7 @@ function OrderCheckoutPage() {
     const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
     const totalItem = cartItems.reduce((total: number, item: any) => total + item.quantity, 0);
     const totalPrice = cartItems.reduce((total: number, item: any) => total + item.product.price * item.quantity, 0);
-
+    
     useEffect(() => {
         const script = document.createElement("script");
         script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
@@ -43,7 +43,8 @@ function OrderCheckoutPage() {
             })),
         },
     });
-
+    
+    const shippingCost = watch("deliveryOption") === "Delivery" ? totalPrice * 0.1 : 0;
     const { fields } = useFieldArray({
         control,
         name: "items",
@@ -90,7 +91,7 @@ function OrderCheckoutPage() {
     });
 
     return (
-        <MainLayout className="w-full space-y-6 max-w-7xl mx-auto">
+        <MainLayout className="w-full space-y-6 max-w-7xl mx-auto mb-32">
             <BackButton>Kembali ke Keranjang</BackButton>
             <SectionTitle className="text-3xl font-bold">Checkout</SectionTitle>
 
@@ -105,12 +106,12 @@ function OrderCheckoutPage() {
                 <div className="space-y-4">
                     <SectionTitle>Ringkasan Pesanan</SectionTitle>
                     <div className="bg-gray-50 p-4 rounded-md shadow-sm space-y-2">
-                        <div>
+                        <div className="space-y-3">
                             {fields.map((field: any, index: number) => (
                                 <div key={field.id} className="flex flex-col gap-2">
                                     <p className="flex justify-between">
                                         <span className="font-medium">
-                                            {cartItems[index]?.product?.name} ({cartItems[index]?.quantity})
+                                            {cartItems[index]?.product?.name} ({cartItems[index]?.quantity}x)
                                         </span>
                                         <span className="ml-2">Rp {cartItems[index].product.price}</span>
                                     </p>
@@ -129,8 +130,12 @@ function OrderCheckoutPage() {
                             <span>{totalItem}</span>
                         </div>
                         <div className="flex justify-between font-semibold">
+                            <span>Biaya Pengiriman</span>
+                            <span>{formatters.formatRupiah(shippingCost)}</span>
+                        </div>
+                        <div className="flex justify-between font-semibold">
                             <span>Total Harga</span>
-                            <span>Rp. {totalPrice.toLocaleString()}</span>
+                            <span>{formatters.formatRupiah(totalPrice + shippingCost)}</span>
                         </div>
                     </div>
 

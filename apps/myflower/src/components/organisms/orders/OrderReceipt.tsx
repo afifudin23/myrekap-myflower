@@ -112,6 +112,14 @@ const OrderReceipt = ({ data }: any) => {
                             <Text style={styles.textRow}>{formatters.formatRupiah(item.totalPrice)}</Text>
                         </View>
                     ))}
+                    {data.shippingCost !== 0 && (
+                        <View style={styles.viewRow}>
+                            <Text style={styles.textRow}>Pengiriman</Text>
+                            <Text style={styles.textRow}>1</Text>
+                            <Text style={styles.textRow}>-</Text>
+                            <Text style={styles.textRow}>{formatters.formatRupiah(data.shippingCost)}</Text>
+                        </View>
+                    )}
                 </View>
 
                 {/* Summary */}
@@ -119,7 +127,7 @@ const OrderReceipt = ({ data }: any) => {
                     <View style={{ ...styles.viewBottom, fontSize: 16 }}>
                         <Text style={styles.textBottom}>Total Price</Text>
                         <Text style={{ ...styles.textBottomItem, fontSize: 25 }}>
-                            {formatters.formatRupiah(data.totalPrice)}
+                            {formatters.formatRupiah(data.totalPrice + data.shippingCost)}
                         </Text>
                     </View>
                     <View style={styles.viewBottom}>

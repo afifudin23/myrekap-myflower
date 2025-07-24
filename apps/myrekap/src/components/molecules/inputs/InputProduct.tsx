@@ -1,15 +1,15 @@
 import { Label } from "@/components/atoms";
-import { axiosInstance } from "@/utils";
+import { axiosInstance, formatters } from "@/utils";
 import { useEffect, useState } from "react";
 import { Controller, useFieldArray } from "react-hook-form";
 
-function InputProduct({ label, name, control }: any) {
+function InputProduct({ label, name, control, setValue }: any) {
     const [categoryProducts, setCategoryProducts] = useState([]);
     const { fields, append, remove } = useFieldArray({
         control,
         name,
     });
-    
+
     useEffect(() => {
         const getCategoryProducts = async () => {
             try {
@@ -39,23 +39,37 @@ function InputProduct({ label, name, control }: any) {
                         </div>
 
                         <div className="grid grid-cols-3 gap-3">
+                            {/* Product ID */}
                             <Controller
                                 name={`items.${index}.productId`}
                                 control={control}
                                 render={({ field }) => (
                                     <div>
                                         <label className="block text-sm">Kategori Bunga</label>
-                                        <select {...field} className="w-full border p-2 rounded" required>
+                                        <select
+                                            {...field}
+                                            onChange={(e) => {
+                                                const selected: any = categoryProducts.find(
+                                                    (p: any) => p.id === e.target.value
+                                                );
+                                                field.onChange(e); // update productId
+                                                setValue(`items.${index}.price`, selected?.price ?? 0); // set hidden price
+                                            }}
+                                            className="w-full border p-2 rounded"
+                                            required
+                                        >
                                             <option value="">-- Pilih Kategori --</option>
                                             {categoryProducts.map((product: any) => (
                                                 <option key={product.id} value={product.id}>
-                                                    {product.name}
+                                                    {product.name} - {formatters.formatRupiah(product.price)}
                                                 </option>
                                             ))}
                                         </select>
                                     </div>
                                 )}
                             />
+
+                            {/* Quantity */}
                             <Controller
                                 name={`items.${index}.quantity`}
                                 control={control}
@@ -73,6 +87,7 @@ function InputProduct({ label, name, control }: any) {
                                 )}
                             />
 
+                            {/* Message */}
                             <Controller
                                 name={`items.${index}.message`}
                                 control={control}
@@ -83,6 +98,13 @@ function InputProduct({ label, name, control }: any) {
                                     </div>
                                 )}
                             />
+
+                            {/* Hidden price */}
+                            <Controller
+                                name={`items.${index}.price`}
+                                control={control}
+                                render={({ field }) => <input type="hidden" {...field} />}
+                            />
                         </div>
                     </div>
                 ))}
@@ -90,7 +112,7 @@ function InputProduct({ label, name, control }: any) {
                 <div className="flex gap-4">
                     <button
                         type="button"
-                        onClick={() => append({ productId: "", quantity: 1, message: "" })}
+                        onClick={() => append({ productId: "", quantity: 1, message: "", price: 0 })}
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                     >
                         + Tambah Produk

@@ -5,10 +5,8 @@ import useOrders from "@/hooks/useOrders";
 import OrderList from "@/components/organisms/orders/OrderList";
 
 function OrdersPage() {
-    
-    const { orders, loading } = useOrders();
+    const { orders } = useOrders();
     console.log(orders);
-    if (loading) return <div>Loading...</div>;
     return (
         <MainLayout className="w-full space-y-6 max-w-4xl mx-auto">
             <BackButton to="/products">Kembali ke Produk</BackButton>

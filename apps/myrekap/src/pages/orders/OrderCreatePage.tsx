@@ -21,6 +21,7 @@ function OrderCreatePage() {
         control,
         watch,
         getValues,
+        setValue,
         formState: { errors },
     } = useForm<any>({
         resolver: zodResolver(orderSchema.create),
@@ -28,7 +29,7 @@ function OrderCreatePage() {
             customerName: "",
             customerCategory: "",
             phoneNumber: "",
-            items: [{ productId: "", quantity: 1, message: "" }],
+            items: [{ productId: "", quantity: 1, message: "", price: 0 }],
             deliveryOption: "",
             deliveryAddress: "",
             readyDate: "",
@@ -45,7 +46,7 @@ function OrderCreatePage() {
                 const value = data[key];
 
                 if (key === "paymentProof" && Array.isArray(value)) {
-                    value.map((file) => {
+                    value.map((file: File) => {
                         formData.append(key, file);
                     });
                 } else if (typeof value === "object" && !(value instanceof File)) {
@@ -102,6 +103,7 @@ function OrderCreatePage() {
                 watch={watch}
                 errors={errors}
                 getValues={getValues}
+                setValue={setValue}
             />
 
             {/* Loading */}

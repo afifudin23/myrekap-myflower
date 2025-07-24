@@ -6,7 +6,7 @@ export const PRODUCT_FORM_ITEMS = [
     },
     {
         label: "Harga",
-        type: "text",
+        type: "money",
         name: "price",
     },
     {
