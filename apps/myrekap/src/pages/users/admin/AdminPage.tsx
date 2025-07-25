@@ -17,6 +17,8 @@ const AdminPage = () => {
     const [showAlertConfirm, setShowAlertConfirm] = useState<boolean>(false);
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
+    if (!users) return <p>Loading...</p>;
+
     useEffect(() => {
         const state = location.state as { message?: string };
 

@@ -105,7 +105,6 @@ export const update = z
                     .string()
                     .transform((val) => (val === "" ? null : val))
                     .nullish(),
-                price: z.coerce.number().positive("Harga tidak boleh 0 atau negatif"),
             })
         ),
         deliveryOption: z
