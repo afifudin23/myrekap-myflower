@@ -15,7 +15,8 @@ function OrderDetailSection({ order }: any) {
         <div className="grid md:grid-cols-2 gap-5">
             <div className="space-y-3 bg-slate-50 p-4 rounded-md shadow-sm text-sm 2xl:text-xl">
                 <SectionTitle className="text-xl 2xl:text-3xl font-semibold">Informasi Pesanan</SectionTitle>
-                <div className="">Status: {order.orderStatus?.split("_").join(" ")}</div>
+                <div className="">Status Pesanan: {order.orderStatus?.split("_").join(" ")}</div>
+                <div className="">Status Pembayaran: {order.paymentStatus?.split("_").join(" ")}</div>
                 <div className="">Nama Penerima: {order.customerName}</div>
                 <div className="">Opsi Pengiriman: {order.deliveryOption}</div>
                 <div className="">Alamat Pengiriman: {order.deliveryAddress || "-"}</div>
@@ -59,7 +60,7 @@ function OrderDetailSection({ order }: any) {
                         <span>{formatters.formatRupiah(order.totalPrice + order.shippingCost)}</span>
                     </div>
                 </div>
-                {order.paymentStatus === "PAID" && (
+                {["PAID", "UNPAID"].includes(order.paymentStatus) && (
                     <SmallButton
                         type="button"
                         colors={{ primary: "#3e84da", hover: "#336aaf" }}

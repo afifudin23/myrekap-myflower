@@ -6,7 +6,6 @@ import OrderList from "@/components/organisms/orders/OrderList";
 
 function OrdersPage() {
     const { orders } = useOrders();
-    console.log(orders);
     return (
         <MainLayout className="w-full space-y-6 max-w-4xl mx-auto">
             <BackButton to="/products">Kembali ke Produk</BackButton>

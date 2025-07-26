@@ -1,3 +1,4 @@
+import ProtectedRoute from "@/components/templates/ProtectedRoute";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
 import Login from "@/pages/auth/LoginPage";
 import Register from "@/pages/auth/RegisterPage";
@@ -23,21 +24,23 @@ function AppRouter() {
                     <Route path="register" element={<Register />} />
                     <Route path="forgot-password" element={<ForgotPasswordPage />} />
                 </Route>
+                
+                <Route element={<ProtectedRoute />}>
+                    <Route path="/products">
+                        <Route index element={<ProductsPage />} />
+                        <Route path=":id" element={<ProductDetailPage />} />
+                    </Route>
 
-                <Route path="/products">
-                    <Route index element={<ProductsPage />} />
-                    <Route path=":id" element={<ProductDetailPage />} />
-                </Route>
+                    <Route path="/carts" element={<CartPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
 
-                <Route path="/carts" element={<CartPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-
-                <Route path="/orders">
-                    <Route index element={<OrdersPage />} />
-                    <Route path=":id" element={<OrderDetailPage />} />
-                    <Route path="checkout" element={<OrderCheckoutPage />} />
-                    <Route path="payment-success" element={<PaymentSuccessPage />} />
-                    <Route path="payment-failed" element={<PaymentFailedPage />} />
+                    <Route path="/orders">
+                        <Route index element={<OrdersPage />} />
+                        <Route path=":id" element={<OrderDetailPage />} />
+                        <Route path="checkout" element={<OrderCheckoutPage />} />
+                        <Route path="payment-success" element={<PaymentSuccessPage />} />
+                        <Route path="payment-failed" element={<PaymentFailedPage />} />
+                    </Route>
                 </Route>
 
                 <Route path="*" element={<h1>Not Found</h1>} />

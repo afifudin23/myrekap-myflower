@@ -16,19 +16,19 @@ function ProfileForm({ control, errors }: any) {
                                 control={control}
                                 render={({ field }) => (
                                     <>
-                                    <Label id={item.name} children={item.label} />
-                                    <select
-                                    {...field}
-                                        className="border py-2 2xl:py-3 px-4 rounded-lg w-full text-base 2xl:text-xl"
+                                        <Label id={item.name} children={item.label} />
+                                        <select
+                                            {...field}
+                                            className="border py-2 2xl:py-3 px-4 rounded-lg w-full text-base 2xl:text-xl"
                                         >
-                                        <option value="">{field.value ? field.value : "-- Input Kategori Pelanggan --"}</option>
-                                        {item.options?.map((option: any) => (
-                                            <option key={option} value={option} className="">
-                                                {option}
-                                            </option>
-                                        ))}
-                                    </select>
-                                        </>
+                                            <option value="">{"-- Input Kategori Pelanggan --"}</option>
+                                            {item.options?.map((option: any) => (
+                                                <option key={option} value={option} className="">
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </>
                                 )}
                             />
                         );

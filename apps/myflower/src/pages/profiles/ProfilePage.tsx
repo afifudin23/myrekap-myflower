@@ -4,6 +4,7 @@ import SectionTitle from "@/components/atoms/SectionTitle";
 import ProfileForm from "@/components/organisms/profiles/ProfileForm";
 import MainLayout from "@/components/templates/MainLayout";
 import { profileFormSchema } from "@/schemas/profileSchema";
+import useAuthStore from "@/stores/useAuthStore";
 import { axiosInstance, formatters } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AxiosError } from "axios";
@@ -24,7 +25,7 @@ function ProfilePage() {
             username: user.username,
             email: user.email,
             phoneNumber: user.phoneNumber,
-            customerCategory: formatters.formatCapital(user.customerCategory),
+            customerCategory: formatters.formatCapital(user.customerCategory || ""),
             oldPassword: "",
             newPassword: "",
             confPassword: "",
@@ -49,9 +50,7 @@ function ProfilePage() {
     });
 
     const handleLogout = async () => {
-        localStorage.clear();
-        await axiosInstance.post("auth/logout");
-        navigate("/auth/login");
+        await useAuthStore.getState().logout();
     };
     return (
         <MainLayout className="w-full max-w-3xl space-y-6">

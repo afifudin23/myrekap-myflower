@@ -9,6 +9,7 @@ import AuthForm from "@/components/organisms/auth/AuthForm";
 import { COLORS } from "@/constants/colorConstant";
 import axiosInstance from "@/utils/axiosInstance";
 import { LOGIN_FIELDS } from "@/components/organisms/auth/auth.constants";
+import useAuthStore from "@/stores/useAuthStore";
 
 function Login() {
     const [errorMessage, setErrorMessage] = useState<string>("");
@@ -27,8 +28,7 @@ function Login() {
                 username: data.username,
                 password: data.password,
             });
-            localStorage.setItem("user", JSON.stringify(response.data));
-            // setUserCookies({ username: response.data.username, role: response.data.role });
+            useAuthStore.getState().setUser(response.data);
             navigate("/products");
         } catch (error) {
             const axiosError = error as AxiosError;
