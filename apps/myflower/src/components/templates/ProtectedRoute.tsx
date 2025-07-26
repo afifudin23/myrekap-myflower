@@ -8,7 +8,6 @@ const ProtectedRoute = () => {
     const location = useLocation();
 
     useEffect(() => {
-        console.log(123)
         verifyToken();
     }, [location.pathname, verifyToken]);
 

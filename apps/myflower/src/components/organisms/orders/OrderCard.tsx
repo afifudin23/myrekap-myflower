@@ -27,13 +27,18 @@ function OrderCard({ order }: any) {
             </div>
 
             <div className="flex justify-between text-sm">
-                <span>Status:</span>
+                <span>Pesanan:</span>
                 <span className="font-medium capitalize">{order.orderStatus.split("_").join(" ")}</span>
             </div>
 
             <div className="flex justify-between text-sm">
-                <span>Total:</span>
-                <span className="font-semibold">{formatters.formatRupiah(order.totalPrice+order.shippingCost)}</span>
+                <span>Pembayaran:</span>
+                <span className="font-medium capitalize">{order.paymentStatus.split("_").join(" ")}</span>
+            </div>
+
+            <div className="flex justify-between text-sm">
+                <span>Total Pembayaran:</span>
+                <span className="font-semibold">{formatters.formatRupiah(order.totalPrice + order.shippingCost)}</span>
             </div>
 
             <div className="pt-2">

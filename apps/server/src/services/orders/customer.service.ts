@@ -1,10 +1,8 @@
-import { enqueueWhatsAppMessage } from "@/config";
 import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
 import { ordersCustomerSchema } from "@/schemas";
 import { formatters } from "@/utils";
-import { generatedTextLink } from "@/utils/formatters.utils";
 
 export const create = async (user: any, data: ordersCustomerSchema.CreateType) => {
     const cartItems = await prisma.cartItem.findMany({ where: { userId: user.id }, include: { product: true } });
@@ -40,15 +38,15 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
                 ...(data.paymentMethod === "COD" && { paymentStatus: "UNPAID" }),
                 user: { connect: { id: user.id } },
                 totalPrice,
-                shippingCost, // Fixed shipping cost next time
+                ...(data.deliveryOption === "DELIVERY" && { shippingCost }), // Fixed shipping cost next time
                 items: { create: orderItems },
             },
             include: { items: { include: { product: true } } },
         });
 
         // Send Notification Whatsapp
-        const message = generatedTextLink(order);
-        enqueueWhatsAppMessage(message);
+        // const message = generatedTextLink(order);
+        // enqueueWhatsAppMessage(message);
 
         // Decrement Stock Product
         for (const item of orderItems) {
@@ -59,7 +57,7 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
         }
 
         // Off during testing
-        await prisma.cartItem.deleteMany({ where: { userId: user.id } });
+        // await prisma.cartItem.deleteMany({ where: { userId: user.id } });
         return order;
     } catch (error: any) {
         console.log(error.message);
@@ -79,6 +77,13 @@ export const findByIdAndUser = async (userId: string, orderId: string) => {
             where: { id: orderId, userId },
             include: { items: { include: { product: { include: { images: true } } } } },
         });
+    } catch (_error) {
+        throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
+    }
+};
+export const remove = async (orderCode: string) => {
+    try {
+        return await prisma.order.delete({ where: { orderCode } });
     } catch (_error) {
         throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
     }

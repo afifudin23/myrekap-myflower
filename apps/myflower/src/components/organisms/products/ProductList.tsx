@@ -21,7 +21,6 @@ function ProductList({ products }: any) {
     };
     const handleAddToCart = async (productId: string, e?: React.MouseEvent) => {
         e?.stopPropagation();
-        console.log(productId);
         try {
             await axiosInstance.post("/carts", { productId });
             alert("Produk berhasil ditambahkan ke keranjang.");

@@ -4,14 +4,25 @@ import SectionTitle from "@/components/atoms/SectionTitle";
 import OrderDetailSection from "@/components/organisms/orders/OrderDetailSection";
 import MainLayout from "@/components/templates/MainLayout";
 import { axiosInstance } from "@/utils";
+import { generatedTextLink } from "@/utils/formatters";
 import { useEffect, useState } from "react";
 
 function OrderDetailPage() {
     const [order, setOrder] = useState<any>({});
+    const [snapToken, setSnapToken] = useState<string | null>("");
+    console.log(order);
 
     useEffect(() => {
         const storedOrder = JSON.parse(localStorage.getItem("orderDetail") || "{}");
+        setSnapToken(localStorage.getItem("snapToken"));
         setOrder(storedOrder);
+    }, []);
+
+    useEffect(() => {
+        const script = document.createElement("script");
+        script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+        script.setAttribute("data-client-key", import.meta.env.VITE_MIDTRANS_CLIENT_KEY || "");
+        document.body.appendChild(script);
     }, []);
 
     const handleCancelOrder = async () => {
@@ -43,6 +54,33 @@ function OrderDetailPage() {
         }
     };
 
+    const handlePay = () => {
+        if (snapToken) {
+            window.snap.pay(snapToken, {
+                onSuccess: async () => {
+                    await axiosInstance.delete("/carts");
+
+                    // Send WhatsApp message
+                    const message = generatedTextLink(order);
+                    await fetch(
+                        `https://api.callmebot.com/whatsapp.php?phone=${
+                            import.meta.env.VITE_WHATSAPP_NUMBER
+                        }&text=${message}&apikey=${import.meta.env.VITE_CALLMEBOT_API_KEY}`
+                    );
+                },
+                onPending: () => {
+                    localStorage.setItem("snapToken", snapToken);
+                    window.location.href = "/orders/" + order.id;
+                },
+                onError: async (error: any) => {
+                    console.error("Payment Failed:", error);
+                    await axiosInstance.delete("/orders/customer/" + order.orderCode);
+                    alert("Terjadi kesalahan saat pembayaran.");
+                },
+            });
+        }
+    };
+
     return (
         <MainLayout className="w-full space-y-3 2xl:space-y-10 max-w-4xl 2xl:max-w-7xl mx-auto">
             <BackButton to="/orders">Kembali ke Pesanan</BackButton>
@@ -71,6 +109,11 @@ function OrderDetailPage() {
                 >
                     Terima Pesanan
                 </Button>
+                {order.paymentStatus === "PENDING" && snapToken && (
+                    <button onClick={handlePay} className="btn btn-primary mt-4">
+                        Lanjutkan Pembayaran
+                    </button>
+                )}
             </div>
         </MainLayout>
     );
