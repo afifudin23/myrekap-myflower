@@ -1,7 +1,7 @@
 import { FaRegTrashAlt, FaPencilAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import { badgeColorUser, formatters, setUserDetailCookies } from "@/utils";
+import { badgeColorUser, formatters } from "@/utils";
 import { AlertConfirm, AlertInfo } from "@/components/molecules";
 
 const UserTable = ({
@@ -73,7 +73,7 @@ const UserTable = ({
                                     <td className="flex gap-2 items-center p-3 py-5 text-lg whitespace-nowrap">
                                         <Link
                                             to={`/users/admin/${user.id}/edit`}
-                                            onClick={() => setUserDetailCookies(user)}
+                                            onClick={() => localStorage.setItem("userSelected", JSON.stringify(user))}
                                             className="p-2 bg-amber-400 bg-opacity-90 rounded-lg"
                                         >
                                             <FaPencilAlt className="text-amber-100 text-sm 2xl:text-lg" />

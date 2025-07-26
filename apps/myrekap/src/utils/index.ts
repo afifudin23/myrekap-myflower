@@ -1,4 +1,3 @@
-export * from "./cookies";
 export { default as axiosInstance } from "./axiosInstance";
 export * from "./colors";
 export * from "./filterSearch";

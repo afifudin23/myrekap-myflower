@@ -37,6 +37,7 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
                 ...(user.customerCategory != null && { customerCategory: user.customerCategory }),
                 source: "MYFLOWER",
                 orderCode: formatters.generateOrderCode(),
+                ...(data.paymentMethod === "COD" && { paymentStatus: "UNPAID" }),
                 user: { connect: { id: user.id } },
                 totalPrice,
                 shippingCost, // Fixed shipping cost next time
@@ -109,7 +110,7 @@ export const confirm = async (id: string) => {
         const data = await prisma.order.update({
             where: { id },
             include: { items: { include: { product: { include: { images: true } } } } },
-            data: { orderStatus: "COMPLETED" },
+            data: { orderStatus: "COMPLETED", paymentStatus: "PAID" },
         });
         return data;
     } catch (_error) {

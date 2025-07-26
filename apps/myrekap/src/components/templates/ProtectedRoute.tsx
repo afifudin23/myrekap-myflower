@@ -1,46 +1,23 @@
-import { Loading } from "@/components/atoms";
-import MainLayout from "@/components/templates/MainLayout";
-import { useVerify } from "@/hooks";
-import { axiosInstance, getUserCookies, removeOrderCookies, removeUserCookies, removeUserDetailCookies } from "@/utils";
-import { ReactNode } from "react";
+// src/components/routes/ProtectedRoute.tsx
+import { useEffect } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuthStore } from "@/stores/useAuthStore";
 
-function ProtectedRoute({ children }: { children?: ReactNode }) {
-    const { loading, isAuthenticated, error } = useVerify();
-    const userCookies = getUserCookies();
-    const path = useLocation().pathname.split("/")[1];
+const ProtectedRoute = () => {
+    const { isAuthenticated, loading, verifyToken } = useAuthStore();
+    const location = useLocation();
 
-    if (loading) {
-        return <Loading />;
-    }
-    if (!isAuthenticated || !userCookies) {
-        removeOrderCookies();
-        removeUserDetailCookies()
-        removeUserCookies();
-        (async () => await axiosInstance.post("auth/logout"))();
-        return <Navigate to="/auth/login" replace />;
-    }
-    if (error.code === "ERR_NETWORK") {
-        return (
-            <MainLayout>
-                <div className="flex justify-center items-center ">
-                    <div className="text-2xl font-bold">
-                        Tidak Dapat Terhubung Ke Server. Periksa Koneksi Internet Anda
-                    </div>
-                </div>
-            </MainLayout>
-        );
-    }
-    if (path === "users/admin" && getUserCookies().role !== "SUPERADMIN") {
-        return (
-            <MainLayout>
-                <div className="flex justify-center items-center ">
-                    <div className="text-2xl font-bold">Maaf Halaman Ini Hanya Bisa Diakses Oleh Superadmin</div>
-                </div>
-            </MainLayout>
-        );
-    }
-    return <>{children || <Outlet />}</>;
-}
+    useEffect(() => {
+        verifyToken();
+    }, [location.pathname, verifyToken]);
+
+    if (loading) return <div className="p-10 text-center">Checking authentication...</div>;
+
+    return isAuthenticated ? (
+        <Outlet />
+    ) : (
+        <Navigate to="/auth/login" state={{ message: "Sesi Anda Telah Habis, Silahkan Login Kembali" }} replace />
+    );
+};
 
 export default ProtectedRoute;

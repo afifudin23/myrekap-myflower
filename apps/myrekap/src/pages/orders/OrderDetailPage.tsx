@@ -2,7 +2,7 @@ import { Loading } from "@/components/atoms";
 import { AlertInfo, InputFinishedProduct, TitlePage } from "@/components/molecules";
 import { OrderDetailSection } from "@/components/organisms/orders";
 import MainLayout from "@/components/templates/MainLayout";
-import { axiosInstance, formatters, removeOrderCookies } from "@/utils";
+import { axiosInstance, formatters } from "@/utils";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -82,7 +82,7 @@ function OrderDetailPage() {
                 <button
                     onClick={() => {
                         navigate("/orders");
-                        removeOrderCookies();
+                        localStorage.removeItem("orderDetail");
                     }}
                 >
                     <TbLogout2 className="text-5xl 2xl:text-6xl" />

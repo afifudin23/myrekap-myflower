@@ -2,7 +2,7 @@ import { TitlePage } from "@/components/molecules";
 import MainLayout from "@/components/templates/MainLayout";
 import { useRef, useState } from "react";
 import { OrderForm } from "@/components/organisms/orders";
-import { axiosInstance, removeOrderCookies } from "@/utils";
+import { axiosInstance } from "@/utils";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { TbLogout2 } from "react-icons/tb";
@@ -87,12 +87,7 @@ function OrderCreatePage() {
         <MainLayout>
             <div className="flex justify-between">
                 <TitlePage title="Tambah Order" subtitle="Menginput Order Sesuai Kebutuhan" />
-                <button
-                    onClick={() => {
-                        navigate("/orders");
-                        removeOrderCookies();
-                    }}
-                >
+                <button onClick={() => navigate("/orders")}>
                     <TbLogout2 className="text-5xl 2xl:text-6xl" />
                 </button>
             </div>

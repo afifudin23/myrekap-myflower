@@ -1,30 +1,30 @@
 import { axiosInstance } from "@/utils";
 import { AxiosError } from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 function useVerify() {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<AxiosError>({} as AxiosError);
-    const hasFetched = useRef(false);
+    const location = useLocation();
 
     useEffect(() => {
-        if (hasFetched.current) return;
-        hasFetched.current = true;
         const checkAuth = async () => {
+            setLoading(true);
             try {
                 const response = await axiosInstance.get("auth/verify");
                 setIsAuthenticated(response.status === 200);
+                console.log(response.status === 200);
             } catch (error: any | AxiosError) {
+                console.log(error.response.data);
                 setError(error);
             } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, 10);
+                setLoading(false);
             }
         };
         checkAuth();
-    }, []);
+    }, [location.pathname]);
 
     return { isAuthenticated, loading, error };
 }

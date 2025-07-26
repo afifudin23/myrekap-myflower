@@ -1,19 +1,13 @@
 import { RiFlowerLine } from "react-icons/ri";
-import { Button, Loading } from "@/components/atoms";
+import { Button } from "@/components/atoms";
 import { TypeOf, ZodType } from "zod";
 import { FieldErrors, Path, SubmitHandler, UseFormHandleSubmit, UseFormRegister } from "react-hook-form";
-import { AnimatePresence } from "framer-motion";
-import { AlertInfo } from "@/components/molecules";
 
 interface AuthFormProps<TSchema extends ZodType<any, any>> {
-    showAlert: boolean;
-    setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
-    alertMessage: string;
     onSubmit: SubmitHandler<TypeOf<TSchema>>;
     items: string[];
     register: UseFormRegister<TypeOf<TSchema>>;
     handleSubmit: UseFormHandleSubmit<TypeOf<TSchema>>;
-    isLoading: boolean;
     errors: FieldErrors<TypeOf<TSchema>>;
 }
 const getErrorMessage = (fieldName: string, errors: any) => {
@@ -22,14 +16,10 @@ const getErrorMessage = (fieldName: string, errors: any) => {
 };
 
 function AuthForm<TSchema extends ZodType<any, any>>({
-    showAlert,
-    setShowAlert,
-    alertMessage,
     onSubmit,
     items,
     register,
     handleSubmit,
-    isLoading,
     errors,
 }: AuthFormProps<TSchema>) {
     return (
@@ -72,14 +62,6 @@ function AuthForm<TSchema extends ZodType<any, any>>({
                         Login
                     </Button>
                 </form>
-
-                {/* Custom Alert */}
-                <AnimatePresence>
-                    {showAlert && <AlertInfo handleAlert={() => setShowAlert(false)} message={alertMessage} />}
-                </AnimatePresence>
-
-                {/* Loading */}
-                {isLoading && <Loading />}
             </div>
         </div>
     );

@@ -1,8 +1,7 @@
-import { getUserCookies } from "@/utils";
 import { NavLink } from "react-router-dom";
 
 export function SidebarMenuItem({ name, path, icons }: any) {
-    const user = getUserCookies();
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
     return (
         <>
             {path === "users/admin" && user.role === "ADMIN" ? (

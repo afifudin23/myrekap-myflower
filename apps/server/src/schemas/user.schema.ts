@@ -28,10 +28,12 @@ export const updateProfile = object({
     phoneNumber: string().nullish(),
     customerCategory: z.preprocess(
         (value) => (typeof value === "string" ? formatters.parseCapital(value) : value),
-        z.enum(["UMUM", "PEMDA", "AKADEMIK", "RUMAH_SAKIT", "POLISI_MILITER", "PERBANKAN"], {
-            required_error: "Customer category is required",
-            invalid_type_error: "Customer category must be a valid enum value",
-        })
+        z
+            .enum(["UMUM", "PEMDA", "AKADEMIK", "RUMAH_SAKIT", "POLISI_MILITER", "PERBANKAN"], {
+                required_error: "Customer category is required",
+                invalid_type_error: "Customer category must be a valid enum value",
+            })
+            .nullish()
     ),
     oldPassword: string().nullish(),
     newPassword: string().nullish(),

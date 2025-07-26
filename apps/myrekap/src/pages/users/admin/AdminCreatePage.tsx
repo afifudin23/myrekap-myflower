@@ -1,7 +1,7 @@
 import { TitlePage } from "@/components/molecules";
 import { UserForm } from "@/components/organisms/users";
 import MainLayout from "@/components/templates/MainLayout";
-import { axiosInstance, removeUserDetailCookies } from "@/utils";
+import { axiosInstance } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TbLogout2 } from "react-icons/tb";
@@ -71,12 +71,7 @@ function AdminCreatePage() {
         <MainLayout>
             <div className="flex justify-between">
                 <TitlePage title="Tambah User Admin" subtitle="Menambah User Baru Sesuai Kebutuhan" />
-                <button
-                    onClick={() => {
-                        navigate(-1);
-                        removeUserDetailCookies();
-                    }}
-                >
+                <button onClick={() => navigate("/users/admin")}>
                     <TbLogout2 className="text-5xl 2xl:text-6xl" />
                 </button>
             </div>
