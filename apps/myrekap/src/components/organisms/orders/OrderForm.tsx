@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ORDER_FORM_ITEMS } from ".";
 import { InputDate, InputDropdown, InputFile, InputMoney, InputProduct, InputText } from "@/components/molecules";
 import { Button } from "@/components/atoms";
-import { formatters } from "@/utils";
+// import { formatters } from "@/utils";
 
 // interface OrderFormProps<TSchema extends ZodType<any, any>> {
 //     onSubmit: SubmitHandler<TypeOf<TSchema>>; // ini lebih tepat daripada React.FormEventHandler
@@ -25,9 +25,9 @@ const getErrorMessage = (fieldName: string, errors: any) => {
 function OrderForm({ onSubmit, fieldRefs, control, watch, errors, getValues, setValue }: any) {
     const deliveryOption = watch("deliveryOption");
     const paymentMethod = watch("paymentMethod");
-    const items = watch("items");
-    const totalPrice = items.reduce((total: number, item: any) => total + item.price * item.quantity, 0);
-    const shippingCost = deliveryOption === "Delivery" ? totalPrice * 0.1 : 0;
+    // const items = watch("items");
+    // const totalPrice = items.reduce((total: number, item: any) => total + item.price * item.quantity, 0);
+    // const shippingCost = deliveryOption === "Delivery" ? totalPrice * 0.1 : 0;
 
     useEffect(() => {
         if (!errors || Object.keys(errors).length === 0) return;
@@ -122,8 +122,8 @@ function OrderForm({ onSubmit, fieldRefs, control, watch, errors, getValues, set
                         return null;
                 }
             })}
-            <h1>Biaya Pengiriman: {formatters.formatRupiah(shippingCost)}</h1>
-            <h1>Total Harga: {formatters.formatRupiah(totalPrice + shippingCost)}</h1>
+            {/* <h1>Biaya Pengiriman: {formatters.formatRupiah(shippingCost)}</h1>
+            <h1>Total Harga: {formatters.formatRupiah(totalPrice + shippingCost)}</h1> */}
 
             <Button type="submit" className="mb-28 mt-20 2xl:mt-32">
                 Submit

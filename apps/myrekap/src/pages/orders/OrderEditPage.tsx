@@ -29,6 +29,7 @@ function OrderEditPage() {
         resolver: zodResolver(orderSchema.update),
         defaultValues: order,
     });
+    console.log(order)
     console.log(errors)
     const onSubmit = async (data: any) => {
         console.log(data)

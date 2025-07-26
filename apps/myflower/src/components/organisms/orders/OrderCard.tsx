@@ -33,7 +33,7 @@ function OrderCard({ order }: any) {
 
             <div className="flex justify-between text-sm">
                 <span>Total:</span>
-                <span className="font-semibold">Rp {order.totalPrice.toLocaleString()}</span>
+                <span className="font-semibold">{formatters.formatRupiah(order.totalPrice+order.shippingCost)}</span>
             </div>
 
             <div className="pt-2">

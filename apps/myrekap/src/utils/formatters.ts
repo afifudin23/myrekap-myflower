@@ -106,6 +106,8 @@ const formatters = {
                     : Array.isArray(data.paymentProof)
                     ? data.paymentProof
                     : [data.paymentProof],
+            totalPrice: data.totalPrice,
+            shippingCost: data.shippingCost,
         };
     },
 
