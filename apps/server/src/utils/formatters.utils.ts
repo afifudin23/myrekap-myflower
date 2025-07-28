@@ -98,4 +98,12 @@ export const generateItemDetails = (orderItems: any[]) => {
     }));
 };
 
-
+export const getAppName = (role: string) => {
+    switch (role) {
+        case "SUPERADMIN":
+        case "ADMIN":
+            return "MyRekap";
+        case "CUSTOMER":
+            return "MyFlower";
+    }
+};

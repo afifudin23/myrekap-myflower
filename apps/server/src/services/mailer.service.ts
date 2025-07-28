@@ -1,4 +1,6 @@
 import { brevo, env } from "@/config";
+import { tokenService } from "@/services";
+import { formatters } from "@/utils";
 
 interface SendTemplateEmailProps {
     to: string;
@@ -26,13 +28,28 @@ export const sendTemplateEmail = async ({ to, name, templateId, params }: SendTe
     }
 };
 
-interface SendVerificationEmailProps {
-    to: string;
-    name: string;
-    token: string;
-}
+export const sendVerificationEmail = async (user: any) => {
+    const token = await tokenService.generateToken({ userId: user.id, type: "VERIFY_EMAIL" });
+    const appName = formatters.getAppName(user.role);
+    const clientUrl = appName === "MyRekap" ? env.MYREKAP_URL : env.MYFLOWER_URL;
+    const verificationLink = `${clientUrl}/auth/verify-email?token=${token}`;
+    await sendTemplateEmail({
+        to: user.email,
+        name: user.fullName,
+        templateId: 3,
+        params: { name: user.fullName, appName, verificationLink },
+    });
+};
 
-export const sendVerificationEmail = async ({ to, name, token }: SendVerificationEmailProps) => {
-    const verificationLink = `${env.MYFLOWER_URL}/auth/verify-email?token=${token}`;
-    await sendTemplateEmail({ to, name, templateId: 3, params: { name, verificationLink } });
+export const sendResetPasswordEmail = async (user: any) => {
+    const token = await tokenService.generateToken({ userId: user.id, type: "RESET_PASSWORD" });
+    const appName = formatters.getAppName(user.role);
+    const clientUrl = appName === "MyRekap" ? env.MYREKAP_URL : env.MYFLOWER_URL;
+    const resetLink = `${clientUrl}/auth/reset-password?token=${token}`;
+    await sendTemplateEmail({
+        to: user.email,
+        name: user.fullName,
+        templateId: 4,
+        params: { name: user.fullName, appName, resetLink },
+    });
 };

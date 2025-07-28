@@ -63,15 +63,14 @@ function LoginPage() {
             setIsLoading(false);
             useAuthStore.getState().setUser(response.data);
             navigate("/dashboard");
-        } catch (error) {
+        } catch (error: any) {
             const axiosError = error as AxiosError;
             setIsLoading(false);
             setShowAlert(true);
             if (axiosError.code === "ERR_NETWORK") {
                 setMessage("Tidak Dapat Terhubung Ke Server. Periksa Koneksi Internet Anda");
-            }
-            if (axiosError.response) {
-                setMessage("Username atau Password Yang Anda Masukan Salah");
+            } else {
+                setMessage(error.response.data.message);
             }
         } finally {
             if (loadingTimer) {

@@ -34,7 +34,7 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
     if (!token || typeof token !== "string") {
         return res.status(400).json({ message: "Invalid or missing token" });
     }
-    console.log(token)
+    console.log(token);
     try {
         await authService.verifyEmail(token);
         res.status(200).json({ message: "Email verified successfully" });
@@ -55,7 +55,27 @@ export const resendVerificationEmail = async (req: Request, res: Response, next:
 
 export const verify = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        res.status(200).json({ message: "Verification successful" });
+        res.status(200).json({ message: "Verification successfully" });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+    const { email } = authSchema.forgotPassword.parse(req.body);
+    try {
+        await authService.forgotPassword(email);
+        res.status(200).json({ message: "Password reset email sent successfully" });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+    const { token, password } = authSchema.resetPassword.parse(req.body);
+    try {
+        await authService.resetPassword(token, password);
+        res.status(200).json({ message: "Password reset successfully" });
     } catch (error) {
         return next(error);
     }

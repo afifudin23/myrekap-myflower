@@ -1,15 +1,24 @@
 import { formatters } from "@/utils";
 import z, { object, string } from "zod";
 
-export const create = object({
-    fullName: string(),
-    username: string(),
-    email: string().email(),
-    phoneNumber: string(),
-    password: string().min(5),
-    confPassword: string().min(5),
-    role: z.enum(["ADMIN", "SUPERADMIN"]).default("ADMIN"),
-});
+export const create = z
+    .object({
+        fullName: z.string(),
+        username: z.string(),
+        email: z.string().email(),
+        phoneNumber: z.string(),
+        password: z.string().min(5),
+        confPassword: z.string().min(5),
+    })
+    .superRefine((data, ctx) => {
+        if (data.password && data.confPassword && data.password !== data.confPassword) {
+            ctx.addIssue({
+                path: ["password", "confPassword"],
+                message: "Confirm password does not match new password",
+                code: z.ZodIssueCode.custom,
+            });
+        }
+    });
 
 export const update = object({
     fullName: string().nullish(),
@@ -18,7 +27,7 @@ export const update = object({
     phoneNumber: string().nullish(),
     password: string().nullish(),
     confPassword: string().nullish(),
-    role: z.enum(["ADMIN", "SUPERADMIN"]).nullish(),
+    role: z.enum(["ADMIN"]).nullish(),
 });
 
 export const updateProfile = object({

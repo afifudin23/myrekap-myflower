@@ -10,6 +10,8 @@ authRouter.post("/register", errorHandler(authController.registerCustomer));
 authRouter.post("/resend-verify-email", errorHandler(authController.resendVerificationEmail));
 authRouter.get("/verify-email", errorHandler(authController.verifyEmail));
 authRouter.get("/verify", authMiddleware, errorHandler(authController.verify));
+authRouter.post("/forgot-password", errorHandler(authController.forgotPassword));
+authRouter.post("/reset-password", errorHandler(authController.resetPassword));
 authRouter.post("/logout", authMiddleware, errorHandler(authController.logoutUser));
 
 export default authRouter;

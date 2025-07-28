@@ -45,7 +45,8 @@ function AdminCreatePage() {
             await axiosInstance.post("users/admin", data);
             navigate("/users/admin", {
                 state: {
-                    message: "User baru berhasil ditambahkan",
+                    message:
+                        "User berhasil dibuat. Silahkan verifikasi email terlebih dahulu sebelum login",
                 },
             });
         } catch (error: any) {

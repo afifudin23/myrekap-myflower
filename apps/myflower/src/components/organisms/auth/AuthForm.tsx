@@ -1,7 +1,8 @@
 import Button from "@/components/atoms/Button";
 import { COLORS } from "@/constants/colorConstant";
+import { Link } from "react-router-dom";
 
-function AuthForm({ fields, onSubmit, register, errors, buttonName, link }: any) {
+function AuthForm({ fields, onSubmit, register, errors, buttonName, link, formType }: any) {
     return (
         <form className="flex flex-col px-7 2xl:px-10 gap-5 2xl:gap-5 w-full" onSubmit={onSubmit}>
             <div className="flex flex-col gap-3">
@@ -45,6 +46,14 @@ function AuthForm({ fields, onSubmit, register, errors, buttonName, link }: any)
                         </div>
                     );
                 })}
+                {formType === "login" && (
+                    <Link
+                        to="/auth/forgot-password"
+                        className="pl-3 text-sm text-[#007BFF] font-medium hover:underline w-fit"
+                    >
+                        Lupa Password?
+                    </Link>
+                )}
             </div>
 
             <p className="border border-slate-300"></p>
@@ -57,13 +66,3 @@ function AuthForm({ fields, onSubmit, register, errors, buttonName, link }: any)
 }
 
 export default AuthForm;
-
-// interface AuthFormProps {
-//     fields: any;
-//     errorMessage: string;
-//     onSubmit: () => void;
-//     register: any;
-//     errors: any;
-//     buttonName: string;
-//     link: React.ReactNode;
-// }

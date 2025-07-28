@@ -1,20 +1,11 @@
 import { FaRegTrashAlt, FaPencilAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
 import { badgeColorUser, formatters } from "@/utils";
-import { AlertConfirm, AlertInfo } from "@/components/molecules";
 
 const UserTable = ({
     settings,
-    message,
-    showAlert,
-    setShowAlert,
-    showAlertConfirm,
-    setShowAlertConfirm,
     handleDeleteUser,
-    handleDeleteUserConfirm,
     users,
-    setSelectedUserId,
 }: any) => {
     return (
         <>
@@ -145,20 +136,7 @@ const UserTable = ({
                 ))}
             </div>
 
-            {/* Alert */}
-            <AnimatePresence>
-                {showAlert && message && <AlertInfo message={message} handleAlert={() => setShowAlert(false)} />}
-                {showAlertConfirm && message && (
-                    <AlertConfirm
-                        message={message}
-                        handleAlert={() => {
-                            setShowAlertConfirm(false);
-                            setSelectedUserId(null);
-                        }}
-                        handleResultConfirm={handleDeleteUserConfirm}
-                    />
-                )}
-            </AnimatePresence>
+            
         </>
     );
 };

@@ -3,6 +3,7 @@ import { object, string } from "zod";
 export const envSchema = object({
     PORT: string().transform((val) => parseInt(val, 10)),
     CLIENT_ORIGINS: string(),
+    MYREKAP_URL: string(),
     MYFLOWER_URL: string(),
     DATABASE_URL: string(),
     SHADOW_DATABASE_URL: string().optional(),

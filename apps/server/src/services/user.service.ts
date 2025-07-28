@@ -2,6 +2,7 @@ import argon2 from "argon2";
 import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException, UnauthorizedException } from "@/exceptions";
+import { mailerService } from "@/services";
 
 export const findAllAdmins = async () => {
     const user = await prisma.user.findMany({ where: { role: { in: ["ADMIN", "SUPERADMIN"] } } });
@@ -30,40 +31,29 @@ export const findById = async (id: string) => {
     }
 };
 
-export const create = async (requestBody: any) => {
-    const { fullName, username, email, phoneNumber, password, confPassword, role = "ADMIN" } = requestBody;
+export const create = async (body: any) => {
+    const { username, email, password } = body;
 
-    if (password !== confPassword) {
-        throw new BadRequestException("Password confirmation does not match", ErrorCode.PASSWORD_MISMATCH);
-    }
     // check if the username or email is already taken
     const existingUser = await prisma.user.findFirst({
         where: { OR: [{ username }, { email }] },
         select: { id: true },
     });
-    if (existingUser) {
+    if (existingUser)
         throw new BadRequestException("The username or email is already taken", ErrorCode.USER_ALREADY_EXISTS);
-    }
-    const users = await findAllAdmins();
 
-    // check if the first user is a superadmin
-    if (users.length === 0) {
-        if (role !== "SUPERADMIN") {
-            throw new BadRequestException("First user must be a superadmin", ErrorCode.FIRST_USER_MUST_BE_SUPERADMIN);
-        }
-    }
-
+    // hash password and create user
     const hashPassword = await argon2.hash(password);
+    delete body.confPassword;
     const user = await prisma.user.create({
         data: {
-            fullName,
-            username,
-            email,
-            phoneNumber,
+            ...body,
             password: hashPassword,
-            role,
+            role: "ADMIN",
         },
     });
+
+    await mailerService.sendVerificationEmail(user);
     const { password: remove, ...data } = user;
     return data;
 };
@@ -110,9 +100,9 @@ export const updateProfile = async (userId: string, body: any) => {
     }
 };
 
-export const update = async (id: string, requestBody: any) => {
-    const { fullName, username, email, phoneNumber, password, confPassword } = requestBody;
-    console.log(requestBody);
+export const update = async (id: string, body: any) => {
+    const { fullName, username, email, phoneNumber, password, confPassword } = body;
+    console.log(body);
 
     // check if the user exists
     const findUser = await prisma.user.findUnique({ where: { id } });
@@ -137,11 +127,11 @@ export const update = async (id: string, requestBody: any) => {
             throw new BadRequestException("Password confirmation does not match", ErrorCode.PASSWORD_MISMATCH);
         }
         const hashPassword = await argon2.hash(password);
-        requestBody.password = hashPassword;
-        requestBody.confPassword = undefined;
+        body.password = hashPassword;
+        body.confPassword = undefined;
         const user = await prisma.user.update({
             where: { id },
-            data: requestBody,
+            data: body,
         });
         const { password: remove, ...data } = user;
         return data;

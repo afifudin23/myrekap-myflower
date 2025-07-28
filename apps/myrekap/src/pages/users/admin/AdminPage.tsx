@@ -1,9 +1,10 @@
 import { ButtonSmall } from "@/components/atoms";
-import { TitlePage } from "@/components/molecules";
+import { AlertConfirm, AlertInfo, TitlePage } from "@/components/molecules";
 import { UserTable } from "@/components/organisms/users";
 import MainLayout from "@/components/templates/MainLayout";
 import { useUsers } from "@/hooks";
 import { axiosInstance } from "@/utils";
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { MdAddToPhotos } from "react-icons/md";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -21,14 +22,18 @@ const AdminPage = () => {
 
     useEffect(() => {
         const state = location.state as { message?: string };
-
         if (state?.message) {
             setMessage(state.message);
             setShowAlert(true);
-            setTimeout(() => setShowAlert(false), 3000);
-            navigate(location.pathname, { replace: true });
+
+            // Delay scroll alert
+            setTimeout(() => {
+                setShowAlert(false);
+                navigate(location.pathname, { replace: true, state: {} });
+            }, 3000); 
         }
-    }, []);
+    }, [location.key]);
+
     const handleDeleteUser = (id: string, name: string) => {
         setSelectedUserId(id);
         setMessage(`Apakah anda akan menghapus user ${name} ?`);
@@ -64,18 +69,22 @@ const AdminPage = () => {
                     <MdAddToPhotos /> Tambah
                 </ButtonSmall>
             </Link>
-            <UserTable
-                settings={true}
-                message={message}
-                showAlert={showAlert}
-                setShowAlert={setShowAlert}
-                showAlertConfirm={showAlertConfirm}
-                setShowAlertConfirm={setShowAlertConfirm}
-                handleDeleteUser={handleDeleteUser}
-                handleDeleteUserConfirm={handleDeleteUserConfirm}
-                users={users}
-                setSelectedUserId={setSelectedUserId}
-            />
+            <UserTable settings={true} handleDeleteUser={handleDeleteUser} users={users} />
+
+            {/* Alert */}
+            <AnimatePresence>
+                {showAlert && message && <AlertInfo message={message} handleAlert={() => setShowAlert(false)} />}
+                {showAlertConfirm && message && (
+                    <AlertConfirm
+                        message={message}
+                        handleAlert={() => {
+                            setShowAlertConfirm(false);
+                            setSelectedUserId(null);
+                        }}
+                        handleResultConfirm={handleDeleteUserConfirm}
+                    />
+                )}
+            </AnimatePresence>
         </MainLayout>
     );
 };

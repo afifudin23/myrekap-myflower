@@ -24,10 +24,10 @@ function Register() {
     const onSubmit = async (data: RegisterFormType) => {
         try {
             await axiosInstance.post("auth/register", data);
-            alert("Akun berhasil didaftarkan.");
+            alert("Pendaftaran berhasil! Link verifikasi akun telah dikirim ke email kamu.");
             navigate("/auth/login");
         } catch (error: any) {
-            console.log(error.response.data)
+            console.log(error.response.data);
             const axiosError = error as AxiosError;
             if (axiosError.code === "ERR_NETWORK") {
                 setErrorMessage("Tidak Dapat Terhubung Ke Server. Periksa Koneksi Internet Anda");

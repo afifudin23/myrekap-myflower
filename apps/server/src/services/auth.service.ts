@@ -4,7 +4,7 @@ import ErrorCode from "@/constants/error-code";
 import { BadRequestException, ForbiddenException, NotFoundException, UnauthorizedException } from "@/exceptions";
 import * as jwt from "jsonwebtoken";
 import { env } from "@/config";
-import { mailerService, tokenService } from "@/services";
+import { mailerService } from "@/services";
 
 export const loginUser = async (body: any) => {
     // check if the user exists
@@ -19,8 +19,7 @@ export const loginUser = async (body: any) => {
 
     // check if the email is verified
     if (!user.isVerified) {
-        const token = await tokenService.generateToken({ userId: user.id, type: "VERIFY_EMAIL" });
-        await mailerService.sendVerificationEmail({ to: user.email, name: user.fullName, token });
+        await mailerService.sendVerificationEmail(user);
 
         throw new ForbiddenException(
             "Account not verified. We have resent the verification link to your email.",
@@ -51,13 +50,11 @@ export const registerCustomer = async (body: any) => {
             ...body,
             password: hashPassword,
             role: "CUSTOMER",
-            isVerified: false,
         },
     });
 
     // generate token and send verification email
-    const token = await tokenService.generateToken({ userId: user.id, type: "VERIFY_EMAIL" });
-    await mailerService.sendVerificationEmail({ to: user.email, name: user.fullName, token });
+    await mailerService.sendVerificationEmail(user);
 };
 
 export const resendVerificationEmail = async (email: string) => {
@@ -69,8 +66,7 @@ export const resendVerificationEmail = async (email: string) => {
     if (user.isVerified) throw new BadRequestException("Email already verified", ErrorCode.EMAIL_ALREADY_VERIFIED);
 
     // generate token and send verification email
-    const token = await tokenService.generateToken({ userId: user.id, type: "VERIFY_EMAIL" });
-    await mailerService.sendVerificationEmail({ to: user.email, name: user.fullName, token });
+    await mailerService.sendVerificationEmail(user);
 };
 
 export const verifyEmail = async (token: string) => {
@@ -89,5 +85,29 @@ export const verifyEmail = async (token: string) => {
     await prisma.$transaction([
         prisma.user.update({ where: { id: userToken.userId }, data: { isVerified: true } }),
         prisma.userToken.deleteMany({ where: { userId: userToken.userId, type: "VERIFY_EMAIL" } }),
+    ]);
+};
+
+export const forgotPassword = async (email: string) => {
+    // check if the user exists
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw new NotFoundException("User not found", ErrorCode.USER_NOT_FOUND);
+
+    // generate token and send reset password email
+    await mailerService.sendResetPasswordEmail(user);
+};
+
+export const resetPassword = async (token: string, password: string) => {
+    // check if the token is valid
+    const userToken = await prisma.userToken.findFirst({
+        where: { token, type: "RESET_PASSWORD", isUsed: false, expiresAt: { gt: new Date() } },
+    });
+    if (!userToken) throw new BadRequestException("Invalid token", ErrorCode.INVALID_TOKEN);
+
+    // hash password, update user and delete token
+    const hashPassword = await argon2.hash(password);
+    await prisma.$transaction([
+        prisma.user.update({ where: { id: userToken.userId }, data: { password: hashPassword } }),
+        prisma.userToken.deleteMany({ where: { userId: userToken.userId, type: "RESET_PASSWORD" } }),
     ]);
 };

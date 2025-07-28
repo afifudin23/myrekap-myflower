@@ -35,3 +35,23 @@ export const registerCustomer = z
 export const resendVerificationEmail = z.object({
     email: z.string().email(),
 });
+
+export const forgotPassword = z.object({
+    email: z.string().email(),
+});
+
+export const resetPassword = z
+    .object({
+        token: z.string(),
+        password: z.string().min(5),
+        confPassword: z.string().min(5),
+    })
+    .superRefine((data, ctx) => {
+        if (data.password !== data.confPassword) {
+            ctx.addIssue({
+                path: ["confPassword"],
+                message: "Confirmation password does not match",
+                code: z.ZodIssueCode.custom,
+            });
+        }
+    });

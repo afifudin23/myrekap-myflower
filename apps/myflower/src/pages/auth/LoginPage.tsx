@@ -49,6 +49,7 @@ function Login() {
                 onSubmit={handleSubmit(onSubmit)}
                 errors={errors}
                 buttonName="Masuk"
+                formType="login"
                 link={
                     <p className="text-center">
                         Belum memiliki akun?{" "}
