@@ -30,13 +30,13 @@ function Login() {
             });
             useAuthStore.getState().setUser(response.data);
             navigate("/products");
-        } catch (error) {
+        } catch (error: any) {
             const axiosError = error as AxiosError;
             if (axiosError.code === "ERR_NETWORK") {
                 setErrorMessage("Tidak Dapat Terhubung Ke Server. Periksa Koneksi Internet Anda");
             }
             if (axiosError.response) {
-                setErrorMessage("Username atau Password Yang Anda Masukan Salah");
+                setErrorMessage(error.response.data.message);
             }
         }
     };

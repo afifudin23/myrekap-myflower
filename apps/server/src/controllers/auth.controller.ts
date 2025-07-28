@@ -15,18 +15,39 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         });
         res.status(200).json(data);
     } catch (error) {
-        next(error);
+        return next(error);
     }
 };
 
 export const registerCustomer = async (req: Request, res: Response, next: NextFunction) => {
     const body = authSchema.registerCustomer.parse(req.body);
     try {
-        const data = await authService.registerCustomer(body);
-        res.status(201).json({
-            message: "User Customer registered successfully",
-            data,
-        });
+        await authService.registerCustomer(body);
+        res.status(201).json({ message: "Registration successful. Please check your email to verify your account." });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+    const token = req.query.token;
+    if (!token || typeof token !== "string") {
+        return res.status(400).json({ message: "Invalid or missing token" });
+    }
+    console.log(token)
+    try {
+        await authService.verifyEmail(token);
+        res.status(200).json({ message: "Email verified successfully" });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const resendVerificationEmail = async (req: Request, res: Response, next: NextFunction) => {
+    const { email } = authSchema.resendVerificationEmail.parse(req.body);
+    try {
+        await authService.resendVerificationEmail(email);
+        res.status(200).json({ message: "Resend verification email successful" });
     } catch (error) {
         return next(error);
     }
@@ -36,7 +57,7 @@ export const verify = async (_req: Request, res: Response, next: NextFunction) =
     try {
         res.status(200).json({ message: "Verification successful" });
     } catch (error) {
-        next(error);
+        return next(error);
     }
 };
 
@@ -49,6 +70,6 @@ export const logoutUser = async (_req: Request, res: Response, next: NextFunctio
         });
         res.status(200).json({ message: "Logout successful" });
     } catch (error) {
-        next(error);
+        return next(error);
     }
 };

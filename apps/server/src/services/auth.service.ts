@@ -1,9 +1,10 @@
 import argon2 from "argon2";
 import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
-import { BadRequestException, NotFoundException, UnauthorizedException } from "@/exceptions";
+import { BadRequestException, ForbiddenException, NotFoundException, UnauthorizedException } from "@/exceptions";
 import * as jwt from "jsonwebtoken";
 import { env } from "@/config";
+import { mailerService, tokenService } from "@/services";
 
 export const loginUser = async (body: any) => {
     // check if the user exists
@@ -16,6 +17,17 @@ export const loginUser = async (body: any) => {
     const isPasswordValid = await argon2.verify(user.password, body.password);
     if (!isPasswordValid) throw new UnauthorizedException("Invalid Password", ErrorCode.INVALID_PASSWORD);
 
+    // check if the email is verified
+    if (!user.isVerified) {
+        const token = await tokenService.generateToken({ userId: user.id, type: "VERIFY_EMAIL" });
+        await mailerService.sendVerificationEmail({ to: user.email, name: user.fullName, token });
+
+        throw new ForbiddenException(
+            "Account not verified. We have resent the verification link to your email.",
+            ErrorCode.EMAIL_NOT_VERIFIED
+        );
+    }
+
     // generate token
     const { password, ...data } = user;
     const token = jwt.sign({ id: user.id }, env.JWT_SECRET);
@@ -23,17 +35,13 @@ export const loginUser = async (body: any) => {
 };
 
 export const registerCustomer = async (body: any) => {
-    if (body.password !== body.confPassword) {
-        throw new BadRequestException("Password confirmation does not match", ErrorCode.PASSWORD_MISMATCH);
-    }
     // check if the username or email is already taken
     const existingUser = await prisma.user.findFirst({
         where: { OR: [{ username: body.username }, { email: body.email }] },
         select: { id: true },
     });
-    if (existingUser) {
+    if (existingUser)
         throw new BadRequestException("The username or email is already taken", ErrorCode.USER_ALREADY_EXISTS);
-    }
 
     // hash password and create user
     delete body.confPassword;
@@ -43,8 +51,43 @@ export const registerCustomer = async (body: any) => {
             ...body,
             password: hashPassword,
             role: "CUSTOMER",
+            isVerified: false,
         },
     });
-    const { password, ...data } = user;
-    return data;
+
+    // generate token and send verification email
+    const token = await tokenService.generateToken({ userId: user.id, type: "VERIFY_EMAIL" });
+    await mailerService.sendVerificationEmail({ to: user.email, name: user.fullName, token });
+};
+
+export const resendVerificationEmail = async (email: string) => {
+    // check if the user exists
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw new NotFoundException("User not found", ErrorCode.USER_NOT_FOUND);
+
+    // check if the email is already verified
+    if (user.isVerified) throw new BadRequestException("Email already verified", ErrorCode.EMAIL_ALREADY_VERIFIED);
+
+    // generate token and send verification email
+    const token = await tokenService.generateToken({ userId: user.id, type: "VERIFY_EMAIL" });
+    await mailerService.sendVerificationEmail({ to: user.email, name: user.fullName, token });
+};
+
+export const verifyEmail = async (token: string) => {
+    // check if the token is valid
+    const userToken = await prisma.userToken.findFirst({
+        where: { token, type: "VERIFY_EMAIL", isUsed: false, expiresAt: { gt: new Date() } },
+    });
+    if (!userToken) throw new BadRequestException("Invalid token", ErrorCode.INVALID_TOKEN);
+
+    // check if the email is already verified
+    const user = await prisma.user.findUnique({ where: { id: userToken.userId } });
+    if (!user) throw new NotFoundException("User not found", ErrorCode.USER_NOT_FOUND);
+    if (user.isVerified) throw new BadRequestException("Email already verified", ErrorCode.EMAIL_ALREADY_VERIFIED);
+
+    // update user and delete token
+    await prisma.$transaction([
+        prisma.user.update({ where: { id: userToken.userId }, data: { isVerified: true } }),
+        prisma.userToken.deleteMany({ where: { userId: userToken.userId, type: "VERIFY_EMAIL" } }),
+    ]);
 };

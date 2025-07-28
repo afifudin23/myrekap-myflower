@@ -26,12 +26,14 @@ model User {
   phoneNumber      String            @map("phone_number")
   customerCategory CustomerCategory? @map("customer_category")
   role             Role              @map("role")
+  isVerified       Boolean           @default(false) @map("is_verified")
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @updatedAt @map("updated_at")
 
   cartItems CartItem[]
   orders    Order[]
   reviews   Review[]
+  tokens    UserToken[]
 
   @@map("users")
 }
@@ -40,6 +42,26 @@ enum Role {
   ADMIN      @map("admin")
   SUPERADMIN @map("superadmin")
   CUSTOMER   @map("customer")
+}
+
+model UserToken {
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  token     String    @map("token")
+  type      TokenType @map("type")
+  isUsed    Boolean   @default(false) @map("is_used")
+  expiresAt DateTime  @map("expires_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, token, isUsed])
+  @@map("user_tokens")
+}
+
+enum TokenType {
+  VERIFY_EMAIL   @map("verify_email")
+  RESET_PASSWORD @map("reset_password")
 }
 
 model Product {

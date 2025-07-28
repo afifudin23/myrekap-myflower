@@ -7,3 +7,5 @@ export * as userService from "@/services/user.service";
 export * as cartItemService from "@/services/cart-item.service";
 export * as transactionService from "@/services/transaction.service";
 export * as reviewService from "@/services/review.service";
+export * as mailerService from "@/services/mailer.service";
+export * as tokenService from "@/services/token.service";

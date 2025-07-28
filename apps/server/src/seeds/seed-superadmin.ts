@@ -19,6 +19,7 @@ async function seedSuperadmin() {
                     phoneNumber: env.SUPERADMIN_PHONE_NUMBER,
                     password: hashPassword,
                     role: "SUPERADMIN",
+                    isVerified: true,
                 },
             });
         }

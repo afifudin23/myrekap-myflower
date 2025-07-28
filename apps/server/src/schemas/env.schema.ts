@@ -3,8 +3,9 @@ import { object, string } from "zod";
 export const envSchema = object({
     PORT: string().transform((val) => parseInt(val, 10)),
     CLIENT_ORIGINS: string(),
+    MYFLOWER_URL: string(),
     DATABASE_URL: string(),
-    SHADOW_DATABASE_URL: string().optional( ),
+    SHADOW_DATABASE_URL: string().optional(),
     JWT_SECRET: string().min(20),
     SUPERADMIN_FULL_NAME: string(),
     SUPERADMIN_USERNAME: string().max(15),
@@ -18,4 +19,7 @@ export const envSchema = object({
     MIDTRANS_SERVER_KEY: string(),
     WHATSAPP_NUMBER: string().min(10),
     CALLMEBOT_API_KEY: string(),
+    BREVO_API_KEY: string(),
+    MAIL_FROM_NAME: string(),
+    MAIL_FROM_EMAIL: string().email(),
 });
