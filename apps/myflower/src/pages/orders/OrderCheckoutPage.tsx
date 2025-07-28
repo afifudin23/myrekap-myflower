@@ -6,24 +6,27 @@ import OrderForm from "@/components/organisms/orders/OrderForm";
 import MainLayout from "@/components/templates/MainLayout";
 import { orderFormSchema } from "@/schemas/orderSchema";
 import { axiosInstance, formatters } from "@/utils";
+import { generatedTextLink } from "@/utils/formatters";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 function OrderCheckoutPage() {
     const navigate = useNavigate();
+    const [order, setOrder] = useState<any>(null);
     const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
     const totalItem = cartItems.reduce((total: number, item: any) => total + item.quantity, 0);
     const totalPrice = cartItems.reduce((total: number, item: any) => total + item.product.price * item.quantity, 0);
-    
+
     useEffect(() => {
         const script = document.createElement("script");
         script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
         script.setAttribute("data-client-key", import.meta.env.VITE_MIDTRANS_CLIENT_KEY || "");
         document.body.appendChild(script);
     }, []);
+
     const {
         handleSubmit,
         control,
@@ -43,7 +46,7 @@ function OrderCheckoutPage() {
             })),
         },
     });
-    
+
     const shippingCost = watch("deliveryOption") === "Delivery" ? totalPrice * 0.1 : 0;
     const { fields } = useFieldArray({
         control,
@@ -52,31 +55,51 @@ function OrderCheckoutPage() {
 
     const onSubmit = handleSubmit(async (data) => {
         try {
-            const ordersResponse = await axiosInstance.post("/orders/customer", data);
+            let createOrder = order;
+            if (!createOrder) {
+                const response = await axiosInstance.post("/orders/customer", data);
+                createOrder = response.data.data;
+                setOrder(response.data.data);
+            }
+
             if (data.paymentMethod === "COD") {
+                await axiosInstance.delete("/carts");
                 alert("Pesanan berhasil dibuat. Silahkan melakukan pembayaran melalui metode COD.");
                 navigate("/products");
                 return true;
             }
-            const orderCode = ordersResponse.data.data.orderCode;
-            const snapResponse = await axiosInstance.post("/transactions/create", { orderCode });
+
+            const currentOrderCode = createOrder.orderCode;
+            const snapResponse = await axiosInstance.post("/transactions/create", { orderCode: currentOrderCode });
             const snapToken = snapResponse.data.data.token;
 
             window.snap.pay(snapToken, {
-                onSuccess: (result: any) => {
-                    console.log("Payment Success:", result);
-                    alert("Pembayaran berhasil!");
+                onSuccess: async () => {
+                    await axiosInstance.delete("/carts");
+                    setOrder(null);
+
+                    // Send WhatsApp message
+                    const message = generatedTextLink(order);
+                    await fetch(
+                        `https://api.callmebot.com/whatsapp.php?phone=${
+                            import.meta.env.VITE_WHATSAPP_NUMBER
+                        }&text=${message}&apikey=${import.meta.env.VITE_CALLMEBOT_API_KEY}`
+                    );
                 },
-                onPending: (result: any) => {
-                    console.log("Waiting for payment:", result);
-                    alert("Pembayaran sedang diproses.");
+                onPending: async () => {
+                    await axiosInstance.delete("/carts");
+                    localStorage.setItem("snapToken", snapToken);
+                    window.location.href = "/orders";
                 },
-                onError: (error: any) => {
+                onError: async (error: any) => {
                     console.error("Payment Failed:", error);
+                    await axiosInstance.delete("/orders/customer/" + currentOrderCode);
+                    setOrder(null);
                     alert("Terjadi kesalahan saat pembayaran.");
                 },
-                onClose: () => {
-                    console.warn("User closed the Snap popup");
+                onClose: async () => {
+                    await axiosInstance.delete("/orders/customer/" + currentOrderCode);
+                    setOrder(null);
                 },
             });
         } catch (error: any) {

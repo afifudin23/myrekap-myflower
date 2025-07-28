@@ -36,3 +36,17 @@ export const formatCustomerNameReceipt = (data: string) => {
     const twoInitial = words.length > 2 ? words[2].charAt(0).toUpperCase() + "." : "";
     return twoInitial ? `${first} ${twoInitial}` : first;
 };
+
+export const generatedTextLink = (order: any) => {
+    return encodeURIComponent(`💐 Halo Mas Afif, Ada Pesanan Baru! 📦
+Nama: ${formatCapital(order.customerName)}
+Total: ${formatRupiah(order.totalPrice + order.shippingCost)}
+Opsi Pengiriman: ${formatCapital(order.deliveryOption)}
+Alamat: ${order.deliveryAddress ? formatCapital(order.deliveryAddress) : "-"}
+Deadline: ${isoDateToStringDateTime(order.readyDate)} WIB
+Items:
+${order.items
+    .map((item: any, index: number) => `${index + 1}. ${formatCapital(item.product?.name)} x${item.quantity}`)
+    .join("\n")}
+`);
+};

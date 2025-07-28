@@ -4,7 +4,6 @@ import { Request, Response, NextFunction } from "express";
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     const body = ordersCustomerSchema.create.parse(req.body);
-    console.log(body)
     try {
         const user = (req as any).user;
         const data = await ordersCustomerService.create(user, body);
@@ -31,6 +30,14 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
         next(error);
     }
 };
+export const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const data = await ordersCustomerService.remove(req.params.orderCode);
+        res.status(200).json({ message: "Order deleted successfully", data });
+    } catch (error) {
+        next(error);
+    }
+}
 export const cancelOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = await ordersCustomerService.cancel(req.params.id);
