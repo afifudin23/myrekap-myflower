@@ -1,6 +1,7 @@
 import { Button, Loading } from "@/components/atoms";
 import { InputText } from "@/components/molecules";
 import { USER_FORM_ITEMS } from ".";
+import { COLORS } from "@/constants/colors";
 
 function FormUser({ control, fieldRefs, errors, isLoading, onSubmit }: any) {
     return (
@@ -18,7 +19,7 @@ function FormUser({ control, fieldRefs, errors, isLoading, onSubmit }: any) {
                         />
                     );
                 })}
-                <Button type="submit" className="mb-28 mt-20 2xl:mt-32">
+                <Button type="submit" className="mb-28 mt-20 2xl:mt-32" colors={COLORS}>
                     Submit
                 </Button>
             </form>

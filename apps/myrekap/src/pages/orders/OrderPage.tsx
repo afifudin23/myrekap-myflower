@@ -78,8 +78,8 @@ function OrderPage() {
 
             <ButtonSmall
                 children="Tambah Pesanan"
-                className="bg-blue-600 text-white mt-5 py-1 px-2 2xl:py-2 2xl:px-4 font-medium rounded-lg hover:bg-blue-700 transition font-fredoka gap-2"
-                onClick={() => (window.location.href = "/orders/create")}
+                className="bg-blue-600 text-white mt-5 py-1 px-3 2xl:py-2 2xl:px-4 font-medium rounded-lg hover:bg-blue-700 transition font-fredoka gap-2"
+                onClick={() => navigate("/orders/create")}
             />
 
             {filteredOrders.length > 0 ? (

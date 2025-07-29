@@ -1,6 +1,7 @@
 import { InputFile, InputMoney, InputText } from "@/components/molecules";
 import { Button, Loading } from "@/components/atoms";
 import { PRODUCT_FORM_ITEMS } from ".";
+import { COLORS } from "@/constants/colors";
 
 // interface ProductForm {
 //     control: any;
@@ -49,7 +50,7 @@ function ProductForm({ control, onSubmit, errors, fieldRefs, isLoading, setValue
                             );
                     }
                 })}
-                <Button type="submit" className="mb-28 mt-20 2xl:mt-32">
+                <Button type="submit" className="mb-28 mt-20 2xl:mt-32" colors={COLORS}>
                     Submit
                 </Button>
             </form>

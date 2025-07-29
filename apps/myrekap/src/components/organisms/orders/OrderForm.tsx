@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { ORDER_FORM_ITEMS } from ".";
 import { InputDate, InputDropdown, InputFile, InputMoney, InputProduct, InputText } from "@/components/molecules";
 import { Button } from "@/components/atoms";
+import { COLORS } from "@/constants/colors";
 // import { formatters } from "@/utils";
 
 // interface OrderFormProps<TSchema extends ZodType<any, any>> {
@@ -125,7 +126,7 @@ function OrderForm({ onSubmit, fieldRefs, control, watch, errors, getValues, set
             {/* <h1>Biaya Pengiriman: {formatters.formatRupiah(shippingCost)}</h1>
             <h1>Total Harga: {formatters.formatRupiah(totalPrice + shippingCost)}</h1> */}
 
-            <Button type="submit" className="mb-28 mt-20 2xl:mt-32">
+            <Button type="submit" className="mb-28 mt-20 2xl:mt-32" colors={COLORS}>
                 Submit
             </Button>
         </form>

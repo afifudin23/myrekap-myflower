@@ -7,21 +7,49 @@ const OrderCard = ({ order }: any) => {
             key={order.id}
             className={`${bgColorOrderCard(
                 order.paymentStatus
-            )} border hover:border-slate-400 p-4 rounded-2xl justify-between group cursor-pointer hover:shadow-lg transition-all duration-200 ease-in-out flex flex-col gap-3`}
+            )} border hover:border-slate-400 p-4 rounded-2xl justify-between group cursor-pointer hover:shadow-lg transition-all duration-200 ease-in-out flex flex-col gap-5`}
         >
             {/* Header */}
-            <div className="flex justify-between items-center gap-2">
+            <div className="2xl:flex justify-between items-center gap-2 hidden">
                 <p className="text-xs font-semibold px-2 py-1 rounded-md bg-slate-800 bg-opacity-40 text-white">
                     #{order.orderCode}
                 </p>
                 <div className="flex gap-2">
                     <Badge
-                        className={`${badgeColorPaymentStatus(order.paymentStatus)} w-[90px] py-1 text-xs text-white font-semibold`}
+                        className={`${badgeColorPaymentStatus(
+                            order.paymentStatus
+                        )} w-[90px] py-1 text-xs text-white font-semibold`}
                         field={order.paymentStatus}
                     />
                     <Badge
-                        className={`${badgeColorOrderStatus(order.orderStatus)} w-[90px] py-1 text-xs text-white font-semibold`}
+                        className={`${badgeColorOrderStatus(
+                            order.orderStatus
+                        )} w-[90px] py-1 text-xs text-white font-semibold`}
                         field={order.orderStatus}
+                    />
+                </div>
+            </div>
+
+            <div className="gap-2 flex-col flex 2xl:hidden">
+                <p className="w-fit text-xs font-semibold px-2 py-1 rounded-md bg-slate-800 bg-opacity-40 text-white">
+                    #{order.orderCode}
+                </p>
+                <div className="flex gap-2 justify-end">
+                    <Badge
+                        className={`${badgeColorPaymentStatus(
+                            order.paymentStatus
+                        )} w-[90px] py-1 text-xs text-white font-semibold`}
+                        field={order.paymentStatus}
+                    />
+                    <Badge
+                        className={`${badgeColorOrderStatus(
+                            order.orderStatus
+                        )} w-[90px] py-1 text-xs text-white font-semibold`}
+                        field={order.orderStatus}
+                    />
+                    <Badge
+                        className="bg-[#609393] w-[100px] py-1 text-white text-xs font-semibold"
+                        field={order.customerCategory}
                     />
                 </div>
             </div>
@@ -47,7 +75,9 @@ const OrderCard = ({ order }: any) => {
                         )}
                         {order.items.length > 2 && <li className="italic text-gray-500">Tampilkan lebih banyak</li>}
                     </ul>
-                    <p className="text-xl font-bold text-right">{formatters.formatRupiah(order.totalPrice + order.shippingCost)}</p>
+                    <p className="text-xl font-bold text-right">
+                        {formatters.formatRupiah(order.totalPrice + order.shippingCost)}
+                    </p>
                 </div>
             </div>
 
@@ -62,7 +92,7 @@ const OrderCard = ({ order }: any) => {
                     </p>
                 </div>
                 <Badge
-                    className="bg-[#609393] w-[100px] py-1 text-white text-xs font-semibold"
+                    className="bg-[#609393] w-[100px] py-1 text-white text-xs font-semibold hidden 2xl:flex"
                     field={order.customerCategory}
                 />
             </div>

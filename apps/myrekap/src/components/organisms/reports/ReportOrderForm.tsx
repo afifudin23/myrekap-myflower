@@ -3,6 +3,7 @@ import { AlertInfo, InputDate, InputDropdown } from "@/components/molecules";
 import { REPORT_ORDER_FORM_ITEMS } from ".";
 import { AnimatePresence } from "framer-motion";
 import { FaArrowRightLong } from "react-icons/fa6";
+import { COLORS } from "@/constants/colors";
 
 const ReportOrderForm = ({ handleSubmit, control, errors, fieldRefs, onSubmit, showAlert, setShowAlert }: any) => {
     return (
@@ -38,7 +39,7 @@ const ReportOrderForm = ({ handleSubmit, control, errors, fieldRefs, onSubmit, s
                         />
                     );
                 })}
-                <Button type="submit" className="mb-28 mt-20 2xl:mt-32">
+                <Button type="submit" className="mb-28 mt-20 2xl:mt-32" colors={COLORS}>
                     Cetak
                 </Button>
             </form>
