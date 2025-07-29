@@ -29,7 +29,7 @@ app.use(
 app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(express.json()); // for parsing json
 app.use(attachLogger); // for logging requests with request id
-app.use(httpLogger); // for logging http requests
+app.use(httpLogger); // for logging http requests   
 app.use(cookieParser());
 
 app.get("/test-error", async (_req, _res, next) => {

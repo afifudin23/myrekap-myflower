@@ -7,6 +7,12 @@ const axiosInstance = axios.create({
     withCredentials: true,
 });
 
+// Interceptor untuk menambahkan header x-app-name
+axiosInstance.interceptors.request.use((config) => {
+    config.headers["x-app-name"] = "myrekap"; 
+    return config;
+});
+
 // Interceptor untuk menangani error 401 (Unauthorized)
 axiosInstance.interceptors.response.use(
     (response) => response,

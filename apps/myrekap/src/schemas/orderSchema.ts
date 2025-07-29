@@ -81,6 +81,15 @@ export const create = z
         }
     });
 
+const existingFile = z.object({
+    fileName: z.string(),
+    id: z.string(),
+    orderId: z.string(),
+    publicId: z.string(),
+    secureUrl: z.string(),
+    size: z.number(),
+});
+
 export const update = z
     .object({
         customerName: z.string().nonempty("Nama wajib diisi"),
@@ -141,7 +150,17 @@ export const update = z
                 message: "Metode pembayaran tidak valid",
             })
             .transform((value) => formatters.parseCapital(value)),
-        paymentProof: z.array(z.instanceof(File)),
+        paymentProof: z.array(
+            z.union([
+                existingFile,
+                z
+                    .instanceof(File)
+                    .nullish()
+                    .refine((file) => (file?.size ? file.size <= 2 * 1024 * 1024 : true), {
+                        message: "Maksimal ukuran 2 MB.",
+                    }),
+            ])
+        ),
         publicIdsToDelete: z.array(z.string()).nullish(),
     })
     .superRefine((data, ctx) => {

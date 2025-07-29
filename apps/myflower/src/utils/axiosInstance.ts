@@ -7,5 +7,9 @@ const axiosInstance = axios.create({
     withCredentials: true,
 });
 
+axiosInstance.interceptors.request.use((config) => {
+    config.headers["x-app-name"] = "myflower"; // atau dynamic sesuai environment/project
+    return config;
+});
 
 export default axiosInstance;

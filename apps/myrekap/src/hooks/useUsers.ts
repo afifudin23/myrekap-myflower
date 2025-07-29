@@ -12,6 +12,7 @@ function useUsers(role: "admin" | "customer") {
                 const response = await axiosInstance.get(`/users/${role}`);
                 setUsers(response.data.data);
             } catch (error: any) {
+                console.log(error.response.data);
                 setUsers(error.response.data);
             }
         };
