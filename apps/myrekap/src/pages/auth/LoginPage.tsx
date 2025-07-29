@@ -1,4 +1,4 @@
-import { AuthForm } from "@/components/organisms/auth";
+import { AuthForm, LOGIN_FIELDS } from "@/components/organisms/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
@@ -10,6 +10,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { AnimatePresence } from "framer-motion";
 import { AlertInfo } from "@/components/molecules";
 import { Loading } from "@/components/atoms";
+import AuthTemplate from "@/components/templates/AuthTemplate";
 
 function LoginPage() {
     const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -81,13 +82,21 @@ function LoginPage() {
         }
     };
     return (
-        <div className="bg-gradient-to-t from-[#FFFFFF] to-[#096bff] h-screen flex">
-            <AuthForm
+        <AuthTemplate description="Silahkan Masuk">
+            {/* <AuthForm
                 onSubmit={onSubmit}
                 items={["Username", "Password"]}
                 register={register}
                 handleSubmit={handleSubmit}
                 errors={errors}
+            /> */}
+            <AuthForm
+                fields={LOGIN_FIELDS}
+                register={register}
+                onSubmit={handleSubmit(onSubmit)}
+                errors={errors}
+                buttonName="Masuk"
+                formType="login"
             />
 
             {/* Custom Alert */}
@@ -97,7 +106,7 @@ function LoginPage() {
 
             {/* Loading */}
             {isLoading && <Loading />}
-        </div>
+        </AuthTemplate>
     );
 }
 export default LoginPage;

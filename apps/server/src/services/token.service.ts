@@ -15,7 +15,7 @@ export const generateToken = async ({ userId, type, expiresInMinutes = 30 }: Gen
     });
     if (existingToken) return existingToken.token;
 
-    // generate new token
+    // delete old tokens and generate new tokend 
     const token = crypto.randomBytes(32).toString("hex");
     const expiresAt = addMinutes(new Date(), expiresInMinutes);
 

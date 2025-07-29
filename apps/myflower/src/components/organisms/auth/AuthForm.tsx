@@ -49,7 +49,10 @@ function AuthForm({ fields, onSubmit, register, errors, buttonName, link, formTy
                 {formType === "login" && (
                     <Link
                         to="/auth/forgot-password"
-                        className="pl-3 text-sm text-[#007BFF] font-medium hover:underline w-fit"
+                        className={`pl-3 text-sm  font-medium hover:underline w-fit`}
+                        style={{ color: COLORS.primary }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.hover)}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.primary)}
                     >
                         Lupa Password?
                     </Link>

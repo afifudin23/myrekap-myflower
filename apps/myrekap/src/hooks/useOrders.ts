@@ -2,24 +2,10 @@ import { axiosInstance } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-function useOrders(now = new Date()) {
+function useOrders() {
     const [orders, setOrders] = useState<any[]>([]);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const hasFetched = useRef(false);
-
-    useEffect(() => {
-        const defaultMonth = (now.getMonth() + 1).toString().padStart(2, "0"); // 2-digit
-        const defaultYear = now.getFullYear().toString();
-
-        if (!searchParams.get("month") || !searchParams.get("year")) {
-            setSearchParams((prev) => {
-                const newParams = new URLSearchParams(prev.toString());
-                if (!newParams.get("month")) newParams.set("month", defaultMonth);
-                if (!newParams.get("year")) newParams.set("year", defaultYear);
-                return newParams;
-            });
-        }
-    }, [searchParams, setSearchParams]);
 
     useEffect(() => {
         if (hasFetched.current) return;

@@ -11,21 +11,21 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const AdminPage = () => {
     const { users, setUsers } = useUsers("admin");
+    const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+    // Alert
     const location = useLocation();
     const navigate = useNavigate();
     const [message, setMessage] = useState<string | null>(null);
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [showAlertConfirm, setShowAlertConfirm] = useState<boolean>(false);
-    const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-
-    if (!users) return <p>Loading...</p>;
 
     useEffect(() => {
         const state = location.state as { message?: string };
         if (state?.message) {
             setMessage(state.message);
             setShowAlert(true);
-
+            
             // Delay scroll alert
             setTimeout(() => {
                 setShowAlert(false);

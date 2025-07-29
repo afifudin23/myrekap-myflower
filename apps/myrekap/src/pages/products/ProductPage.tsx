@@ -17,14 +17,17 @@ function ProductPage() {
 
     useEffect(() => {
         const state = location.state as { message?: string };
-
         if (state?.message) {
             setMessage(state.message);
             setShowAlert(true);
-            setTimeout(() => setShowAlert(false), 3000);
-            navigate(location.pathname, { replace: true });
+
+            // Delay scroll alert
+            setTimeout(() => {
+                setShowAlert(false);
+                navigate(location.pathname, { replace: true, state: {} });
+            }, 3000); 
         }
-    }, []);
+    }, [location.key]);
 
     return (
         <MainLayout>

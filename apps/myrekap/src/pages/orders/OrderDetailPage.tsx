@@ -74,7 +74,6 @@ function OrderDetailPage() {
         }
     };
 
-    console.log(order);
     return (
         <MainLayout>
             <div className="flex justify-between">

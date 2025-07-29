@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { Loading } from "@/components/atoms";
 
 const ProtectedRoute = () => {
     const { isAuthenticated, loading, verifyToken } = useAuthStore();
@@ -9,9 +10,9 @@ const ProtectedRoute = () => {
 
     useEffect(() => {
         verifyToken();
-    }, [location.pathname, verifyToken]);
+    }, [location.pathname]);
 
-    if (loading) return <div className="p-10 text-center">Checking authentication...</div>;
+    if (loading) return <Loading />;
 
     return isAuthenticated ? (
         <Outlet />
