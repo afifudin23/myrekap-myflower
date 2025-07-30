@@ -1,7 +1,6 @@
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
 import { cloudinary, prisma, uploadFile } from "@/config";
-// import enqueueWhatsAppMessage from "@/utils/queue-wa-message.util";
 import puppeteer from "puppeteer";
 import { generateOrderCode } from "@/utils/formatters.utils";
 import { mailerService } from "@/services";
@@ -83,7 +82,7 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
     });
     try {
         const totalPrice = orderItems.reduce((total: number, item: any) => total + item.totalPrice, 0);
-        const shippingCost = totalPrice * 0.1;
+        const shippingCost = body.deliveryOption === "DELIVERY" ? totalPrice * 0.1 : 0;
         const data = await prisma.order.create({
             data: {
                 ...body,
@@ -92,7 +91,7 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
                 userId,
                 totalPrice,
                 ...(["CASH", "BANK_TRANSFER"].includes(body.paymentMethod) && { paymentStatus: "PAID" }),
-                ...(body.deliveryOption === "DELIVERY" && { shippingCost }),
+                shippingCost,
                 items: { create: orderItems },
             },
             include: { items: { include: { product: true } } },
@@ -217,10 +216,23 @@ export const update = async (id: string, body: any, file: Express.Multer.File) =
         }
 
         // UPDATE ORDER (EXCLUDE ORDER ITEM)
+        const total = await prisma.orderItem.aggregate({
+            where: { orderId: id },
+            _sum: {
+                totalPrice: true,
+            },
+        });
+        const totalPrice = total._sum.totalPrice ?? 0;
+        const shippingCost = body.deliveryOption === "DELIVERY" ? totalPrice * 0.1 : 0;
+
         const { items, publicIdsToDelete, ...data } = body;
         const updatedOrder = await prisma.order.update({
             where: { id },
-            data,
+            data: {
+                ...data,
+                totalPrice,
+                shippingCost,
+            },
             include: { items: { include: { product: true } } },
         });
 

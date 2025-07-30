@@ -99,6 +99,7 @@ const formatters = {
                 productId: item.productId,
                 quantity: item.quantity,
                 message: item.message || "",
+                price: item.unitPrice,
             })),
             deliveryOption: data.deliveryOption,
             deliveryAddress: data.deliveryAddress || "",
