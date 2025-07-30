@@ -32,6 +32,7 @@ const ReportOrderForm = ({ handleSubmit, control, errors, fieldRefs, onSubmit, s
                             key={item.name}
                             label={item.label}
                             options={item.options || []}
+                            optionLabel={item.optionLabel}
                             name={item.name}
                             control={control}
                             ref={(el) => (fieldRefs.current[item.name] = el)}
@@ -39,7 +40,7 @@ const ReportOrderForm = ({ handleSubmit, control, errors, fieldRefs, onSubmit, s
                         />
                     );
                 })}
-                <Button type="submit" className="mb-28 mt-20 2xl:mt-32" colors={COLORS}>
+                <Button type="submit" className="mb-28 mt-20 2xl:mt-32 p-1 2xl:p-2 w-[15rem] 2xl:w-[20rem]" colors={COLORS}>
                     Cetak
                 </Button>
             </form>

@@ -50,7 +50,7 @@ function ProductForm({ control, onSubmit, errors, fieldRefs, isLoading, setValue
                             );
                     }
                 })}
-                <Button type="submit" className="mb-28 mt-20 2xl:mt-32" colors={COLORS}>
+                <Button type="submit" className="mb-28 mt-20 2xl:mt-32 p-1 2xl:p-2 w-[15rem] 2xl:w-[20rem]" colors={COLORS}>
                     Submit
                 </Button>
             </form>

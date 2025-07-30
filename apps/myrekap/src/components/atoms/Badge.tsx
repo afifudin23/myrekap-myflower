@@ -1,14 +1,12 @@
-import { formatters } from "@/utils";
-
 interface BadgeProps {
     className: string;
-    field: string;
+    children: string;
 }
 
-function Badge({ className, field }: BadgeProps) {
+function Badge({ className, children}: BadgeProps) {
     return (
         <div className={`${className} flex justify-center items-center rounded-md text-white`}>
-            <h1>{formatters.formatCapital(field)}</h1>
+            <h1>{children}</h1>
         </div>
     );
 }

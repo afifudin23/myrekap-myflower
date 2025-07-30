@@ -7,7 +7,7 @@ import { axiosInstance } from "@/utils";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { MdAddToPhotos } from "react-icons/md";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const AdminPage = () => {
     const { users, setUsers } = useUsers("admin");
@@ -15,7 +15,6 @@ const AdminPage = () => {
 
     // Alert
     const location = useLocation();
-    const navigate = useNavigate();
     const [message, setMessage] = useState<string | null>(null);
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [showAlertConfirm, setShowAlertConfirm] = useState<boolean>(false);
@@ -25,12 +24,13 @@ const AdminPage = () => {
         if (state?.message) {
             setMessage(state.message);
             setShowAlert(true);
-            
-            // Delay scroll alert
-            setTimeout(() => {
+
+            const timer = setTimeout(() => {
                 setShowAlert(false);
-                navigate(location.pathname, { replace: true, state: {} });
-            }, 3000); 
+                window.history.replaceState({}, document.title);
+            }, 3000);
+
+            return () => clearTimeout(timer);
         }
     }, [location.key]);
 

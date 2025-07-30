@@ -40,6 +40,9 @@ export function badgeColorOrderStatus(orderStatus: string) {
     switch (orderStatus) {
         case "COMPLETED":
             return "bg-[#24CAFF]";
+            
+        case "DELIVERY":
+            return "bg-[#24315c]";
 
         case "IN_PROCESS":
             return "bg-[#707070]";

@@ -25,14 +25,18 @@ function LoginPage() {
 
     useEffect(() => {
         const state = location.state as { message?: string };
-
         if (state?.message) {
             setMessage(state.message);
             setShowAlert(true);
-            setTimeout(() => setShowAlert(false), 3000);
-            navigate(location.pathname, { replace: true });
+
+            const timer = setTimeout(() => {
+                setShowAlert(false);
+                window.history.replaceState({}, document.title);
+            }, 3000);
+
+            return () => clearTimeout(timer);
         }
-    }, []);
+    }, [location.key]);
 
     useEffect(() => {
         if (user?.username) {
@@ -82,14 +86,7 @@ function LoginPage() {
         }
     };
     return (
-        <AuthTemplate description="Silahkan Masuk">
-            {/* <AuthForm
-                onSubmit={onSubmit}
-                items={["Username", "Password"]}
-                register={register}
-                handleSubmit={handleSubmit}
-                errors={errors}
-            /> */}
+        <AuthTemplate description="Masuk untuk mengelola pesanan dan melihat laporan rekap pelanggan.">
             <AuthForm
                 fields={LOGIN_FIELDS}
                 register={register}

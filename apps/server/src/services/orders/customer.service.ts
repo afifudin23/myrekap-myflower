@@ -1,8 +1,10 @@
+import { enqueueWhatsAppMessage } from "@/config";
 import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
 import { ordersCustomerSchema } from "@/schemas";
 import { formatters } from "@/utils";
+import { generatedTextLink } from "@/utils/formatters.utils";
 
 export const create = async (user: any, data: ordersCustomerSchema.CreateType) => {
     const cartItems = await prisma.cartItem.findMany({ where: { userId: user.id }, include: { product: true } });
@@ -121,4 +123,10 @@ export const confirm = async (id: string) => {
     } catch (_error) {
         throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
     }
+};
+
+export const notification = async (order: any) => {
+    // Send Notification to WhatsApp
+    const message = generatedTextLink(order);
+    enqueueWhatsAppMessage(message);
 };

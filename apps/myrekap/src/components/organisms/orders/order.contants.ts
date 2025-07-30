@@ -1,4 +1,11 @@
-import { CUSTOMER_CATEGORY_ITEMS, DELIVERY_OPTION_ITEMS, PAYMENT_METHOD_ITEMS } from "@/constants/category";
+import {
+    CUSTOMER_CATEGORY_ITEMS,
+    CUSTOMER_CATEGORY_LABELS,
+    DELIVERY_OPTION_ITEMS,
+    DELIVERY_OPTION_LABELS,
+    PAYMENT_METHOD_ITEMS,
+    PAYMENT_METHOD_LABELS,
+} from "@/constants/category";
 
 export const ORDER_FORM_ITEMS = [
     {
@@ -10,7 +17,8 @@ export const ORDER_FORM_ITEMS = [
         label: "Kategori Pelanggan",
         type: "dropdown",
         name: "customerCategory",
-        options: CUSTOMER_CATEGORY_ITEMS.filter((item) => item !== "Semua"),
+        options: CUSTOMER_CATEGORY_ITEMS.filter((item) => item.label !== "Semua"),
+        optionLabel: CUSTOMER_CATEGORY_LABELS,
     },
     {
         label: "Nomor Telepon",
@@ -26,7 +34,8 @@ export const ORDER_FORM_ITEMS = [
         label: "Opsi Pengiriman",
         type: "dropdown",
         name: "deliveryOption",
-        options: DELIVERY_OPTION_ITEMS.filter((item) => item !== "Semua"),
+        options: DELIVERY_OPTION_ITEMS.filter((item) => item.label !== "Semua"),
+        optionLabel: DELIVERY_OPTION_LABELS,
     },
     {
         label: "Alamat Pengiriman",
@@ -42,7 +51,8 @@ export const ORDER_FORM_ITEMS = [
         label: "Metode Pembayaran",
         type: "dropdown",
         name: "paymentMethod",
-        options: PAYMENT_METHOD_ITEMS.filter((item) => item !== "Semua"),
+        options: PAYMENT_METHOD_ITEMS.filter((item) => item.label !== "Semua"),
+        optionLabel: PAYMENT_METHOD_LABELS,
     },
     {
         label: "Bukti Pembayaran",

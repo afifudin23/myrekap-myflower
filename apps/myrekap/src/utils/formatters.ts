@@ -1,3 +1,5 @@
+import { CUSTOMER_CATEGORY_LABELS, ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS, PAYMENT_STATUS_LABELS } from "@/constants/category";
+
 const formatters = {
     // parse = frontend -> backend
     // format = backend -> frontend
@@ -14,6 +16,8 @@ const formatters = {
         const twoInitial = words.length > 2 ? words[2].charAt(0).toUpperCase() + "." : "";
         return twoInitial ? `${first} ${twoInitial}` : first;
     },
+
+    //  UBAH FRONTEND -> BACKEND
     parseCapital(data: string) {
         return data.toUpperCase().replace(/[ /-]/g, "_"); // Replace spaces and slashes with underscores
     },
@@ -88,7 +92,7 @@ const formatters = {
     parseInputOrder(data: any) {
         return {
             customerName: data.customerName,
-            customerCategory: this.formatCapital(data.customerCategory),
+            customerCategory: data.customerCategory,
             phoneNumber: data.phoneNumber,
             items: data.items.map((item: any) => ({
                 id: item.id,
@@ -96,10 +100,10 @@ const formatters = {
                 quantity: item.quantity,
                 message: item.message || "",
             })),
-            deliveryOption: this.formatCapital(data.deliveryOption),
+            deliveryOption: data.deliveryOption,
             deliveryAddress: data.deliveryAddress || "",
             readyDate: new Date(data.readyDate),
-            paymentMethod: this.formatCapital(data.paymentMethod),
+            paymentMethod: data.paymentMethod,
             paymentProof:
                 data.paymentProof === null
                     ? []
@@ -137,13 +141,13 @@ const formatters = {
         return {
             orderCode: data.orderCode,
             customerName: this.formatCustomerNameReceipt(data.customerName),
-            customerCategory: data.customerCategory.split("_").join(" "),
+            customerCategory: CUSTOMER_CATEGORY_LABELS[data.customerCategory].toUpperCase(),
             phoneNumber: data.phoneNumber,
             totalPrice: data.totalPrice,
-            paymentMethod: data.paymentMethod ? data.paymentMethod.split("_").join(" ") : "-",
+            paymentMethod: data.paymentMethod ? PAYMENT_METHOD_LABELS[data.paymentMethod].toUpperCase()  : "-",
             paymentProvider: data.paymentProvider ? data.paymentProvider.split("_").join(" ") : "-",
-            paymentStatus: data.paymentStatus,
-            orderStatus: data.orderStatus.split("_").join(" "),
+            paymentStatus: PAYMENT_STATUS_LABELS[data.paymentStatus].toUpperCase(),
+            orderStatus: ORDER_STATUS_LABELS[data.orderStatus].toUpperCase(),
             orderDate: this.isoDateToStringDate(data.orderDate),
         };
     },

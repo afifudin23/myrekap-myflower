@@ -1,6 +1,7 @@
 import { env } from "@/config";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import type { Request } from "express";
+import path from "path";
 type MulterFile = Request["file"];
 
 if (!env.CLOUDINARY_CLOUD_NAME || !env.CLOUDINARY_API_KEY || !env.CLOUDINARY_API_SECRET) {
@@ -17,17 +18,17 @@ export const uploadFile = async (file: MulterFile, folder: string): Promise<Uplo
         if (!file || !file.buffer) {
             return reject(new Error("File buffer not available"));
         }
+        const nameWithoutExt = path.parse(file.originalname).name;
 
         const stream = cloudinary.uploader.upload_stream(
             {
                 folder,
-                public_id: `${Date.now()}-${file.originalname}`,
+                public_id: `${Date.now()}-${nameWithoutExt}`,
                 resource_type: "image",
             },
             (error, result) => {
                 if (error) return reject(new Error(error.message));
                 if (!result) return reject(new Error("No result from Cloudinary"));
-                // if (error) return reject(new Error(error.message));
                 resolve(result);
             }
         );

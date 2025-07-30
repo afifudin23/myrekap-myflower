@@ -9,7 +9,7 @@ interface SendTemplateEmailProps {
     params: any;
 }
 
-export const sendTemplateEmail = async ({ to, name, templateId, params }: SendTemplateEmailProps) => {
+const sendTemplateEmail = async ({ to, name, templateId, params }: SendTemplateEmailProps) => {
     try {
         await brevo.sendTransacEmail({
             to: [{ email: to, name }],
@@ -51,5 +51,24 @@ export const sendResetPasswordEmail = async (user: any) => {
         name: user.fullName,
         templateId: 4,
         params: { name: user.fullName, appName, resetLink },
+    });
+};
+
+export const sendUpdateOrderStatusEmail = async (data: any) => {
+    const { user, customerName, orderCode, orderStatus, paymentMethod, paymentProvider, totalPrice, items } = data;
+
+    await sendTemplateEmail({
+        to: user.email,
+        name: user.fullName,
+        templateId: 5,
+        params: {
+            customerName,
+            orderCode,
+            orderStatus,
+            paymentMethod,
+            paymentProvider: paymentProvider ? paymentProvider : "-",
+            totalPrice: formatters.formatRupiah(totalPrice),
+            items: formatters.formatItemsAsList(items),
+        },
     });
 };

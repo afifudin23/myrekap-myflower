@@ -1,22 +1,21 @@
-import { Badge, ButtonSmall } from "@/components/atoms";
-import { InputDropdown } from "@/components/molecules";
-import OrderReceipt from "@/components/organisms/orders/OrderReceipt";
-import { ORDER_STATUS_ITEMS } from "@/constants/category";
-import { badgeColorOrderStatus, badgeColorPaymentStatus, formatters } from "@/utils";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import { HiPhoto } from "react-icons/hi2";
+import OrderReceipt from "@/components/organisms/orders/OrderReceipt";
 import { IoReceiptSharp } from "react-icons/io5";
+import { Badge, ButtonSmall } from "@/components/atoms";
+import {
+    CUSTOMER_CATEGORY_LABELS,
+    ORDER_STATUS_LABELS,
+    PAYMENT_METHOD_LABELS,
+    PAYMENT_STATUS_LABELS,
+    SOURCE_LABELS,
+} from "@/constants/category";
+import { badgeColorOrderStatus, badgeColorPaymentStatus, formatters } from "@/utils";
+import { GrUpdate } from "react-icons/gr";
 import { RiEdit2Fill } from "react-icons/ri";
 import { TbReceiptFilled } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
-function OrderDetailSection({
-    order,
-    control,
-    isOpenFinishedProduct,
-    setIsOpenFinishedProduct,
-    setIsOpenPaymentProof,
-}: any) {
+function OrderDetailSection({ order, isOpenUpdateProgress, setIsOpenUpdateProgress, setIsOpenPaymentProof }: any) {
     const navigate = useNavigate();
     const disabled = order.source === "MYFLOWER";
     return (
@@ -30,19 +29,21 @@ function OrderDetailSection({
                         <Badge
                             className={`${badgeColorPaymentStatus(
                                 order.paymentStatus
-                            )} w-[90px] py-1 text-sm text-white font-semibold`}
-                            field={order.paymentStatus}
-                        />
+                            )} w-[110px] p-1 text-sm text-white font-semibold`}
+                        >
+                            {PAYMENT_STATUS_LABELS[order.paymentStatus]}
+                        </Badge>
+
                         <Badge
                             className={`${badgeColorOrderStatus(
                                 order.orderStatus
-                            )} w-[100px] py-1 text-sm text-white font-semibold`}
-                            field={order.orderStatus}
-                        />
-                        <Badge
-                            className="bg-[#609393] w-[120px] py-1 text-sm text-white font-semibold"
-                            field={order.customerCategory}
-                        />
+                            )} w-[110px] py-1 text-sm text-white font-semibold`}
+                        >
+                            {ORDER_STATUS_LABELS[order.orderStatus]}
+                        </Badge>
+                        <Badge className="bg-[#609393] w-[120px] py-1 text-sm text-white font-semibold">
+                            {CUSTOMER_CATEGORY_LABELS[order.customerCategory]}
+                        </Badge>
                     </div>
                 </div>
                 <div className="flex gap-2 items-center">
@@ -50,7 +51,7 @@ function OrderDetailSection({
                         {formatters.dateToString(order.orderDate)}
                     </p>
                     <p className="px-2 py-1 rounded-md bg-purple-400 font-medium 2xl:font-semibold text-slate-100">
-                        {formatters.formatSource(order.source)}
+                        {SOURCE_LABELS[order.source]}
                     </p>
                 </div>
             </div>
@@ -101,12 +102,14 @@ function OrderDetailSection({
                         <h1 className="text-lg font-semibold 2xl:text-xl">Detail Pembayaran</h1>
                         <p>
                             Metode Pembayaran :{" "}
-                            <span className="font-medium">{order.paymentMethod?.split("_").join(" ") || "-"}</span>
+                            <span className="font-medium">
+                                {order.paymentMethod ? PAYMENT_METHOD_LABELS[order.paymentMethod] : "-"}
+                            </span>
                         </p>
                         <p className="flex items-center gap-1">
                             Provider :{" "}
                             <span className="font-medium">
-                                {order.paymentProvider}{" "}
+                                {order.paymentProvider?.split("_").join(" ") || "-"}{" "}
                                 {order.paymentMethod === "BANK_TRANSFER" && order.paymentProof && (
                                     <button
                                         className="inline-flex text-blue-600 items-center gap-1 font-medium"
@@ -153,9 +156,10 @@ function OrderDetailSection({
                 </ButtonSmall>
                 <ButtonSmall
                     className="bg-blue-600 hover:bg-blue-700 py-1 2xl:py-2 px-4 font-semibold"
-                    onClick={() => setIsOpenFinishedProduct(!isOpenFinishedProduct)}
+                    onClick={() => setIsOpenUpdateProgress(!isOpenUpdateProgress)}
                 >
-                    <HiPhoto /> Produk
+                    <GrUpdate />
+                    Progress
                 </ButtonSmall>
 
                 <ButtonSmall className="bg-cyan-500 hover:bg-cyan-600 py-1 2xl:py-2 px-4 font-semibold">
@@ -167,18 +171,6 @@ function OrderDetailSection({
                         <IoReceiptSharp /> Nota
                     </PDFDownloadLink>
                 </ButtonSmall>
-
-                <div className="w-64">
-                    <InputDropdown
-                        label="Status Pesanan"
-                        name="orderStatus"
-                        control={control}
-                        formInput={false}
-                        className="py-1 2xl:py-2 px-4 text-base 2xl:text-xl"
-                        options={ORDER_STATUS_ITEMS.filter((item) => item !== "Semua")}
-                        disabled={disabled}
-                    />
-                </div>
             </div>
         </div>
     );

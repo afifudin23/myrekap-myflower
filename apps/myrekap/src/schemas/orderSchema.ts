@@ -1,20 +1,12 @@
-import { formatters } from "@/utils";
 import { z } from "zod";
 
 export const create = z
     .object({
         customerName: z.string().nonempty("Nama wajib diisi"),
-        customerCategory: z
-            .string()
-            .nonempty("Wajib pilih kategori customer")
-            // enum validation replace
-            .refine(
-                (val) => ["Umum", "Pemda", "Akademik", "Rumah Sakit", "Polisi/Militer", "Perbankan"].includes(val),
-                {
-                    message: "Kategori customer tidak valid",
-                }
-            )
-            .transform((value) => formatters.parseCapital(value)),
+        customerCategory: z.enum(["UMUM", "PEMDA", "AKADEMIK", "RUMAH_SAKIT", "POLISI_MILITER", "PERBANKAN"], {
+            required_error: "Wajib pilih kategori customer",
+            invalid_type_error: "Kategori customer tidak valid",
+        }),
         phoneNumber: z.string().nonempty("Nomor telepon wajib diisi"),
         items: z.array(
             z.object({
@@ -28,13 +20,10 @@ export const create = z
                 price: z.coerce.number().positive("Harga tidak boleh 0 atau negatif"),
             })
         ),
-        deliveryOption: z
-            .string()
-            .nonempty("Wajib pilih metode pengiriman")
-            .refine((val) => ["Delivery", "Pickup"].includes(val), {
-                message: "Metode pengiriman tidak valid",
-            })
-            .transform((val) => formatters.parseCapital(val)),
+        deliveryOption: z.enum(["DELIVERY", "PICKUP"], {
+            required_error: "Wajib pilih metode pengiriman",
+            invalid_type_error: "Metode pengiriman tidak valid",
+        }),
         deliveryAddress: z
             .string()
             .transform((val) => (val === "" ? null : val))
@@ -55,17 +44,14 @@ export const create = z
                 }
             )
             .transform((date) => date.toISOString()),
-        paymentMethod: z
-            .string()
-            .nonempty("Wajib pilih metode pembayaran")
-            .refine((val) => ["Cash", "Bank Transfer"].includes(val), {
-                message: "Metode pembayaran tidak valid",
-            })
-            .transform((value) => formatters.parseCapital(value)),
+        paymentMethod: z.enum(["CASH", "BANK_TRANSFER"], {
+            required_error: "Wajib pilih metode pembayaran",
+            invalid_type_error: "Metode pembayaran tidak valid",
+        }),
         paymentProof: z.array(z.instanceof(File)),
     })
     .superRefine((data, ctx) => {
-        if (data.paymentMethod === "Bank Transfer" && !data.paymentProof) {
+        if (data.paymentMethod === "BANK_TRANSFER" && !data.paymentProof) {
             ctx.addIssue({
                 path: ["paymentProof"],
                 code: z.ZodIssueCode.custom,
@@ -94,16 +80,10 @@ export const update = z
     .object({
         customerName: z.string().nonempty("Nama wajib diisi"),
         customerCategory: z
-            .string()
-            .nonempty("Wajib pilih kategori customer")
-            // enum validation replace
-            .refine(
-                (val) => ["Umum", "Pemda", "Akademik", "Rumah Sakit", "Polisi/Militer", "Perbankan"].includes(val),
-                {
-                    message: "Kategori customer tidak valid",
-                }
-            )
-            .transform((value) => formatters.parseCapital(value)),
+            .enum(["UMUM", "PEMDA", "AKADEMIK", "RUMAH_SAKIT", "POLISI_MILITER", "PERBANKAN"], {
+                invalid_type_error: "Kategori customer tidak valid",
+            })
+            .nullish(),
         phoneNumber: z.string().nonempty("Nomor telepon wajib diisi"),
         items: z.array(
             z.object({
@@ -116,13 +96,9 @@ export const update = z
                     .nullish(),
             })
         ),
-        deliveryOption: z
-            .string()
-            .nonempty("Wajib pilih metode pengiriman")
-            .refine((val) => ["Delivery", "Pickup"].includes(val), {
-                message: "Metode pengiriman tidak valid",
-            })
-            .transform((val) => formatters.parseCapital(val)),
+        deliveryOption: z.enum(["DELIVERY", "PICKUP"], {
+            invalid_type_error: "Metode pengiriman tidak valid",
+        }).nullish(),
         deliveryAddress: z
             .string()
             .transform((val) => (val === "" ? null : val))
@@ -143,13 +119,9 @@ export const update = z
                 }
             )
             .transform((date) => date.toISOString()),
-        paymentMethod: z
-            .string()
-            .nonempty("Wajib pilih metode pembayaran")
-            .refine((val) => ["Cash", "Bank Transfer"].includes(val), {
-                message: "Metode pembayaran tidak valid",
-            })
-            .transform((value) => formatters.parseCapital(value)),
+        paymentMethod: z.enum(["CASH", "BANK_TRANSFER"], {
+            invalid_type_error: "Metode pembayaran tidak valid",
+        }).nullish(),
         paymentProof: z.array(
             z.union([
                 existingFile,
@@ -164,7 +136,7 @@ export const update = z
         publicIdsToDelete: z.array(z.string()).nullish(),
     })
     .superRefine((data, ctx) => {
-        if (data.paymentMethod === "Bank Transfer" && !data.paymentProof) {
+        if (data.paymentMethod === "BANK_TRANSFER" && !data.paymentProof) {
             ctx.addIssue({
                 path: ["paymentProof"],
                 code: z.ZodIssueCode.custom,

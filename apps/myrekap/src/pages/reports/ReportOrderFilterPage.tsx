@@ -1,8 +1,13 @@
 import { TitlePage } from "@/components/molecules";
 import { DEFAULT_VALUE_REPORT_ORDER, ReportOrderForm } from "@/components/organisms/reports";
 import MainLayout from "@/components/templates/MainLayout";
+import {
+    CUSTOMER_CATEGORY_LABELS,
+    ORDER_STATUS_LABELS,
+    PAYMENT_METHOD_LABELS,
+    PAYMENT_STATUS_LABELS,
+} from "@/constants/category";
 import { reportOrderSchema, ReportOrderType } from "@/schemas";
-import { formatters } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -39,14 +44,14 @@ const ReportOrderFilterPage = () => {
             const params = new URLSearchParams({
                 from_date: filter.fromDate.toISOString(),
                 to_date: filter.toDate.toISOString(),
-                customer_category: formatters.parseCapital(filter.customerCategory).toLowerCase(),
-                payment_method: formatters.parseCapital(filter.paymentMethod).toLowerCase(),
-                payment_status: formatters.parseCapital(filter.paymentStatus).toLowerCase(),
-                order_status: formatters.parseCapital(filter.orderStatus).toLowerCase(),
+                customer_category: CUSTOMER_CATEGORY_LABELS[filter.customerCategory].toLowerCase(),
+                payment_method: PAYMENT_METHOD_LABELS[filter.paymentMethod].toLowerCase(),
+                payment_status: PAYMENT_STATUS_LABELS[filter.paymentStatus].toLowerCase(),
+                order_status: ORDER_STATUS_LABELS[filter.orderStatus].toLowerCase(),
             });
 
             reset(DEFAULT_VALUE_REPORT_ORDER);
-            navigate(`/reports/orders/result?${params.toString()}`);
+            navigate(`/reports/orders/result?${params}`);
         } catch (error) {
             console.log(error);
         }

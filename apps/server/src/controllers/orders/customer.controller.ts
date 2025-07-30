@@ -37,7 +37,7 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
     } catch (error) {
         next(error);
     }
-}
+};
 export const cancelOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = await ordersCustomerService.cancel(req.params.id);
@@ -51,6 +51,15 @@ export const confirmOrder = async (req: Request, res: Response, next: NextFuncti
     try {
         const data = await ordersCustomerService.confirm(req.params.id);
         res.status(200).json({ message: "Order confirmed successfully", data });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const notification = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await ordersCustomerService.notification(req.body);
+        res.status(200).send("OK");
     } catch (error) {
         next(error);
     }

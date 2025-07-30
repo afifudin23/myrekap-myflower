@@ -11,5 +11,6 @@ ordersCustomerRouter.post("/", [authMiddleware], errorHandler(ordersCustomerCont
 ordersCustomerRouter.patch("/:id/cancel", [authMiddleware], errorHandler(ordersCustomerController.cancelOrder));
 ordersCustomerRouter.patch("/:id/confirm", [authMiddleware], errorHandler(ordersCustomerController.confirmOrder));
 ordersCustomerRouter.delete("/:orderCode", [authMiddleware], errorHandler(ordersCustomerController.deleteOrder));
+ordersCustomerRouter.post("/notification", [authMiddleware], errorHandler(ordersCustomerController.notification));
 
 export default ordersCustomerRouter;

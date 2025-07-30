@@ -88,6 +88,16 @@ ${data.items
     .join("\n")}
 `);
 };
+export const formatItemsAsList = (items: any[]) => {
+    return items
+        .map(
+            (item, i) =>
+                `${i + 1}. ${item.product.name} - Qty: ${item.quantity} - Harga: ${formatRupiah(
+                    item.unitPrice
+                )} - Total: ${formatRupiah(item.totalPrice)}`
+        )
+        .join("\n");
+};
 
 export const generateItemDetails = (orderItems: any[]) => {
     return orderItems.map((item) => ({

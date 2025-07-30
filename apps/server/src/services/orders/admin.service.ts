@@ -1,9 +1,10 @@
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
-import { cloudinary, enqueueWhatsAppMessage, prisma, uploadFile } from "@/config";
+import { cloudinary, prisma, uploadFile } from "@/config";
 // import enqueueWhatsAppMessage from "@/utils/queue-wa-message.util";
 import puppeteer from "puppeteer";
-import { generatedTextLink, generateOrderCode } from "@/utils/formatters.utils";
+import { generateOrderCode } from "@/utils/formatters.utils";
+import { mailerService } from "@/services";
 
 export const getAllOrders = async (requestQuery: any) => {
     const { month, year, from_date, to_date, customer_category, payment_method, payment_status, order_status } =
@@ -110,9 +111,9 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
             });
         }
         // Send Notification to WhatsApp
-        const message = generatedTextLink(data);
-        enqueueWhatsAppMessage(message);
-        
+        // const message = generatedTextLink(data);
+        // enqueueWhatsAppMessage(message);
+
         // Decrement Stock Product
         for (const item of orderItems) {
             await prisma.product.update({
@@ -260,10 +261,40 @@ export const printOrder = async (html: string) => {
     }
 };
 
-export const updateOrderStatus = async (id: string, orderStatus: "COMPLETED" | "IN_PROCESS" | "CANCELED") => {
-    const order = await prisma.order.findUnique({ where: { id } });
-    if (!order) throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_NOT_FOUND);
+export const updateProgress = async (
+    id: string,
+    orderStatus: "COMPLETED" | "DELIVERY" | "IN_PROCESS" | "CANCELED",
+    finishedProduct?: Express.Multer.File
+) => {
+    // Check if finished product exists
+    if (finishedProduct) {
+        // Delete existing finished product
+        const existingFinishedProduct = await prisma.finishedProduct.findUnique({ where: { orderId: id } });
+        if (existingFinishedProduct) {
+            await prisma.finishedProduct.delete({ where: { orderId: id } });
+            await cloudinary.uploader.destroy(existingFinishedProduct.publicId);
+        }
 
+        // Upload new finished product
+        const result = await uploadFile(finishedProduct, "myflower-myrekap/produk-selesai");
+        await prisma.finishedProduct.create({
+            data: {
+                fileName: finishedProduct.originalname,
+                size: finishedProduct.size,
+                orderId: id,
+                secureUrl: result.secure_url,
+                publicId: result.public_id,
+            },
+        });
+    }
+
+    // Check if order exists
+    const order = await prisma.order.findUnique({
+        where: { id },
+    });
+    if (!order) throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
+
+    // Update order
     let dataOrderStatus: any = { orderStatus };
     if (orderStatus === "CANCELED") {
         dataOrderStatus = {
@@ -271,49 +302,31 @@ export const updateOrderStatus = async (id: string, orderStatus: "COMPLETED" | "
             paymentStatus: "CANCELED",
             previousPaymentStatus: order.paymentStatus,
         };
-    } else if (orderStatus === "COMPLETED" || orderStatus === "IN_PROCESS") {
-        if (order.paymentStatus === "CANCELED" && order.previousPaymentStatus) {
-            dataOrderStatus = {
-                orderStatus,
-                paymentStatus: order.previousPaymentStatus,
-                previousPaymentStatus: null,
-            };
-        }
+    } else if (
+        ["COMPLETED", "IN_PROCESS", "DELIVERY"].includes(orderStatus) &&
+        order.paymentStatus === "CANCELED" &&
+        order.previousPaymentStatus
+    ) {
+        dataOrderStatus = {
+            orderStatus,
+            paymentStatus: order.previousPaymentStatus,
+            previousPaymentStatus: null,
+        };
     }
+    // Update order
     try {
-        const data = await prisma.order.update({
+        const orderUpdated = await prisma.order.update({
             where: { id },
             data: dataOrderStatus,
-        });
-        return data;
-    } catch (_error) {
-        throw new NotFoundException("Order Summary not found", ErrorCode.ORDER_NOT_FOUND);
-    }
-};
-
-export const upload = async (orderId: string, finishedProduct: any) => {
-    try {
-        const existingFinishedProduct = await prisma.finishedProduct.findUnique({ where: { orderId } });
-
-        if (existingFinishedProduct) {
-            await prisma.finishedProduct.delete({ where: { orderId } });
-            await cloudinary.uploader.destroy(existingFinishedProduct.publicId);
-        }
-        if (!finishedProduct)
-            throw new BadRequestException("Finished product not found", ErrorCode.FINISHED_PRODUCT_NOT_FOUND);
-
-        const result = await uploadFile(finishedProduct, "myflower-myrekap/produk-selesai");
-        const data = await prisma.finishedProduct.create({
-            data: {
-                fileName: finishedProduct.originalname,
-                size: finishedProduct.size,
-                orderId,
-                secureUrl: result.secure_url,
-                publicId: result.public_id,
+            include: {
+                user: true,
+                items: { include: { product: { include: { images: true } } } },
+                finishedProduct: true,
             },
         });
-        return data;
-    } catch (error) {
-        throw new InternalException("Failed to add finished product", ErrorCode.FINISHED_PRODUCT_ADD_FAILED, error);
+        if (order.source === "MYFLOWER") mailerService.sendUpdateOrderStatusEmail(orderUpdated);
+        return orderUpdated;
+    } catch (_error) {
+        throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
     }
 };

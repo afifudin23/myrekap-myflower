@@ -229,6 +229,7 @@ enum PaymentMethod {
 
 enum OrderStatus {
   IN_PROCESS @map("in_process")
+  DELIVERY   @map("delivery")
   COMPLETED  @map("completed")
   CANCELED   @map("canceled")
 }

@@ -71,21 +71,13 @@ export const printOrder = async (req: Request, res: Response, next: NextFunction
         return next(error);
     }
 };
-export const updateOrderStatus = async (req: Request, res: Response, next: NextFunction) => {
-    const body = ordersAdminSchema.updateOrderStatus.parse(req.body);
+export const updateOrderProgress = async (req: Request, res: Response, next: NextFunction) => {
+    const {orderStatus} = ordersAdminSchema.updateOrderStatus.parse(req.body);
     try {
-        const data = await ordersAdminService.updateOrderStatus(req.params.id, body.orderStatus);
+        const data = await ordersAdminService.updateProgress(req.params.id, orderStatus, req.file);
         res.json({ message: "Update order status successfully", data });
     } catch (error) {
         return next(error);
     }
 };
 
-export const addFinishedProduct = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const data = await ordersAdminService.upload(req.params.orderId, req.file);
-        res.json({ message: "Finished product added successfully", data });
-    } catch (error) {
-        return next(error);
-    }
-};

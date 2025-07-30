@@ -11,9 +11,9 @@ function AuthTemplate({ description, children }: { description: string; children
                     </b>
                     <p className="border border-black"></p>
                 </h1>
-                <div className="flex flex-col py-7 2xl:py-10">
+                <div className="flex flex-col py-7 2xl:py-10 gap-10">
                     <div className="mb-3 2xl:mb-5 flex flex-col items-center">
-                        <b className="text-4xl 2xl:text-4xl font-semibold">MyFlower</b>
+                        <b className="text-4xl 2xl:text-4xl font-semibold">MyRekap</b>
                         <p className="text-sm 2xl:text-base text-slate-500 mt-1 text-center">
                             {description}
                         </p>

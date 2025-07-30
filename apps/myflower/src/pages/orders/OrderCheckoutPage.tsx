@@ -6,7 +6,6 @@ import OrderForm from "@/components/organisms/orders/OrderForm";
 import MainLayout from "@/components/templates/MainLayout";
 import { orderFormSchema } from "@/schemas/orderSchema";
 import { axiosInstance, formatters } from "@/utils";
-import { generatedTextLink } from "@/utils/formatters";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AxiosError } from "axios";
 import { useEffect, useState } from "react";
@@ -64,6 +63,7 @@ function OrderCheckoutPage() {
 
             if (data.paymentMethod === "COD") {
                 await axiosInstance.delete("/carts");
+                await axiosInstance.post("/orders/customer/notification", createOrder);
                 alert("Pesanan berhasil dibuat. Silahkan melakukan pembayaran melalui metode COD.");
                 navigate("/products");
                 return true;
@@ -75,16 +75,11 @@ function OrderCheckoutPage() {
 
             window.snap.pay(snapToken, {
                 onSuccess: async () => {
-                    await axiosInstance.delete("/carts");
-                    setOrder(null);
-
                     // Send WhatsApp message
-                    const message = generatedTextLink(order);
-                    await fetch(
-                        `https://api.callmebot.com/whatsapp.php?phone=${
-                            import.meta.env.VITE_WHATSAPP_NUMBER
-                        }&text=${message}&apikey=${import.meta.env.VITE_CALLMEBOT_API_KEY}`
-                    );
+                    await axiosInstance.post("/orders/customer/notification", createOrder);
+                    await axiosInstance.delete("/carts");
+                    localStorage.removeItem("snapToken");
+                    setOrder(null);
                 },
                 onPending: async () => {
                     await axiosInstance.delete("/carts");
@@ -103,7 +98,7 @@ function OrderCheckoutPage() {
                 },
             });
         } catch (error: any) {
-            console.log(error.response.data);
+            console.log(error);
             const axiosError = error as AxiosError;
             if (axiosError.code === "ERR_NETWORK") {
                 alert("Tidak Dapat Terhubung Ke Server. Periksa Koneksi Internet Anda");

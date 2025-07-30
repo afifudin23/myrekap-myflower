@@ -6,12 +6,11 @@ import { useProducts } from "@/hooks";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { MdAddToPhotos } from "react-icons/md";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function ProductPage() {
     const { products } = useProducts();
     const location = useLocation();
-    const navigate = useNavigate();
     const [message, setMessage] = useState<string | null>(null);
     const [showAlert, setShowAlert] = useState<boolean>(false);
 
@@ -21,11 +20,12 @@ function ProductPage() {
             setMessage(state.message);
             setShowAlert(true);
 
-            // Delay scroll alert
-            setTimeout(() => {
+            const timer = setTimeout(() => {
                 setShowAlert(false);
-                navigate(location.pathname, { replace: true, state: {} });
-            }, 3000); 
+                window.history.replaceState({}, document.title);
+            }, 3000);
+
+            return () => clearTimeout(timer);
         }
     }, [location.key]);
 
@@ -37,7 +37,13 @@ function ProductPage() {
                     <MdAddToPhotos /> Tambah
                 </ButtonSmall>
             </Link>
-            <ProductList products={products} />
+
+            {/* Product List */}
+            {products.length > 0 ? (
+                <ProductList products={products} />
+            ) : (
+                <p className="text-center text-gray-500 text-3xl mt-40">Tidak ada produk</p>
+            )}
 
             {/* Alert */}
             <AnimatePresence>

@@ -4,13 +4,11 @@ import SectionTitle from "@/components/atoms/SectionTitle";
 import OrderDetailSection from "@/components/organisms/orders/OrderDetailSection";
 import MainLayout from "@/components/templates/MainLayout";
 import { axiosInstance } from "@/utils";
-import { generatedTextLink } from "@/utils/formatters";
 import { useEffect, useState } from "react";
 
 function OrderDetailPage() {
     const [order, setOrder] = useState<any>({});
     const [snapToken, setSnapToken] = useState<string | null>("");
-    console.log(order);
 
     useEffect(() => {
         const storedOrder = JSON.parse(localStorage.getItem("orderDetail") || "{}");
@@ -59,14 +57,8 @@ function OrderDetailPage() {
             window.snap.pay(snapToken, {
                 onSuccess: async () => {
                     await axiosInstance.delete("/carts");
-
-                    // Send WhatsApp message
-                    const message = generatedTextLink(order);
-                    await fetch(
-                        `https://api.callmebot.com/whatsapp.php?phone=${
-                            import.meta.env.VITE_WHATSAPP_NUMBER
-                        }&text=${message}&apikey=${import.meta.env.VITE_CALLMEBOT_API_KEY}`
-                    );
+                    localStorage.removeItem("snapToken");
+                    await axiosInstance.post("/orders/customer/notification", order);
                 },
                 onPending: () => {
                     localStorage.setItem("snapToken", snapToken);

@@ -1,10 +1,11 @@
-import { Loading } from "@/components/atoms";
-import { AlertInfo, InputFinishedProduct, TitlePage } from "@/components/molecules";
+import { ButtonSmall, Loading } from "@/components/atoms";
+import { AlertInfo, InputDropdown, InputFinishedProduct, TitlePage } from "@/components/molecules";
 import { OrderDetailSection } from "@/components/organisms/orders";
 import MainLayout from "@/components/templates/MainLayout";
-import { axiosInstance, formatters } from "@/utils";
+import { ORDER_STATUS_ITEMS, ORDER_STATUS_LABELS } from "@/constants/category";
+import { axiosInstance } from "@/utils";
 import { AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { TbLogout2 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
@@ -15,51 +16,44 @@ function OrderDetailPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
     const [showAlert, setShowAlert] = useState<boolean>(false);
-    const [isOpenFinishedProduct, setIsOpenFinishedProduct] = useState(false);
+    const [isOpenUpdateProgress, setIsOpenUpdateProgress] = useState(false);
     const [isOpenPaymentProof, setIsOpenPaymentProof] = useState(false);
-
     const {
         control,
-        watch,
         reset,
         handleSubmit,
         formState: { errors },
     } = useForm({
         defaultValues: {
             finishedProduct: order.finishedProduct?.secureUrl,
-            orderStatus: formatters.formatCapital(order.orderStatus),
+            orderStatus: order.orderStatus,
         },
     });
-    const orderStatusWatch = watch("orderStatus");
-    useEffect(() => {
-        async function handleOrderStatus() {
-            const response = await axiosInstance.patch(`orders/admin/${order.id}/order-status`, {
-                orderStatus: formatters.parseCapital(orderStatusWatch),
-            });
-            const updatedOrder = { ...order, ...response.data.data };
-            localStorage.setItem("orderDetail", JSON.stringify(updatedOrder));
-            setOrder(updatedOrder);
-        }
-        handleOrderStatus();
-    }, [orderStatusWatch]);
 
     const handleFinishedProduct = async (data: any) => {
         setIsLoading(true);
         try {
             const formData = new FormData();
+            formData.append("orderStatus", data.orderStatus);
             formData.append("finishedProduct", data.finishedProduct);
-            const response = await axiosInstance.post(`orders/admin/${order.id}/finished-product`, formData);
-            const updatedOrder = { ...order, finishedProduct: response.data.data };
+            const response = await axiosInstance.patch(`orders/admin/${order.id}/update-progress`, formData);
+            const resData = response.data.data;
+            const updatedOrder = {
+                ...order,
+                finishedProduct: resData.finishedProduct,
+                orderStatus: resData.orderStatus,
+            };
 
             localStorage.setItem("orderDetail", JSON.stringify(updatedOrder));
             setOrder(updatedOrder);
             setShowAlert(true);
-            setMessage("Foto produk telah berhasil diunggah");
+            setMessage("Progres berhasil diperbarui");
             reset({
                 finishedProduct: updatedOrder.finishedProduct?.secureUrl,
-                orderStatus: formatters.formatCapital(updatedOrder.orderStatus),
+                orderStatus: updatedOrder.orderStatus,
             });
         } catch (error: any) {
+            console.log(error.response.data);
             if (error.response.status === 500) {
                 setShowAlert(true);
                 setMessage("Oops! Server mengalami kendala teknis. Tim kami akan segera menanganinya");
@@ -70,7 +64,7 @@ function OrderDetailPage() {
         } finally {
             setTimeout(() => setShowAlert(false), 3000);
             setIsLoading(false);
-            setIsOpenFinishedProduct(false);
+            setIsOpenUpdateProgress(false);
         }
     };
 
@@ -90,8 +84,8 @@ function OrderDetailPage() {
             <OrderDetailSection
                 order={order}
                 control={control}
-                isOpenFinishedProduct={isOpenFinishedProduct}
-                setIsOpenFinishedProduct={setIsOpenFinishedProduct}
+                isOpenUpdateProgress={isOpenUpdateProgress}
+                setIsOpenUpdateProgress={setIsOpenUpdateProgress}
                 isOpenPaymentProof={isOpenPaymentProof}
                 setIsOpenPaymentProof={setIsOpenPaymentProof}
             />
@@ -115,16 +109,45 @@ function OrderDetailPage() {
                 </div>
             )}
 
-            {/* Input Finished Product */}
-            {isOpenFinishedProduct && (
-                <InputFinishedProduct
-                    control={control}
-                    handleSubmit={handleSubmit}
-                    handleFinishedProduct={handleFinishedProduct}
-                    setIsOpenFinishedProduct={setIsOpenFinishedProduct}
-                    errors={errors}
-                    finishedProduct={order.finishedProduct?.secureUrl}
-                />
+            {/* Input Update Progress */}
+            {isOpenUpdateProgress && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+                    onClick={() => setIsOpenUpdateProgress(false)}
+                >
+                    <form
+                        onSubmit={handleSubmit(handleFinishedProduct)}
+                        className="bg-white p-6 rounded-lg shadow-lg w-2/4 h-4/5 space-y-10"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <InputDropdown
+                            label="Status Pesanan"
+                            name="orderStatus"
+                            control={control}
+                            className="py-1 2xl:py-2 px-4 text-base 2xl:text-xl"
+                            options={ORDER_STATUS_ITEMS.filter((item) => {
+                                const excludedLabels = ["Semua"];
+                                if (order.deliveryOption === "PICKUP") excludedLabels.push("Pengiriman");
+                                return !excludedLabels.includes(item.label);
+                            })}
+                            optionLabel={ORDER_STATUS_LABELS}
+                        />
+                        <InputFinishedProduct
+                            control={control}
+                            handleSubmit={handleSubmit}
+                            handleFinishedProduct={handleFinishedProduct}
+                            setIsOpenUpdateProgress={setIsOpenUpdateProgress}
+                            errors={errors}
+                            finishedProduct={order.finishedProduct?.secureUrl}
+                        />
+                        <ButtonSmall
+                            type="submit"
+                            className="w-1/6 mx-auto py-1 2xl:py-2 px-4 font-semibold bg-blue-600 hover:bg-blue-700"
+                        >
+                            Simpan
+                        </ButtonSmall>
+                    </form>
+                </div>
             )}
 
             {/* Loading */}

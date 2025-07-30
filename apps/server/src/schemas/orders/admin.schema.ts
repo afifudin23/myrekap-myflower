@@ -164,7 +164,7 @@ export const update = z
 export const updateOrderStatus = z.object({
     orderStatus: z.preprocess(
         (value) => (typeof value === "string" ? formatters.parseCapital(value) : value),
-        z.enum(["COMPLETED", "IN_PROCESS", "CANCELED"], {
+        z.enum(["COMPLETED", "DELIVERY", "IN_PROCESS", "CANCELED"], {
             required_error: "Order status is required",
             invalid_type_error: "Order status must be a valid enum value",
         })

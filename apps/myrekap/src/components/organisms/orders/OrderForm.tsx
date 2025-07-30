@@ -54,7 +54,7 @@ function OrderForm({ onSubmit, fieldRefs, control, watch, errors, getValues, set
                                 control={control}
                                 ref={(el) => (fieldRefs.current[item.name] = el)}
                                 error={getErrorMessage(item.name, errors)}
-                                disabled={deliveryOption !== "Delivery" && item.name === "deliveryAddress"}
+                                disabled={deliveryOption !== "DELIVERY" && item.name === "deliveryAddress"}
                             />
                         );
                     case "product":
@@ -86,7 +86,8 @@ function OrderForm({ onSubmit, fieldRefs, control, watch, errors, getValues, set
                             <InputDropdown
                                 key={item.name}
                                 label={item.label}
-                                options={item.options as string[]}
+                                options={item.options as any[]}
+                                optionLabel={item.optionLabel}
                                 name={item.name}
                                 control={control}
                                 ref={(el) => (fieldRefs.current[item.name] = el)}
@@ -113,7 +114,7 @@ function OrderForm({ onSubmit, fieldRefs, control, watch, errors, getValues, set
                                 name={item.name}
                                 control={control}
                                 ref={(el) => (fieldRefs.current[item.name] = el)}
-                                disabled={paymentMethod !== "Bank Transfer"}
+                                disabled={paymentMethod !== "BANK_TRANSFER"}
                                 error={getErrorMessage(item.name, errors)}
                                 getValues={getValues}
                                 setValue={setValue}
@@ -126,7 +127,7 @@ function OrderForm({ onSubmit, fieldRefs, control, watch, errors, getValues, set
             {/* <h1>Biaya Pengiriman: {formatters.formatRupiah(shippingCost)}</h1>
             <h1>Total Harga: {formatters.formatRupiah(totalPrice + shippingCost)}</h1> */}
 
-            <Button type="submit" className="mb-28 mt-20 2xl:mt-32" colors={COLORS}>
+            <Button type="submit" className="mb-28 mt-20 2xl:mt-32 p-1 2xl:p-2 w-[15rem] 2xl:w-[20rem]" colors={COLORS}>
                 Submit
             </Button>
         </form>

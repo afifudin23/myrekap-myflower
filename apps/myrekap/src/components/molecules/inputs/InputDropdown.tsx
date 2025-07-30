@@ -9,6 +9,7 @@ const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
         {
             label,
             options,
+            optionLabel,
             name,
             error,
             control,
@@ -58,13 +59,7 @@ const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
                                         setIsOpen(!isOpen);
                                     }}
                                 >
-                                    <p>
-                                        {!value || disabled
-                                            ? "- Pilih Salah Satu -"
-                                            : typeof value === "string"
-                                            ? value
-                                            : value.toLocaleString()}
-                                    </p>
+                                    <p>{!value || disabled ? "- Pilih Salah Satu -" : optionLabel[value]}</p>
                                     <TiArrowSortedDown
                                         size={25}
                                         className={`transition duration-300 ${isOpen ? "rotate-180" : ""}`}
@@ -75,17 +70,19 @@ const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
                                         isOpen ? "flex flex-col max-h-60" : "max-h-0"
                                     }`}
                                 >
-                                    <li
-                                        className={`${className} bg-gray-700 hover:bg-slate-400 rounded-lg cursor-pointer ${
-                                            value === null && "bg-slate-500"
-                                        }`}
-                                        onClick={() => {
-                                            onChange(null);
-                                            setIsOpen(false);
-                                        }}
-                                    >
-                                        - Pilih Salah Satu -
-                                    </li>
+                                    {formInput && (
+                                        <li
+                                            className={`${className} bg-gray-700 hover:bg-slate-400 rounded-lg cursor-pointer ${
+                                                value === null && "bg-slate-500"
+                                            }`}
+                                            onClick={() => {
+                                                onChange(null);
+                                                setIsOpen(false);
+                                            }}
+                                        >
+                                            - Pilih Salah Satu -
+                                        </li>
+                                    )}
                                     {options.map((item, index) => (
                                         <li
                                             className={`${className} bg-gray-700 hover:bg-slate-400 rounded-lg cursor-pointer ${
@@ -93,11 +90,11 @@ const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
                                             }`}
                                             key={index}
                                             onClick={() => {
-                                                onChange(item);
+                                                onChange(item.value);
                                                 setIsOpen(false);
                                             }}
                                         >
-                                            {item}
+                                            {item.label}
                                         </li>
                                     ))}
                                 </ul>

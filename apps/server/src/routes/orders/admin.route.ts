@@ -20,13 +20,11 @@ ordersAdminRouter.put(
     errorHandler(ordersAdminController.updateOrder)
 );
 ordersAdminRouter.post("/pdf", [authMiddleware], errorHandler(ordersAdminController.printOrder));
-ordersAdminRouter.patch("/:id/order-status", [authMiddleware], errorHandler(ordersAdminController.updateOrderStatus));
-
-ordersAdminRouter.post(
-    "/:orderId/finished-product",
+ordersAdminRouter.patch(
+    "/:id/update-progress",
     [authMiddleware],
     upload.single("finishedProduct"),
-    errorHandler(ordersAdminController.addFinishedProduct)
+    errorHandler(ordersAdminController.updateOrderProgress)
 );
 
 export default ordersAdminRouter;

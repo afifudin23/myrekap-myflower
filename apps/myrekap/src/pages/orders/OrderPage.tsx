@@ -25,11 +25,12 @@ function OrderPage() {
             setMessage(state.message);
             setShowAlert(true);
 
-            // Delay scroll alert
-            setTimeout(() => {
+            const timer = setTimeout(() => {
                 setShowAlert(false);
-                navigate(location.pathname, { replace: true, state: {} });
-            }, 3000); 
+                window.history.replaceState({}, document.title);
+            }, 3000);
+
+            return () => clearTimeout(timer);
         }
     }, [location.key]);
 
@@ -130,7 +131,7 @@ export default OrderPage;
 //             setTimeout(() => {
 //                 setShowAlert(false);
 //                 navigate(location.pathname, { replace: true, state: {} });
-//             }, 3000); 
+//             }, 3000);
 //         }
 //     }, [location.key]);
 

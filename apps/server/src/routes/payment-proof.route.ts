@@ -4,6 +4,6 @@ import { Router } from "express";
 
 const paymentProofRouter : Router = Router();
 
-paymentProofRouter.delete("/:orderSummaryId", errorHandler(paymentProofController.deletePaymentProof));
+paymentProofRouter.delete("/:orderId", errorHandler(paymentProofController.deletePaymentProof));
 
 export default paymentProofRouter;

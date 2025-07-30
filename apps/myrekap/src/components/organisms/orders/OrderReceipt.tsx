@@ -160,14 +160,22 @@ const OrderReceipt = ({ data }: any) => {
                         fontSize: 15,
                     }}
                 >
-                    <View style={{ flexDirection: "column", gap: 10, alignItems: "center" }}>
+                    <View style={{ flexDirection: "column", gap: 6, alignItems: "center" }}>
                         <Text>Owner,</Text>
                         <Image src="/assets/images/ttd-owner.png" style={{ width: 60, height: 60 }} />
+                        <View style={{ width: 110, borderBottomWidth: 1, borderColor: "#ccc" }} />
                         <Text>Fahri Septa M.</Text>
                     </View>
-                    <View style={{ flexDirection: "column", gap: 10, alignItems: "center" }}>
+                    <View style={{ flexDirection: "column", gap: 5, alignItems: "center" }}>
                         <Text>Customer,</Text>
-                        <Image src="/assets/images/ttd-customer.png" style={{ width: 60, height: 60 }} />
+                        <View
+                            style={{
+                                width: 110,
+                                height: 70,
+                                borderBottomWidth: 1,
+                                borderColor: "#ccc",
+                            }}
+                        />
                         <Text>{formatters.formatCustomerNameReceipt(data.customerName)}</Text>
                     </View>
                 </View>
