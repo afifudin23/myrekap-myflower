@@ -1,11 +1,12 @@
 import { ButtonSmall, Loading } from "@/components/atoms";
 import { AlertInfo, InputDropdown, InputFinishedProduct, TitlePage } from "@/components/molecules";
-import { OrderDetailSection } from "@/components/organisms/orders";
+import { OrderDetailSection, OrderReceipt } from "@/components/organisms/orders";
 import MainLayout from "@/components/templates/MainLayout";
 import { ORDER_STATUS_ITEMS, ORDER_STATUS_LABELS } from "@/constants/category";
 import { axiosInstance } from "@/utils";
+import { pdf } from "@react-pdf/renderer";
 import { AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TbLogout2 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +19,8 @@ function OrderDetailPage() {
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [isOpenUpdateProgress, setIsOpenUpdateProgress] = useState(false);
     const [isOpenPaymentProof, setIsOpenPaymentProof] = useState(false);
+    const printRef = useRef<HTMLDivElement>(null);
+
     const {
         control,
         reset,
@@ -29,6 +32,14 @@ function OrderDetailPage() {
             orderStatus: order.orderStatus,
         },
     });
+
+    useEffect(() => {
+        const storedOrder = localStorage.getItem("orderDetail");
+        if (storedOrder) {
+            setOrder(JSON.parse(storedOrder));
+        }
+        setIsLoading(false);
+    }, []);
 
     const handleFinishedProduct = async (data: any) => {
         setIsLoading(true);
@@ -68,6 +79,19 @@ function OrderDetailPage() {
         }
     };
 
+    const handlePrintPdf = async () => {
+        const blob = await pdf(<OrderReceipt data={order} />).toBlob();
+        const url = URL.createObjectURL(blob);
+
+        const newWindow = window.open(url);
+        if (newWindow) {
+            newWindow.onload = function () {
+                newWindow.focus();
+                newWindow.print();
+            };
+        }
+    };
+
     return (
         <MainLayout>
             <div className="flex justify-between">
@@ -81,13 +105,14 @@ function OrderDetailPage() {
                     <TbLogout2 className="text-5xl 2xl:text-6xl" />
                 </button>
             </div>
+
             <OrderDetailSection
                 order={order}
-                control={control}
                 isOpenUpdateProgress={isOpenUpdateProgress}
                 setIsOpenUpdateProgress={setIsOpenUpdateProgress}
-                isOpenPaymentProof={isOpenPaymentProof}
                 setIsOpenPaymentProof={setIsOpenPaymentProof}
+                printRef={printRef}
+                handlePrintPdf={handlePrintPdf}
             />
 
             {/* PaymentProof */}

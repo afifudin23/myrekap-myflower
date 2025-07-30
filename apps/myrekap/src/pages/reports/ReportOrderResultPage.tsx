@@ -4,6 +4,7 @@ import { ReportOrderTable } from "@/components/organisms/reports";
 import MainLayout from "@/components/templates/MainLayout";
 import { axiosInstance, formatters } from "@/utils";
 import { useEffect, useState } from "react";
+import { FaRegFilePdf } from "react-icons/fa";
 import { MdOutlineDownloadForOffline } from "react-icons/md";
 import { TbLogout2 } from "react-icons/tb";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -82,6 +83,44 @@ function ReportOrderResultPage() {
             console.log(error.response.data);
         }
     };
+    const handleCetakLangsung = () => {
+        const rawHtml = document.getElementById("table-report-orders")?.innerHTML;
+        if (!rawHtml) return;
+
+        const html = `
+            <html>
+            <head>
+                <meta charset="utf-8" />
+                <title>Laporan Penjualan Produk</title>
+                <script src="https://cdn.tailwindcss.com"></script>
+                <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+                <style>
+                    @media print {
+                        @page {
+                            size: A4 landscape;
+                            margin: 20mm;
+                        }
+                    }
+
+                    body {
+                        font-family: 'Poppins', sans-serif;
+                        font-size: 8px;
+                    }
+                </style>
+            </head>
+            <body onload="window.print(); window.close();">
+                ${rawHtml}
+            </body>
+            </html>
+        `;
+
+        const printWindow = window.open("", "_blank");
+        if (!printWindow) return;
+
+        printWindow.document.open();
+        printWindow.document.write(html);
+        printWindow.document.close();
+    };
 
     return (
         <MainLayout>
@@ -98,12 +137,23 @@ function ReportOrderResultPage() {
             </div>
 
             {orderFilter.length > 0 ? (
-                <>
-                    <ButtonSmall className="bg-purple-500 hover:bg-purple-600 py-1 2xl:py-2 px-4 font-semibold" onClick={() => handleUnduhPDF()}>
-                        <MdOutlineDownloadForOffline size={20} /> Unduh PDF
-                    </ButtonSmall>
+                <div>
+                    <div className="flex gap-3">
+                        <ButtonSmall
+                            className="bg-purple-500 hover:bg-purple-600 py-1 2xl:py-2 px-4 font-medium"
+                            onClick={() => handleUnduhPDF()}
+                        >
+                            <MdOutlineDownloadForOffline size={20} /> Unduh PDF
+                        </ButtonSmall>
+                        <ButtonSmall
+                            className="bg-blue-400 hover:bg-blue-500 py-1 2xl:py-2 px-4 font-medium"
+                            onClick={() => handleCetakLangsung()}
+                        >
+                            <FaRegFilePdf /> Cetak PDF
+                        </ButtonSmall>
+                    </div>
                     <ReportOrderTable orderFilter={orderFilter} />
-                </>
+                </div>
             ) : (
                 <h1 className="text-center text-2xl my-56">Data Pesanan Tidak Ditemukan</h1>
             )}

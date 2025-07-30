@@ -14,8 +14,15 @@ import { GrUpdate } from "react-icons/gr";
 import { RiEdit2Fill } from "react-icons/ri";
 import { TbReceiptFilled } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
+import { MdOutlineDownloadForOffline } from "react-icons/md";
 
-function OrderDetailSection({ order, isOpenUpdateProgress, setIsOpenUpdateProgress, setIsOpenPaymentProof }: any) {
+function OrderDetailSection({
+    order,
+    isOpenUpdateProgress,
+    setIsOpenUpdateProgress,
+    setIsOpenPaymentProof,
+    handlePrintPdf,
+}: any) {
     const navigate = useNavigate();
     const disabled = order.source === "MYFLOWER";
     return (
@@ -168,8 +175,14 @@ function OrderDetailSection({ order, isOpenUpdateProgress, setIsOpenUpdateProgre
                         fileName={`receipt-order-${order.orderCode}.pdf`}
                         className="flex items-center justify-center gap-1"
                     >
-                        <IoReceiptSharp /> Nota
+                        <MdOutlineDownloadForOffline size={20} /> Unduh Nota
                     </PDFDownloadLink>
+                </ButtonSmall>
+                <ButtonSmall
+                    className="bg-purple-500 hover:bg-purple-600 py-1 2xl:py-2 px-4 font-semibold"
+                    onClick={handlePrintPdf}
+                >
+                    <IoReceiptSharp /> Cetak Nota
                 </ButtonSmall>
             </div>
         </div>
