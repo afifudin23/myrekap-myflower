@@ -102,7 +102,6 @@ export const updateProfile = async (userId: string, body: any) => {
 
 export const update = async (id: string, body: any) => {
     const { fullName, username, email, phoneNumber, password, confPassword } = body;
-    console.log(body);
 
     // check if the user exists
     const findUser = await prisma.user.findUnique({ where: { id } });

@@ -1,5 +1,5 @@
 import { TitlePage } from "@/components/molecules";
-import { ProductForm } from "@/components/organisms/products";
+import { PRODUCT_FORM_ITEMS, ProductForm } from "@/components/organisms/products";
 import MainLayout from "@/components/templates/MainLayout";
 import { axiosInstance } from "@/utils";
 import { useEffect, useRef, useState } from "react";
@@ -98,7 +98,7 @@ function ProductEditPage() {
                 <TitlePage title="Edit Produk" subtitle="Mengelola Data Produk Penjualan" />
                 <button
                     onClick={() => {
-                        navigate(-1);
+                        navigate("/products");
                     }}
                 >
                     <TbLogout2 className="text-5xl 2xl:text-6xl" />
@@ -112,6 +112,7 @@ function ProductEditPage() {
                 fieldRefs={fieldRefs}
                 getValues={getValues}
                 setValue={setValue}
+                fields={PRODUCT_FORM_ITEMS}
             />
         </MainLayout>
     );

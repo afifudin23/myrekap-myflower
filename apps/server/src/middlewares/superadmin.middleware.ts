@@ -14,7 +14,6 @@ const superadminMiddleware = async (req: Request, _res: Response, next: NextFunc
     return next();
   }
   const user = (req as AuthReq).user;
-  console.log(user)
   if (user.role !== "SUPERADMIN") {
     return next(new ForbiddenException("Access denied. Only Superadmin has permission", ErrorCode.FORBIDDEN));
   }

@@ -1,17 +1,12 @@
-import { InputFile, InputMoney, InputText } from "@/components/molecules";
+import { InputDropdown, InputFile, InputMoney, InputText } from "@/components/molecules";
 import { Button, Loading } from "@/components/atoms";
-import { PRODUCT_FORM_ITEMS } from ".";
 import { COLORS } from "@/constants/colors";
 
-// interface ProductForm {
-//     control: any;
-// }
-
-function ProductForm({ control, onSubmit, errors, fieldRefs, isLoading, setValue, getValues }: any) {
+function ProductForm({ control, onSubmit, errors, fieldRefs, isLoading, setValue, getValues, fields }: any) {
     return (
         <>
             <form className="flex flex-col justify-between gap-5 2xl:gap-6" onSubmit={onSubmit}>
-                {PRODUCT_FORM_ITEMS.map((item) => {
+                {fields.map((item: any) => {
                     switch (item.type) {
                         case "text":
                             return (
@@ -22,6 +17,7 @@ function ProductForm({ control, onSubmit, errors, fieldRefs, isLoading, setValue
                                     ref={(el) => (fieldRefs.current[item.name] = el)}
                                     error={errors[item.name as any]?.message}
                                     control={control}
+                                    disabled={item.disabled}
                                 />
                             );
                         case "money":
@@ -48,9 +44,26 @@ function ProductForm({ control, onSubmit, errors, fieldRefs, isLoading, setValue
                                     setValue={setValue}
                                 />
                             );
+                        case "dropdown":
+                            return (
+                                <InputDropdown
+                                    key={item.name}
+                                    label={item.label}
+                                    name={item.name}
+                                    ref={(el) => (fieldRefs.current[item.name] = el)}
+                                    error={errors[item.name as any]?.message}
+                                    control={control}
+                                    options={item.options}
+                                    optionLabel={item.optionLabel}
+                                />
+                            );
                     }
                 })}
-                <Button type="submit" className="mb-28 mt-20 2xl:mt-32 p-1 2xl:p-2 w-[15rem] 2xl:w-[20rem]" colors={COLORS}>
+                <Button
+                    type="submit"
+                    className="mb-28 mt-20 2xl:mt-32 p-1 2xl:p-2 w-[15rem] 2xl:w-[20rem]"
+                    colors={COLORS}
+                >
                     Submit
                 </Button>
             </form>

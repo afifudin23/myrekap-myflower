@@ -24,8 +24,6 @@ export const create = async (productId: string, userId: string, data: any) => {
 };
 
 export const update = async (reviewId: string, userId: string, productId: string, data: any) => {
-    console.log(reviewId, userId, productId, data);
-
     // check if product exists
     const product = await prisma.product.findUnique({ where: { id: productId } });
     if (!product) throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);

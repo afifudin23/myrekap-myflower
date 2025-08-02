@@ -1,65 +1,88 @@
-import { useForm } from "react-hook-form";
+import { TitlePage } from "@/components/molecules";
+import { PRODUCT_STOCK_FORM_FIELDS, ProductForm } from "@/components/organisms/products";
+import MainLayout from "@/components/templates/MainLayout";
 import { axiosInstance } from "@/utils";
-import { Button } from "@/components/atoms";
-import { COLORS } from "@/constants/colors";
-
-type FormData = {
-    type: "IN" | "OUT";
-    quantity: number;
-    note: string;
-};
+import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { TbLogout2 } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
 function ProductManageStockPage() {
-    const { id, name } = JSON.parse(localStorage.getItem("productDetail") || "{}");
+    const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const fieldRefs = useRef<Record<string, HTMLDivElement | null>>({});
+    const product = JSON.parse(localStorage.getItem("productDetail") || "{}");
 
-    const { register, handleSubmit, watch, reset } = useForm<FormData>({
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+        getValues,
+        setValue,
+    } = useForm({
         defaultValues: {
-            type: "IN",
-            quantity: 1,
+            name: product?.name,
+            type: "",
+            quantity: 0,
             note: "",
         },
     });
 
-    const type = watch("type");
-
-    const onSubmit = async (data: FormData) => {
+    const onSubmit = handleSubmit(async(data) => {
+        setIsLoading(true);
         try {
-            await axiosInstance.post(`/products/${id}/restock`, {
-                ...data,
-                note: data.note.trim() || (data.type === "IN" ? `Restock by admin` : `Manual deduction`),
-            });
-            alert("Stock updated!");
-            reset();
-        } catch (err) {
-            alert("Failed to update stock");
+            await axiosInstance.post(`products/${product.id}/stock`, data);
+            localStorage.removeItem("productDetail");
+            navigate("/products", {
+                state: {
+                    message: "Perubahan pada stok produk berhasil disimpan",
+                },
+            })
+        } catch (error: any) {
+            console.log(error.response.data);
+            if (error.response.status === 500) {
+                navigate("/products", {
+                    state: {
+                        message: "Oops! Server mengalami kendala teknis. Tim kami akan segera menanganinya",
+                    },
+                });
+            } else {
+                navigate("/products", {
+                    state: {
+                        message: error.response.data.message,
+                    },
+                });
+            }
+        } finally {
+            setIsLoading(false);
+            
         }
-    };
+    });
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 bg-white rounded-xl shadow-md">
-            {/* Subjudul Produk */}
-            <div className="text-lg font-semibold text-gray-800">
-                Restock Produk: <span className="text-blue-600">{name}</span>
+        <MainLayout>
+            <div className="flex justify-between">
+                <TitlePage title="Edit Produk" subtitle="Mengelola Data Produk Penjualan" />
+                <button
+                    onClick={() => {
+                        navigate("/products");
+                    }}
+                >
+                    <TbLogout2 className="text-5xl 2xl:text-6xl" />
+                </button>
             </div>
 
-            {/* Pilih Jenis */}
-            <select {...register("type")}>
-                <option value="IN">⬆️ Stok Masuk</option>
-                <option value="OUT">⬇️ Stok Keluar</option>
-            </select>
-
-            {/* Jumlah */}
-            <input type="number" min={1} {...register("quantity", { required: true })} placeholder="Jumlah" />
-
-            {/* Catatan */}
-            <textarea
-                {...register("note")}
-                placeholder={type === "IN" ? "Catatan (mis. Restock manual)" : "Catatan (mis. Barang rusak)"}
+            <ProductForm
+                control={control}
+                onSubmit={onSubmit}
+                errors={errors}
+                isLoading={isLoading}
+                fieldRefs={fieldRefs}
+                getValues={getValues}
+                setValue={setValue}
+                fields={PRODUCT_STOCK_FORM_FIELDS}
             />
-            <Button type="submit" className="mb-28 mt-20 2xl:mt-32 p-1 2xl:p-2 w-[15rem] 2xl:w-[20rem]" colors={COLORS}>
-                {type === "IN" ? "Tambah Stok" : "Kurangi Stok"}
-            </Button>
-        </form>
+        </MainLayout>
     );
 }
 

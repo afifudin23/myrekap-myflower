@@ -1,5 +1,5 @@
 import { TitlePage } from "@/components/molecules";
-import { ProductForm } from "@/components/organisms/products";
+import { PRODUCT_FORM_ITEMS, ProductForm } from "@/components/organisms/products";
 import MainLayout from "@/components/templates/MainLayout";
 import { axiosInstance } from "@/utils";
 import { useEffect, useRef, useState } from "react";
@@ -97,6 +97,7 @@ function ProductCreatePage() {
                 isLoading={isLoading}
                 getValues={getValues}
                 fieldRefs={fieldRefs}
+                fields={PRODUCT_FORM_ITEMS}
             />
         </MainLayout>
     );

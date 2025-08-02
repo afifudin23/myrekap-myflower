@@ -83,7 +83,7 @@ const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
                                             - Pilih Salah Satu -
                                         </li>
                                     )}
-                                    {options.map((item, index) => (
+                                    {options.map((item: any, index: number) => (
                                         <li
                                             className={`${className} bg-gray-700 hover:bg-slate-400 rounded-lg cursor-pointer ${
                                                 value === item && "bg-slate-500"

@@ -10,7 +10,7 @@ export type InputTextProps = {
 
 export type InputDropdownProps = {
     label: string;
-    options: any[];
+    options: any;
     optionLabel: any;
     name: string;
     error?: string;

@@ -86,7 +86,7 @@ function OrderForm({ onSubmit, fieldRefs, control, watch, errors, getValues, set
                             <InputDropdown
                                 key={item.name}
                                 label={item.label}
-                                options={item.options as any[]}
+                                options={item.options}
                                 optionLabel={item.optionLabel}
                                 name={item.name}
                                 control={control}

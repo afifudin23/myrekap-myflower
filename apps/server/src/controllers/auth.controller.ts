@@ -35,7 +35,6 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
     if (!token || typeof token !== "string") {
         return res.status(400).json({ message: "Invalid or missing token" });
     }
-    console.log(token);
     try {
         await authService.verifyEmail(token);
         res.status(200).json({ message: "Email verified successfully" });

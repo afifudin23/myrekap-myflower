@@ -16,7 +16,6 @@ const core = new midtransClient.CoreApi({
 });
 
 export const notification = async (data: any) => {
-    console.log(data);
     try {
         const { order_id, status_code, gross_amount, signature_key } = data;
         const signatureHash = crypto
@@ -31,7 +30,6 @@ export const notification = async (data: any) => {
         const notification = await snap.transaction.notification(data);
         const transactionStatus = notification.transaction_status;
         const orderCode = notification.metadata.order_id || order_id;
-        console.log("\n", notification, "\n");
 
         const order = await prisma.order.findUnique({ where: { orderCode: orderCode } });
         if (!order) {

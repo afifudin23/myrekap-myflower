@@ -46,7 +46,6 @@ export const getAllOrders = async (query: any) => {
             finishedProduct: true,
         },
     });
-    console.log(data);
     return data;
 };
 
