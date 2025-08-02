@@ -3,6 +3,7 @@ import { UnprocessableUntityException } from "@/exceptions";
 import { Request, Response, NextFunction } from "express";
 import multer, { FileFilterCallback } from "multer";
 const storage = multer.memoryStorage();
+
 const fileFilter = (_req: any, file: any, cb: FileFilterCallback) => {
     if (!file.mimetype.startsWith("image/")) {
         return cb(
@@ -11,6 +12,7 @@ const fileFilter = (_req: any, file: any, cb: FileFilterCallback) => {
     }
     cb(null, true);
 };
+
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter,

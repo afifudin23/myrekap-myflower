@@ -7,9 +7,11 @@ import {
     PAYMENT_METHOD_LABELS,
     PAYMENT_STATUS_ITEMS,
     PAYMENT_STATUS_LABELS,
+    TYPE_STOCK_REPORT_ITEMS,
+    TYPE_STOCK_REPORT_LABELS,
 } from "@/constants/category";
 
-export const REPORT_ORDER_FORM_ITEMS = [
+export const REPORT_ORDER_FORM_FIELDS = [
     {
         label: "Kategori Customer",
         name: "customerCategory",
@@ -44,3 +46,17 @@ export const DEFAULT_VALUE_REPORT_ORDER = {
     paymentStatus: "ALL",
     orderStatus: "ALL",
 } as const;
+
+export const REPORT_PRODUCT_STOCK_FORM_FIELDS = [
+    {
+        label: "Tipe Laporan",
+        name: "type",
+        options: TYPE_STOCK_REPORT_ITEMS,
+        optionLabel: TYPE_STOCK_REPORT_LABELS,
+    },
+];
+
+export const DEFAULT_VALUE_REPORT_PRODUCT_STOCK = {
+    monthYear: new Date(),
+    type: "summary",
+};

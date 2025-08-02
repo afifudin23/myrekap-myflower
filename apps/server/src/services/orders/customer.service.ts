@@ -1,71 +1,88 @@
-import { enqueueWhatsAppMessage } from "@/config";
 import prisma from "@/config/database";
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
 import { ordersCustomerSchema } from "@/schemas";
 import { formatters } from "@/utils";
-import { generatedTextLink } from "@/utils/formatters.utils";
 
 export const create = async (user: any, data: ordersCustomerSchema.CreateType) => {
     const cartItems = await prisma.cartItem.findMany({ where: { userId: user.id }, include: { product: true } });
-    if (cartItems.length === 0) {
+    if (cartItems.length === 0)
         throw new BadRequestException("Cart must contain at least one item", ErrorCode.ORDER_MUST_CONTAIN_ITEMS);
-    }
-    const orderItems = cartItems.map((cartItem) => {
-        const item = data.items.find((m) => m.productId === cartItem.productId);
-        if (!item) throw new NotFoundException(`Product not found `, ErrorCode.PRODUCT_NOT_FOUND);
 
-        return {
+    const cartItemMap = new Map(cartItems.map((cartItem) => [cartItem.productId, cartItem]));
+    const orderCode = formatters.generateCode("order");
+    const transactionOps = [];
+    const orderItems = [];
+    let totalPrice = 0;
+
+    for (const item of data.items) {
+        const cartItem = cartItemMap.get(item.productId);
+        if (!cartItem) throw new NotFoundException("Product not found in cart", ErrorCode.PRODUCT_NOT_FOUND);
+
+        if (cartItem.quantity > cartItem.product.stock)
+            throw new BadRequestException("Stock is not enough", ErrorCode.STOCK_NOT_ENOUGH);
+
+        transactionOps.push(
+            prisma.product.update({
+                where: { id: cartItem.productId },
+                data: { stock: { decrement: cartItem.quantity } },
+            }),
+            prisma.productHistory.create({
+                data: {
+                    type: "STOCK_OUT",
+                    quantity: cartItem.quantity,
+                    productId: cartItem.productId,
+                    note: `Order #${orderCode}`,
+                },
+            })
+        );
+
+        const orderItemPrice = cartItem.product.price * cartItem.quantity;
+        orderItems.push({
             productId: cartItem.productId,
             quantity: cartItem.quantity,
-            message: item?.message,
+            message: item.message,
             unitPrice: cartItem.product.price,
-            totalPrice: cartItem.product.price * cartItem.quantity,
-        };
-    });
-    try {
-        const totalPrice = orderItems.reduce((total, item) => total + item.totalPrice, 0);
-        const shippingCost = totalPrice * 0.1;
-        const { items, ...orderData } = data;
+            totalPrice: orderItemPrice,
+        });
+        totalPrice += orderItemPrice;
+    }
+    const shippingCost = data.deliveryOption === "DELIVERY" ? totalPrice * 0.1 : 0;
+    const customerCategory = user.customerCategory ?? undefined;
+    const paymentStatus = data.paymentMethod === "COD" ? "UNPAID" : undefined;
+    const { items, ...orderData } = data;
 
-        const order = await prisma.order.create({
+    transactionOps.push(
+        prisma.order.create({
             data: {
                 ...orderData,
                 customerName: user.fullName,
                 phoneNumber: user.phoneNumber,
-                // Check if user.customerCategory is null, default to undefined (Admin/SuperAdmin will not see this field)
-                ...(user.customerCategory != null && { customerCategory: user.customerCategory }),
                 source: "MYFLOWER",
-                orderCode: formatters.generateOrderCode(),
-                ...(data.paymentMethod === "COD" && { paymentStatus: "UNPAID" }),
-                user: { connect: { id: user.id } },
+                userId: user.id,
+                orderCode,
                 totalPrice,
-                ...(data.deliveryOption === "DELIVERY" && { shippingCost }), // Fixed shipping cost next time
+                shippingCost,
+                customerCategory,
+                paymentStatus,
                 items: { create: orderItems },
             },
             include: { items: { include: { product: true } } },
-        });
+        })
+    );
 
-        // Send Notification Whatsapp
-        // const message = generatedTextLink(order);
-        // enqueueWhatsAppMessage(message);
-
-        // Decrement Stock Product
-        for (const item of orderItems) {
-            await prisma.product.update({
-                where: { id: item.productId },
-                data: { stock: { decrement: item.quantity } },
-            });
-        }
-
+    try {
+        const result = await prisma.$transaction(transactionOps);
         // Off during testing
         // await prisma.cartItem.deleteMany({ where: { userId: user.id } });
-        return order;
+
+        return result.at(-1);
     } catch (error: any) {
         console.log(error.message);
         throw new InternalException("Failed to create order", ErrorCode.FAILED_TO_CREATE_ORDER, error);
     }
 };
+
 export const findAllByUser = async (userId: string) => {
     return await prisma.order.findMany({
         where: { userId },
@@ -91,18 +108,38 @@ export const remove = async (orderCode: string) => {
     }
 };
 export const cancel = async (id: string) => {
-    const order = await prisma.order.findFirstOrThrow({ where: { id } });
-    if (order.orderStatus !== "IN_PROCESS") {
+    const order = await prisma.order.findFirst({ where: { id }, include: { items: true } });
+    if (!order) throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
+    if (order.orderStatus !== "IN_PROCESS")
         throw new BadRequestException("Order status cannot be canceled", ErrorCode.ORDER_NOT_IN_PROCESS);
+
+    const operations = [];
+
+    for (const item of order.items) {
+        operations.push(
+            prisma.product.update({ where: { id: item.productId }, data: { stock: { increment: item.quantity } } }),
+            prisma.productHistory.create({
+                data: {
+                    type: "STOCK_IN",
+                    quantity: item.quantity,
+                    productId: item.productId,
+                    note: `Order #${order.orderCode} canceled by customer #${order.userId}`,
+                },
+            })
+        );
     }
 
-    try {
-        const data = await prisma.order.update({
+    operations.push(
+        prisma.order.update({
             where: { id },
             include: { items: { include: { product: { include: { images: true } } } } },
-            data: { orderStatus: "CANCELED" },
-        });
-        return data;
+            data: { orderStatus: "CANCELED", paymentStatus: "REFUNDED" },
+        })
+    );
+
+    try {
+        const result = await prisma.$transaction(operations);
+        return result.at(-1);
     } catch (_error) {
         throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
     }
@@ -127,6 +164,7 @@ export const confirm = async (id: string) => {
 
 export const notification = async (order: any) => {
     // Send Notification to WhatsApp
-    const message = generatedTextLink(order);
-    enqueueWhatsAppMessage(message);
+    // const message = generatedTextLink(order);
+    // enqueueWhatsAppMessage(message);
+    console.log(order);
 };

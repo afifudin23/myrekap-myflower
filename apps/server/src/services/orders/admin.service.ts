@@ -1,19 +1,16 @@
 import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
 import { cloudinary, prisma, uploadFile } from "@/config";
-import puppeteer from "puppeteer";
-import { generateOrderCode } from "@/utils/formatters.utils";
+import { formatters } from "@/utils";
 import { mailerService } from "@/services";
 
-export const getAllOrders = async (requestQuery: any) => {
-    const { month, year, from_date, to_date, customer_category, payment_method, payment_status, order_status } =
-        requestQuery;
+export const getAllOrders = async (query: any) => {
+    const { month, year, from_date, to_date, customer_category, payment_method, payment_status, order_status } = query;
     let orderDateFilter: { gte: Date | undefined; lte: Date | undefined };
     let orderDateOrderBy: "asc" | "desc" = "desc";
     if (month && year) {
-        const startDate = new Date(year, month - 1, 1, 0, 0, 0); // 1st day, 00:00:00
-        const lastDay = new Date(year, month, 0).getDate(); // e.g. 28/30/31
-        const endDate = new Date(year, month - 1, lastDay, 23, 59, 59); // Last day, 23:59:59
+        const startDate = new Date(year, month - 1, 1); // 1st day, 00:00:00
+        const endDate = new Date(year, month, 0); // Last day, 23:59:59
 
         orderDateFilter = {
             gte: startDate,
@@ -35,12 +32,10 @@ export const getAllOrders = async (requestQuery: any) => {
     const data = await prisma.order.findMany({
         where: {
             orderDate: orderDateFilter,
-            // flowerCategory: flower_category?.toLowerCase() !== "semua" ? flower_category?.toUpperCase() : undefined,
-            customerCategory:
-                customer_category?.toLowerCase() !== "semua" ? customer_category?.toUpperCase() : undefined,
-            paymentMethod: payment_method?.toLowerCase() !== "semua" ? payment_method?.toUpperCase() : undefined,
-            paymentStatus: payment_status?.toLowerCase() !== "semua" ? payment_status?.toUpperCase() : undefined,
-            orderStatus: order_status?.toLowerCase() !== "semua" ? order_status?.toUpperCase() : undefined,
+            customerCategory: customer_category?.toLowerCase() !== "all" ? customer_category?.toUpperCase() : undefined,
+            paymentMethod: payment_method?.toLowerCase() !== "all" ? payment_method?.toUpperCase() : undefined,
+            paymentStatus: payment_status?.toLowerCase() !== "all" ? payment_status?.toUpperCase() : undefined,
+            orderStatus: order_status?.toLowerCase() !== "all" ? order_status?.toUpperCase() : undefined,
         },
         orderBy: {
             orderDate: orderDateOrderBy,
@@ -51,6 +46,7 @@ export const getAllOrders = async (requestQuery: any) => {
             finishedProduct: true,
         },
     });
+    console.log(data);
     return data;
 };
 
@@ -69,33 +65,64 @@ export const getOrderById = async (id: string) => {
 
 export const create = async (userId: string, body: any, file: Express.Multer.File) => {
     const products = await prisma.product.findMany();
-    const orderItems = body.items.map((item: any) => {
-        const product = products.find((product) => product.id === item.productId);
+    const productMap = new Map(products.map((product) => [product.id, product]));
+    const orderItems = [];
+    const stockOperations = [];
+    const orderCode = formatters.generateCode("order");
+
+    for (const item of body.items) {
+        const product = productMap.get(item.productId);
         if (!product) throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
-        return {
+
+        // Check if stock is enough
+        if (item.quantity >= product.stock)
+            throw new BadRequestException("Stock is not enough", ErrorCode.STOCK_NOT_ENOUGH);
+
+        // Save stock operation update stock and create stock history
+        stockOperations.push(
+            prisma.product.update({
+                where: { id: item.productId },
+                data: { stock: { decrement: item.quantity } },
+            }),
+            prisma.productHistory.create({
+                data: {
+                    type: "STOCK_OUT",
+                    quantity: item.quantity,
+                    productId: item.productId,
+                    note: `Order #${orderCode}`,
+                },
+            })
+        );
+
+        // Save order item
+        orderItems.push({
             productId: item.productId,
             quantity: item.quantity,
             message: item.message,
             unitPrice: product?.price,
             totalPrice: product.price * item.quantity,
-        };
-    });
-    try {
-        const totalPrice = orderItems.reduce((total: number, item: any) => total + item.totalPrice, 0);
-        const shippingCost = body.deliveryOption === "DELIVERY" ? totalPrice * 0.1 : 0;
-        const data = await prisma.order.create({
-            data: {
-                ...body,
-                orderCode: generateOrderCode(),
-                source: "MYREKAP",
-                userId,
-                totalPrice,
-                ...(["CASH", "BANK_TRANSFER"].includes(body.paymentMethod) && { paymentStatus: "PAID" }),
-                shippingCost,
-                items: { create: orderItems },
-            },
-            include: { items: { include: { product: true } } },
         });
+    }
+
+    const totalPrice = orderItems.reduce((total: number, item: any) => total + item.totalPrice, 0);
+    const shippingCost = body.deliveryOption === "DELIVERY" ? totalPrice * 0.1 : 0;
+
+    const createOrder = prisma.order.create({
+        data: {
+            ...body,
+            orderCode,
+            source: "MYREKAP",
+            userId,
+            totalPrice,
+            shippingCost,
+            paymentStatus: "PAID",
+            items: { create: orderItems },
+        },
+        include: { items: { include: { product: true } } },
+    });
+
+    try {
+        const [_, __, order] = await prisma.$transaction([...stockOperations, createOrder]);
 
         if (file && body.paymentMethod === "BANK_TRANSFER") {
             const result = await uploadFile(file, "myflower-myrekap/bukti-transfer");
@@ -103,25 +130,17 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
                 data: {
                     fileName: file.originalname,
                     size: file.size,
-                    orderId: data.id,
+                    orderId: order.id,
                     secureUrl: result.secure_url,
                     publicId: result.public_id,
                 },
             });
         }
         // Send Notification to WhatsApp
-        // const message = generatedTextLink(data);
+        // const message = generatedTextLink(order);
         // enqueueWhatsAppMessage(message);
 
-        // Decrement Stock Product
-        for (const item of orderItems) {
-            await prisma.product.update({
-                where: { id: item.productId },
-                data: { stock: { decrement: item.quantity } },
-            });
-        }
-
-        return data;
+        return order;
     } catch (error) {
         console.log(error);
         throw new InternalException("Something went wrong", ErrorCode.INTERNAL_EXCEPTION, error);
@@ -134,156 +153,192 @@ export const update = async (id: string, body: any, file: Express.Multer.File) =
     if (!existingOrder) throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
 
     // Check if orderItem wants to be updated
-    try {
-        const incomingItems = body.items;
-        if (incomingItems) {
-            const products = await prisma.product.findMany();
+    const incomingItems = body.items;
+    const transactionOps: any[] = [];
 
-            const existingItemIds = existingOrder.items.map((item) => item.id);
-            const incomingItemIds: string[] = [];
+    if (incomingItems) {
+        const products = await prisma.product.findMany();
+        const productMap = new Map(products.map((product) => [product.id, product]));
 
-            // UPDATE OR CREATE
-            for (const item of incomingItems) {
-                const product = products.find((p) => p.id === item.productId);
-                if (!product) {
-                    throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
+        // Map existing items by ID for quick lookup
+        const existingItemMap = new Map(existingOrder.items.map((item) => [item.id, item]));
+
+        // List of existing item IDs from the database
+        const existingItemIds = existingOrder.items.map((item) => item.id);
+
+        // Will store IDs of incoming items that still exist (not deleted)
+        const incomingItemIds: string[] = [];
+
+        // UPDATE OR CREATE ORDER ITEM
+        for (const item of incomingItems) {
+            const product = productMap.get(item.productId);
+            if (!product) throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
+
+            const baseData = {
+                quantity: item.quantity,
+                message: item.message,
+                unitPrice: product.price,
+                totalPrice: product.price * item.quantity,
+                productId: item.productId,
+                orderId: id,
+            };
+
+            // UPDATE EXISTING ITEM
+            if (item.id) {
+                const existingItem = existingItemMap.get(item.id);
+                if (!existingItem) throw new NotFoundException("Order item not found", ErrorCode.ORDER_ITEM_NOT_FOUND);
+                const qtyDifference = item.quantity - existingItem.quantity;
+                if (qtyDifference > product.stock)
+                    throw new BadRequestException("Stock is not enough", ErrorCode.STOCK_NOT_ENOUGH);
+
+                // 1. If qty difference is negative, increase product stock and create a STOCK_IN history
+                // 2. If qty difference is positive, decrease product stock and create a STOCK_OUT history
+                // 3. If qty difference is 0, do nothing
+
+                // CHECK IF STOCK UPDATES
+                if (qtyDifference !== 0) {
+                    transactionOps.push(
+                        prisma.product.update({
+                            where: { id: item.productId },
+                            data: { stock: { decrement: qtyDifference } },
+                        }),
+                        prisma.productHistory.create({
+                            data: {
+                                type: qtyDifference < 0 ? "STOCK_IN" : "STOCK_OUT",
+                                quantity: Math.abs(qtyDifference),
+                                productId: item.productId,
+                                note: `Update Order #${existingOrder.orderCode}`,
+                            },
+                        })
+                    );
                 }
 
-                const baseData = {
-                    quantity: item.quantity,
-                    message: item.message,
-                    unitPrice: product.price,
-                    totalPrice: product.price * item.quantity,
-                    productId: item.productId,
-                    orderId: id,
-                };
+                transactionOps.push(prisma.orderItem.update({ where: { id: item.id }, data: baseData }));
+                incomingItemIds.push(item.id);
+            } else {
+                // CREATE NEW ITEM
+                if (item.quantity > product.stock)
+                    throw new BadRequestException("Stock is not enough", ErrorCode.STOCK_NOT_ENOUGH);
 
-                // UPDATE EXISTING ITEM
-                if (item.id) {
-                    await prisma.orderItem.update({
-                        where: { id: item.id },
-                        data: baseData,
-                    });
-                    incomingItemIds.push(item.id);
-                } else {
-                    // CREATE NEW ITEM
-                    const created = await prisma.orderItem.create({ data: baseData });
-                    incomingItemIds.push(created.id);
-                }
+                transactionOps.push(
+                    prisma.orderItem.create({ data: baseData }),
+                    prisma.product.update({
+                        where: { id: item.productId },
+                        data: { stock: { decrement: item.quantity } },
+                    }),
+                    prisma.productHistory.create({
+                        data: {
+                            type: "STOCK_OUT",
+                            quantity: item.quantity,
+                            productId: item.productId,
+                            note: `Create Order #${existingOrder.orderCode}`,
+                        },
+                    })
+                );
             }
+        }
 
-            // DELETE ORDER ITEM
-            const itemsToDelete = existingItemIds.filter((id) => !incomingItemIds.includes(id));
-            if (itemsToDelete.length > 0) {
-                await prisma.orderItem.deleteMany({
-                    where: { id: { in: itemsToDelete } },
+        // DELETE ORDER ITEM
+        const itemsToDelete = existingItemIds.filter((id) => !incomingItemIds.includes(id));
+        if (itemsToDelete.length > 0) {
+            const deleteItems = existingOrder.items.filter((item) => itemsToDelete.includes(item.id));
+
+            for (const item of deleteItems) {
+                transactionOps.push(
+                    prisma.product.update({
+                        where: { id: item.productId },
+                        data: { stock: { increment: item.quantity } },
+                    }),
+                    prisma.productHistory.create({
+                        data: {
+                            type: "STOCK_IN",
+                            quantity: item.quantity,
+                            productId: item.productId,
+                            note: `Delete Order #${existingOrder.orderCode}`,
+                        },
+                    }),
+                    prisma.orderItem.deleteMany({ where: { id: item.id } })
+                );
+            }
+        }
+    }
+
+    // DELETE PAYMENT PROOF
+    if (body.publicIdsToDelete) {
+        await Promise.all(
+            body.publicIdsToDelete.map(async (publicId: string) => {
+                await cloudinary.uploader.destroy(publicId).catch((error) => {
+                    console.error("❌ Failed to delete image:", publicId, error);
                 });
-            }
-        }
-        if (body.publicIdsToDelete) {
-            await Promise.all(
-                body.publicIdsToDelete.map(async (publicId: string) => {
-                    await cloudinary.uploader.destroy(publicId).catch((error) => {
-                        console.error("❌ Failed to delete image:", publicId, error);
-                    });
-                })
-            );
-            await prisma.paymentProof.deleteMany({ where: { publicId: { in: body.publicIdsToDelete } } });
-        }
+            })
+        );
+        await prisma.paymentProof.deleteMany({ where: { publicId: { in: body.publicIdsToDelete } } });
+    }
 
-        // UPLOAD FILE IF EXISTS
-        if (file?.buffer) {
-            const existingProof = await prisma.paymentProof.findUnique({
-                where: { orderId: id },
-            });
-
-            if (existingProof) {
-                await cloudinary.uploader.destroy(existingProof.publicId);
-                await prisma.paymentProof.delete({ where: { id: existingProof.id } });
-            }
-
-            const result = await uploadFile(file, "myflower-myrekap/bukti-transfer");
-
-            await prisma.paymentProof.create({
-                data: {
-                    fileName: file.originalname,
-                    size: file.size,
-                    orderId: id,
-                    secureUrl: result.secure_url,
-                    publicId: result.public_id,
-                },
-            });
-        }
-
-        // UPDATE ORDER (EXCLUDE ORDER ITEM)
-        const total = await prisma.orderItem.aggregate({
+    // UPLOAD FILE IF EXISTS
+    if (file?.buffer) {
+        const existingProof = await prisma.paymentProof.findUnique({
             where: { orderId: id },
-            _sum: {
-                totalPrice: true,
-            },
         });
-        const totalPrice = total._sum.totalPrice ?? 0;
-        const shippingCost = body.deliveryOption === "DELIVERY" ? totalPrice * 0.1 : 0;
 
-        const { items, publicIdsToDelete, ...data } = body;
-        const updatedOrder = await prisma.order.update({
-            where: { id },
+        if (existingProof) {
+            await cloudinary.uploader.destroy(existingProof.publicId);
+            await prisma.paymentProof.delete({ where: { id: existingProof.id } });
+        }
+
+        const result = await uploadFile(file, "myflower-myrekap/bukti-transfer");
+
+        await prisma.paymentProof.create({
             data: {
-                ...data,
-                totalPrice,
-                shippingCost,
+                fileName: file.originalname,
+                size: file.size,
+                orderId: id,
+                secureUrl: result.secure_url,
+                publicId: result.public_id,
             },
-            include: { items: { include: { product: true } } },
         });
+    }
 
-        return updatedOrder;
+    // UPDATE ORDER (EXCLUDE ORDER ITEM)
+    const total = await prisma.orderItem.aggregate({
+        where: { orderId: id },
+        _sum: {
+            totalPrice: true,
+        },
+    });
+    const totalPrice = total._sum.totalPrice ?? 0;
+    const shippingCost = body.deliveryOption === "DELIVERY" ? totalPrice * 0.1 : 0;
+
+    const { items, publicIdsToDelete, ...data } = body;
+    transactionOps.push(
+        prisma.order.update({
+            where: { id },
+            data: { ...data, totalPrice, shippingCost },
+            include: { items: { include: { product: true } } },
+        })
+    );
+    try {
+        const result = await prisma.$transaction(transactionOps);
+
+        return result.at(-1);
     } catch (error) {
         console.log(error);
         throw new InternalException("Something went wrong", ErrorCode.INTERNAL_EXCEPTION, error);
     }
 };
 
-export const printOrder = async (html: string) => {
-    if (!html)
-        throw new BadRequestException("HTML content is required for printing", ErrorCode.ORDER_PRINT_HTML_NOT_FOUND);
-    try {
-        const browser = await puppeteer.launch({ headless: true });
-        const page = await browser.newPage();
-
-        await page.setContent(html, { waitUntil: "networkidle0" });
-        await page.setViewport({ width: 1280, height: 800, deviceScaleFactor: 1 });
-
-        const pdfBuffer = await page.pdf({
-            format: "A4",
-            printBackground: true,
-            landscape: true,
-            margin: {
-                top: "20px",
-                right: "20px",
-                bottom: "20px",
-                left: "20px",
-            },
-        });
-        await browser.close();
-
-        return pdfBuffer;
-    } catch (error) {
-        console.log(error);
-        throw new InternalException("Failed to print order summary", ErrorCode.ORDER_PRINT_FAILED, error);
-    }
-};
-
 export const updateProgress = async (
-    id: string,
+    orderId: string,
+    userId: string,
     orderStatus: "COMPLETED" | "DELIVERY" | "IN_PROCESS" | "CANCELED",
     finishedProduct?: Express.Multer.File
 ) => {
     // Check if finished product exists
     if (finishedProduct) {
         // Delete existing finished product
-        const existingFinishedProduct = await prisma.finishedProduct.findUnique({ where: { orderId: id } });
+        const existingFinishedProduct = await prisma.finishedProduct.findUnique({ where: { orderId } });
         if (existingFinishedProduct) {
-            await prisma.finishedProduct.delete({ where: { orderId: id } });
+            await prisma.finishedProduct.delete({ where: { orderId } });
             await cloudinary.uploader.destroy(existingFinishedProduct.publicId);
         }
 
@@ -293,7 +348,7 @@ export const updateProgress = async (
             data: {
                 fileName: finishedProduct.originalname,
                 size: finishedProduct.size,
-                orderId: id,
+                orderId,
                 secureUrl: result.secure_url,
                 publicId: result.public_id,
             },
@@ -301,19 +356,37 @@ export const updateProgress = async (
     }
 
     // Check if order exists
-    const order = await prisma.order.findUnique({
-        where: { id },
-    });
+    const order = await prisma.order.findUnique({ where: { id: orderId }, include: { items: true } });
     if (!order) throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
 
-    // Update order
+    // Update order status
     let dataOrderStatus: any = { orderStatus };
+    const stockOperations = [];
+
     if (orderStatus === "CANCELED") {
         dataOrderStatus = {
             orderStatus,
             paymentStatus: "CANCELED",
             previousPaymentStatus: order.paymentStatus,
         };
+
+        // Create STOCK_IN history for cancellation
+        for (const item of order.items) {
+            stockOperations.push(
+                prisma.product.update({
+                    where: { id: item.productId },
+                    data: { stock: { increment: item.quantity } },
+                }),
+                prisma.productHistory.create({
+                    data: {
+                        type: "STOCK_IN",
+                        quantity: item.quantity,
+                        productId: item.productId,
+                        note: `Order #${order.orderCode} canceled by admin #${userId}`,
+                    },
+                })
+            );
+        }
     } else if (
         ["COMPLETED", "IN_PROCESS", "DELIVERY"].includes(orderStatus) &&
         order.paymentStatus === "CANCELED" &&
@@ -324,11 +397,32 @@ export const updateProgress = async (
             paymentStatus: order.previousPaymentStatus,
             previousPaymentStatus: null,
         };
+
+        // Create STOCK_OUT history for reactivation
+        for (const item of order.items) {
+            stockOperations.push(
+                prisma.product.update({
+                    where: { id: item.productId },
+                    data: { stock: { decrement: item.quantity } },
+                }),
+                prisma.productHistory.create({
+                    data: {
+                        type: "STOCK_OUT",
+                        quantity: item.quantity,
+                        productId: item.productId,
+                        note: `Order #${order.orderCode} reactivated by admin #${userId}`,
+                    },
+                })
+            );
+        }
     }
+
     // Update order
     try {
+        if (stockOperations.length > 0) await prisma.$transaction(stockOperations);
+
         const orderUpdated = await prisma.order.update({
-            where: { id },
+            where: { id: orderId },
             data: dataOrderStatus,
             include: {
                 user: true,

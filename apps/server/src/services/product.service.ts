@@ -3,6 +3,7 @@ import ErrorCode from "@/constants/error-code";
 import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
 import { productSchema } from "@/schemas";
 import { cloudinary, uploadFile } from "@/config";
+import { formatters } from "@/utils";
 
 type UploadResultsType = {
     fileName: string;
@@ -33,6 +34,7 @@ export const create = async (body: productSchema.CreateProductType, files: Expre
         return await prisma.product.create({
             data: {
                 ...body,
+                productCode: formatters.generateCode("product"),
                 images: { create: uploadResults.map((result) => result) },
             },
             include: {
@@ -142,4 +144,78 @@ export const remove = async (id: string) => {
     } catch (_error) {
         throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
     }
+};
+
+export const createStockHistory = async (id: string, userId: string, body: any) => {
+    const product = await prisma.product.findUnique({ where: { id } });
+    if (!product) throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
+
+    // Check if stock is enough
+    if (body.type === "STOCK_OUT" && body.quantity > product.stock)
+        throw new BadRequestException("Stock is not enough", ErrorCode.STOCK_NOT_ENOUGH);
+
+    body.note =
+        (body.note && body.note.trim()) ||
+        (body.type === "STOCK_IN" ? `Stock in by admin #${userId}` : `Stock out by admin #${userId}`);
+    const history = await prisma.productHistory.create({ data: { ...body, productId: id } });
+    await prisma.product.update({
+        where: { id },
+        data: { stock: body.type === "STOCK_IN" ? { increment: body.quantity } : { decrement: body.quantity } },
+    });
+
+    return history;
+};
+
+export const stockReport = async (month: number, year: number, type: any) => {
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0);
+
+    // Get stock report by type
+    if (["STOCK_IN", "STOCK_OUT"].includes(type)) {
+        return await prisma.productHistory.findMany({
+            where: { type, createdAt: { gte: startDate, lte: endDate } },
+            include: { product: { select: { productCode: true, name: true } } },
+        });
+    }
+
+    // Get all products less than endDate by type summary
+    const products = await prisma.product.findMany({
+        include: { histories: { where: { createdAt: { lte: endDate } } } },
+        orderBy: { createdAt: "asc" },
+    });
+
+    // Generate report
+    const report = products.map((product) => {
+        let stockIn = 0;
+        let stockOut = 0;
+        let prevStokIn = 0;
+        let prevStokOut = 0;
+
+        for (const h of product.histories) {
+            // Get current stock in and stock out (after startDate)
+            if (h.createdAt >= startDate) {
+                if (h.type === "STOCK_IN") stockIn += h.quantity;
+                else if (h.type === "STOCK_OUT") stockOut += h.quantity;
+            }
+            // Get previous stock in and stock out (before startDate)
+            else {
+                if (h.type === "STOCK_IN") prevStokIn += h.quantity;
+                else if (h.type === "STOCK_OUT") prevStokOut += h.quantity;
+            }
+        }
+
+        const initialStock = prevStokIn - prevStokOut;
+        const finalStock = initialStock + stockIn - stockOut;
+
+        return {
+            productCode: product.productCode,
+            productName: product.name,
+            initialStock,
+            stockIn,
+            stockOut,
+            finalStock,
+        };
+    });
+
+    return report;
 };

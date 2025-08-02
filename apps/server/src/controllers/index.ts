@@ -7,3 +7,4 @@ export * as ordersAdminController from "@/controllers/orders/admin.controller";
 export * as ordersCustomerController from "@/controllers/orders/customer.controller";
 export * as transactionController from "@/controllers/transaction.controller";
 export * as reviewController from "@/controllers/review.controller";
+export * as reportController from "@/controllers/report.controller";

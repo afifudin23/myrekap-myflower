@@ -52,32 +52,13 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-export const printOrder = async (req: Request, res: Response, next: NextFunction) => {
-    const { html } = req.body;
-    try {
-        const data = await ordersAdminService.printOrder(html);
-        res.set({
-            "Content-Type": "application/pdf",
-            "Content-Disposition": `attachment; filename="Laporan_Penjualan_${
-                new Date().toISOString().split("T")[0]
-            }.pdf"`,
-            "Content-Length": data.length.toString(),
-            "Cache-Control": "no-cache, no-store, must-revalidate",
-            Pragma: "no-cache",
-            Expires: "0",
-        });
-        res.send(Buffer.from(data));
-    } catch (error) {
-        return next(error);
-    }
-};
 export const updateOrderProgress = async (req: Request, res: Response, next: NextFunction) => {
-    const {orderStatus} = ordersAdminSchema.updateOrderStatus.parse(req.body);
+    const { orderStatus } = ordersAdminSchema.updateOrderStatus.parse(req.body);
     try {
-        const data = await ordersAdminService.updateProgress(req.params.id, orderStatus, req.file);
+        const userId = (req as AuthReq).user.id;
+        const data = await ordersAdminService.updateProgress(req.params.orderId, userId, orderStatus, req.file);
         res.json({ message: "Update order status successfully", data });
     } catch (error) {
         return next(error);
     }
 };
-

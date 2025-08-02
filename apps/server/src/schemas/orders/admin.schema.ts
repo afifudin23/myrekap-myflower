@@ -44,16 +44,7 @@ export const create = z
             .string({ invalid_type_error: "Delivery address must be a string" })
             .transform((val) => (val === "" ? null : val))
             .nullish(),
-        readyDate: z.coerce.date().refine(
-            (date) => {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0); // Reset to midnight
-                return date > today;
-            },
-            {
-                message: "Ready date minimum is today",
-            }
-        ),
+        readyDate: z.coerce.date(),
         paymentMethod: z.preprocess(
             (val) => (typeof val === "string" ? val.toUpperCase() : val),
             z.enum(["CASH", "BANK_TRANSFER"], {
@@ -119,16 +110,6 @@ export const update = z
             .nullish(),
         readyDate: z.coerce
             .date()
-            .refine(
-                (date) => {
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0); // Reset to midnight
-                    return date > today;
-                },
-                {
-                    message: "Ready date minimum is today",
-                }
-            )
             .nullish(),
         paymentMethod: z
             .preprocess(

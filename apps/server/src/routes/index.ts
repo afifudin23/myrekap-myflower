@@ -8,6 +8,7 @@ import ordersCustomerRouter from "@/routes/orders/customer.route";
 import ordersAdminRouter from "@/routes/orders/admin.route";
 import userRouter from "@/routes/user.route";
 import reviewRouter from "@/routes/review.route";
+import reportRouter from "@/routes/report.route";
 
 const rootRouter: Router = Router();
 
@@ -20,5 +21,6 @@ rootRouter.use("/orders/admin", ordersAdminRouter);
 rootRouter.use("/orders/customer", ordersCustomerRouter);
 rootRouter.use("/payment-proofs", paymentProofRouter);
 rootRouter.use("/transactions", transactionRouter);
+rootRouter.use("/reports", reportRouter);
 
 export default rootRouter;

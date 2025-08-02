@@ -1,3 +1,3 @@
-export { default as ReportOrderForm } from "./ReportOrderForm";
+export { default as ReportForm } from "./ReportForm";
 export { default as ReportOrderTable } from "./ReportOrderTable";
-export  * from "./reportOrder.constants";
+export * from "./report.constants";

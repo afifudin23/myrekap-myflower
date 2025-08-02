@@ -3,8 +3,20 @@ import ProtectedRoute from "@/components/templates/ProtectedRoute";
 import { AdminCreatePage, AdminEditPage, AdminPage } from "@/pages/users/admin";
 import { CustomerPage } from "@/pages/users/customer";
 import { OrderCreatePage, OrderDetailPage, OrderEditPage, OrderPage, OrderReceiptPreview } from "@/pages/orders";
-import { ProductCreatePage, ProductDetailPage, ProductEditPage, ProductPage } from "@/pages/products";
-import { ReportOrderFilterPage, ReportOrderResultPage } from "@/pages/reports";
+import {
+    ProductPage,
+    ProductCreatePage,
+    ProductDetailPage,
+    ProductEditPage,
+    ProductManageStockPage,
+} from "@/pages/products";
+import {
+    ReportPage,
+    ReportOrderFilterPage,
+    ReportOrderResultPage,
+    ReportProductStockFilterPage,
+    ReportProductStockResultPage,
+} from "@/pages/reports";
 import { LoginPage } from "@/pages/auth";
 import { DashboardPage } from "@/pages/dashboard";
 import VerifyEmailPage from "../pages/auth/VerifyEmailPage";
@@ -38,14 +50,23 @@ function AppRouter() {
                     </Route>
 
                     <Route path="/reports">
-                        <Route path="orders" element={<ReportOrderFilterPage />} />
-                        <Route path="orders/result" element={<ReportOrderResultPage />} />
+                        <Route index element={<ReportPage />} />
+                        <Route path="orders">
+                            <Route index element={<ReportOrderFilterPage />} />
+                            <Route path="result" element={<ReportOrderResultPage />} />
+                        </Route>
+
+                        <Route path="products">
+                            <Route index element={<ReportProductStockFilterPage />} />
+                            <Route path="result" element={<ReportProductStockResultPage />} />
+                        </Route>
                     </Route>
 
                     <Route path="/products/">
                         <Route index element={<ProductPage />} />
                         <Route path=":id" element={<ProductDetailPage />} />
                         <Route path=":id/edit" element={<ProductEditPage />} />
+                        <Route path=":id/manage-stock" element={<ProductManageStockPage />} />
                         <Route path="create" element={<ProductCreatePage />} />
                     </Route>
 

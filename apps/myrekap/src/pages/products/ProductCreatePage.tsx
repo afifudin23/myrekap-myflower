@@ -20,7 +20,6 @@ function ProductCreatePage() {
         defaultValues: {
             name: "",
             price: 0,
-            stock: 0,
             description: "",
             images: [],
         },

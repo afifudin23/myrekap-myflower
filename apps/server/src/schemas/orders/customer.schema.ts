@@ -7,18 +7,7 @@ export const create = z
             z.enum(["DELIVERY", "PICKUP"])
         ),
         deliveryAddress: z.string().nullish(),
-        readyDate: z.coerce.date().refine(
-            (date) => {
-                const delivery = new Date(date);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0); // Reset to midnight
-
-                return delivery > today;
-            },
-            {
-                message: "Ready date minimum is tomorrow",
-            }
-        ),
+        readyDate: z.coerce.date(),
         paymentMethod: z
             .preprocess((val) => (typeof val === "string" ? val.toUpperCase() : val), z.enum(["COD", "OTHERS"]))
             .transform((val) => (val === "OTHERS" ? null : val))

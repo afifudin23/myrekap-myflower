@@ -60,19 +60,19 @@ function ReportOrderResultPage() {
                 </html>
             `;
 
-            const response = await axiosInstance.post("/orders/admin/pdf", { html }, { responseType: "blob" });
-            const blob = new Blob([response.data], { type: "application/pdf" });
-            const url = window.URL.createObjectURL(blob);
+            let fileName = "Laporan_Penjualan.pdf";
+            const response = await axiosInstance.post("/reports/pdf", { html, fileName }, { responseType: "blob" });
 
             const disposition = response.headers["content-disposition"];
-            let fileName = "Laporan_Penjualan.pdf";
-
             if (disposition && disposition.includes("filename=")) {
-                const matches = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-                if (matches?.[1]) {
-                    fileName = matches[1].replace(/['"]/g, ""); // hilangkan tanda kutip
+                const match = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                if (match?.[1]) {
+                    fileName = match[1].replace(/['"]/g, ""); // hapus tanda kutip
                 }
             }
+
+            const blob = new Blob([response.data], { type: "application/pdf" });
+            const url = window.URL.createObjectURL(blob);
 
             const link = document.createElement("a");
             link.href = url;
@@ -118,7 +118,7 @@ function ReportOrderResultPage() {
         if (!printWindow) return;
 
         printWindow.document.open();
-        printWindow.document.write(html);
+        printWindow.document.writeln(html);
         printWindow.document.close();
     };
 

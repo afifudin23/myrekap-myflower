@@ -10,11 +10,6 @@ export const PRODUCT_FORM_ITEMS = [
         name: "price",
     },
     {
-        label: "Stok Produk",
-        type: "text",
-        name: "stock",
-    },
-    {
         label: "Deskripsi Produk",
         type: "text",
         name: "description",

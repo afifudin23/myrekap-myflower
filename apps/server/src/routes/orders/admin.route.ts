@@ -19,9 +19,8 @@ ordersAdminRouter.put(
     upload.single("paymentProof"),
     errorHandler(ordersAdminController.updateOrder)
 );
-ordersAdminRouter.post("/pdf", [authMiddleware], errorHandler(ordersAdminController.printOrder));
 ordersAdminRouter.patch(
-    "/:id/update-progress",
+    "/:orderId/update-progress",
     [authMiddleware],
     upload.single("finishedProduct"),
     errorHandler(ordersAdminController.updateOrderProgress)

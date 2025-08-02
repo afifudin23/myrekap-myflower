@@ -51,7 +51,6 @@ export const DELIVERY_OPTION_LABELS = {
     PICKUP: "Ambil di Tempat",
 };
 
-// Payment Method
 export const PAYMENT_METHOD_ITEMS = [
     {
         label: "Semua",
@@ -65,18 +64,43 @@ export const PAYMENT_METHOD_ITEMS = [
         label: "Tunai",
         value: "CASH",
     },
+    {
+        label: "Credit Card",
+        value: "CREDIT_CARD",
+    },
+    {
+        label: "Qris",
+        value: "QRIS",
+    },
+    {
+        label: "E-Wallet",
+        value: "EWALLET",
+    },
+    {
+        label: "Cstore",
+        value: "CSTORE",
+    },
+    {
+        label: "COD",
+        value: "COD",
+    },
 ];
 export const PAYMENT_METHOD_LABELS: any = {
     ALL: "Semua",
     BANK_TRANSFER: "Transfer Bank",
     CASH: "Tunai",
+    CREDIT_CARD: "Credit Card",
+    QRIS: "Qris",
+    EWALLET: "E-Wallet",
+    CSTORE: "Cstore",
+    COD: "COD",
 };
 
 // Payment Status
 export const PAYMENT_STATUS_ITEMS = [
     { label: "Semua", value: "ALL" },
     { label: "Lunas", value: "PAID" },
-    { label: "Menunggu", value: "PENDING" },
+    { label: "Pending", value: "PENDING" },
     { label: "Belum Lunas", value: "UNPAID" },
     { label: "Batal", value: "CANCELED" },
     { label: "Expired", value: "EXPIRED" },
@@ -86,7 +110,7 @@ export const PAYMENT_STATUS_ITEMS = [
 export const PAYMENT_STATUS_LABELS: any = {
     ALL: "Semua",
     PAID: "Lunas",
-    PENDING: "Menunggu",
+    PENDING: "Pending",
     UNPAID: "Belum Lunas",
     CANCELED: "Batal",
     EXPIRED: "Expired",
@@ -108,6 +132,18 @@ export const ORDER_STATUS_LABELS: any = {
     DELIVERY: "Pengiriman",
     CANCELED: "Batal",
     COMPLETED: "Selesai",
+};
+
+// Type Stock Report
+export const TYPE_STOCK_REPORT_ITEMS = [
+    { label: "General", value: "summary" },
+    { label: "Stok Masuk", value: "stock_in" },
+    { label: "Stok Keluar", value: "stock_out" },
+];
+export const TYPE_STOCK_REPORT_LABELS: any = {
+    summary: "General",
+    stock_in: "Stok Masuk",
+    stock_out: "Stok Keluar",
 };
 
 export const SOURCE_LABELS: any = {

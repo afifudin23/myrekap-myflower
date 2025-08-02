@@ -62,7 +62,6 @@ function OrderPage() {
         };
         fetchOrders();
     }, [monthYear]);
-    console.log(filteredOrders)
     return (
         <MainLayout>
             <TitlePage title="Daftar Penjualan" subtitle="Menampilkan Data Penjualan Yang Terdaftar" />

@@ -1,16 +1,12 @@
-import { TitlePage } from "@/components/molecules";
-import { DEFAULT_VALUE_REPORT_ORDER, ReportOrderForm } from "@/components/organisms/reports";
+import { InputDate, TitlePage } from "@/components/molecules";
+import { DEFAULT_VALUE_REPORT_ORDER, REPORT_ORDER_FORM_FIELDS, ReportForm } from "@/components/organisms/reports";
 import MainLayout from "@/components/templates/MainLayout";
-import {
-    CUSTOMER_CATEGORY_LABELS,
-    ORDER_STATUS_LABELS,
-    PAYMENT_METHOD_LABELS,
-    PAYMENT_STATUS_LABELS,
-} from "@/constants/category";
 import { reportOrderSchema, ReportOrderType } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { TbLogout2 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
 const ReportOrderFilterPage = () => {
@@ -44,22 +40,29 @@ const ReportOrderFilterPage = () => {
             const params = new URLSearchParams({
                 from_date: filter.fromDate.toISOString(),
                 to_date: filter.toDate.toISOString(),
-                customer_category: CUSTOMER_CATEGORY_LABELS[filter.customerCategory].toLowerCase(),
-                payment_method: PAYMENT_METHOD_LABELS[filter.paymentMethod].toLowerCase(),
-                payment_status: PAYMENT_STATUS_LABELS[filter.paymentStatus].toLowerCase(),
-                order_status: ORDER_STATUS_LABELS[filter.orderStatus].toLowerCase(),
+                customer_category: filter.customerCategory.toLowerCase(),
+                payment_method: filter.paymentMethod.toLowerCase(),
+                payment_status: filter.paymentStatus.toLowerCase(),
+                order_status: filter.orderStatus.toLowerCase(),
             });
 
             reset(DEFAULT_VALUE_REPORT_ORDER);
             navigate(`/reports/orders/result?${params}`);
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            console.log(error.response.data);
         }
     };
     return (
         <MainLayout>
-            <TitlePage title="Cetak Rekap" subtitle="Mencetak Rekap Sesuai Kebutuhan" />
-            <ReportOrderForm
+            <div className="flex justify-between items-center">
+                <TitlePage title="Laporan Penjualan" subtitle="Mencetak Rekap Penjualan Sesuai Kebutuhan" />
+                <button onClick={() => navigate("/reports")}>
+                    <TbLogout2 className="text-5xl 2xl:text-6xl" />
+                </button>
+            </div>
+
+            <ReportForm
+                fields={REPORT_ORDER_FORM_FIELDS}
                 handleSubmit={handleSubmit}
                 control={control}
                 errors={errors}
@@ -67,6 +70,25 @@ const ReportOrderFilterPage = () => {
                 onSubmit={onSubmit}
                 showAlert={showAlert}
                 setShowAlert={setShowAlert}
+                inputDate={
+                    <div id="input-date" className="flex w-full justify-between items-center gap-10">
+                        <InputDate
+                            label="Dari Tanggal"
+                            name="fromDate"
+                            control={control}
+                            ref={(el) => (fieldRefs.current["fromDate"] = el)}
+                            error={errors.fromDate?.message}
+                        />
+                        <FaArrowRightLong className="text-5xl 2xl:text-7xl mt-6" />
+                        <InputDate
+                            label="Sampai Tanggal"
+                            name="toDate"
+                            control={control}
+                            ref={(el) => (fieldRefs.current["toDate"] = el)}
+                            error={errors.toDate?.message}
+                        />
+                    </div>
+                }
             />
         </MainLayout>
     );

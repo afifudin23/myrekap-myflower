@@ -1,11 +1,20 @@
 import crypto from "crypto";
 
-export function generateOrderCode(): string {
+export function generateCode(type: "order" | "product") {
     const randomPrefix = crypto.randomBytes(1).toString("hex").toUpperCase(); // 2 chars
     const timestamp = Date.now().toString(36).toUpperCase();
     const randomSuffix = crypto.randomBytes(3).toString("hex").toUpperCase();
 
-    return `ORD-${randomPrefix}${timestamp}-${randomSuffix}`;
+    switch (type) {
+        case "order":
+            return `ORD-${randomPrefix}${timestamp}-${randomSuffix}`;
+
+        case "product":
+            return `PRD-${randomPrefix}${timestamp}-${randomSuffix}`;
+            
+        default:
+            throw new Error("Invalid type");
+    }
 }
 
 export const generatePaymentInfo = (notification: any) => {
@@ -88,6 +97,7 @@ ${data.items
     .join("\n")}
 `);
 };
+
 export const formatItemsAsList = (items: any[]) => {
     return items
         .map(

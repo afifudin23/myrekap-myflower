@@ -10,7 +10,6 @@ export const create = z
         phoneNumber: z.string().nonempty("Nomor telepon wajib diisi"),
         items: z.array(
             z.object({
-                id: z.string().nullish(),
                 productId: z.string().nonempty("Wajib pilih bunga"),
                 quantity: z.coerce.number().positive("Jumlah pesan tidak boleh 0 atau negatif"),
                 message: z
@@ -33,16 +32,6 @@ export const create = z
                 required_error: "Tanggal siap wajib diisi",
                 invalid_type_error: "Format tanggal tidak valid",
             })
-            .refine(
-                (date) => {
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0); // Reset to midnight
-                    return date > today;
-                },
-                {
-                    message: "Tanggal produk jadi minimal besok hari",
-                }
-            )
             .transform((date) => date.toISOString()),
         paymentMethod: z.enum(["CASH", "BANK_TRANSFER"], {
             required_error: "Wajib pilih metode pembayaran",
@@ -68,8 +57,8 @@ export const create = z
     });
 
 const existingFile = z.object({
-    fileName: z.string(),
     id: z.string(),
+    fileName: z.string(),
     orderId: z.string(),
     publicId: z.string(),
     secureUrl: z.string(),
@@ -96,9 +85,11 @@ export const update = z
                     .nullish(),
             })
         ),
-        deliveryOption: z.enum(["DELIVERY", "PICKUP"], {
-            invalid_type_error: "Metode pengiriman tidak valid",
-        }).nullish(),
+        deliveryOption: z
+            .enum(["DELIVERY", "PICKUP"], {
+                invalid_type_error: "Metode pengiriman tidak valid",
+            })
+            .nullish(),
         deliveryAddress: z
             .string()
             .transform((val) => (val === "" ? null : val))
@@ -108,20 +99,12 @@ export const update = z
                 required_error: "Tanggal siap wajib diisi",
                 invalid_type_error: "Format tanggal tidak valid",
             })
-            .refine(
-                (date) => {
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0); // Reset to midnight
-                    return date > today;
-                },
-                {
-                    message: "Tanggal produk jadi minimal besok hari",
-                }
-            )
             .transform((date) => date.toISOString()),
-        paymentMethod: z.enum(["CASH", "BANK_TRANSFER"], {
-            invalid_type_error: "Metode pembayaran tidak valid",
-        }).nullish(),
+        paymentMethod: z
+            .enum(["CASH", "BANK_TRANSFER"], {
+                invalid_type_error: "Metode pembayaran tidak valid",
+            })
+            .nullish(),
         paymentProof: z.array(
             z.union([
                 existingFile,

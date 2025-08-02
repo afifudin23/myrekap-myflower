@@ -3,7 +3,6 @@ import { FaSquarePollVertical } from "react-icons/fa6";
 import { useSearchParams } from "react-router-dom";
 
 function ReportOrderTable({ orderFilter }: any) {
-    console.log(orderFilter)
     const [searchParams] = useSearchParams();
     const fromDate = formatters.isoDateToStringDate(searchParams.get("from_date"));
     const toDate = formatters.isoDateToStringDate(searchParams.get("to_date"));
@@ -87,7 +86,9 @@ function ReportOrderTable({ orderFilter }: any) {
                                 <td className="border p-2 border-slate-700">{order.paymentProvider}</td>
                                 <td className="border p-2 border-slate-700">{order.paymentStatus}</td>
                                 <td className="border p-2 border-slate-700">{order.orderStatus}</td>
-                                <td className="border p-2 border-slate-700">{formatters.formatRupiah(order.totalPrice)}</td>
+                                <td className="border p-2 border-slate-700">
+                                    {formatters.formatRupiah(order.totalPrice)}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

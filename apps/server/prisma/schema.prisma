@@ -65,19 +65,40 @@ enum TokenType {
 }
 
 model Product {
-  id          String  @id @default(cuid())
-  name        String  @unique @map("name")
-  price       Int     @map("price")
-  stock       Int     @map("stock")
-  description String  @map("description")
-  isActive    Boolean @default(true) @map("is_active")
+  id          String   @id @default(cuid())
+  productCode String   @unique @map("product_code")
+  name        String   @unique @map("name")
+  price       Int      @map("price")
+  stock       Int      @default(0) @map("stock")
+  description String   @map("description")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
 
   images     ProductImage[]
   cartItems  CartItem[]
   orderItems OrderItem[]
   reviews    Review[]
+  histories  ProductHistory[]
 
   @@map("products")
+}
+
+model ProductHistory {
+  id        String      @id @default(cuid())
+  productId String      @map("product_id")
+  type      HistoryType @map("type")
+  quantity  Int         @map("quantity")
+  note      String     @map("note")
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("product_histories")
+}
+
+enum HistoryType {
+  STOCK_IN  @map("stock_in")
+  STOCK_OUT @map("stock_out")
 }
 
 model ProductImage {

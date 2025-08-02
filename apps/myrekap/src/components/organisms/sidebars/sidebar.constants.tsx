@@ -23,7 +23,7 @@ export const SIDEBAR_ITEMS = [
     },
     {
         label: "Cetak Rekap",
-        path: "reports/orders",
+        path: "reports",
         icons: { active: <FaFilePdf />, inactive: <FaRegFilePdf /> },
     },
     {

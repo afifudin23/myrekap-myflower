@@ -31,6 +31,12 @@ const ProductDetailSection = ({ product, handleDeleteConfirm }: any) => {
                         <RiEdit2Fill /> Edit
                     </ButtonSmall>
                     <ButtonSmall
+                        className="bg-blue-400 hover:bg-blue-500 py-1 2xl:py-2 px-4"
+                        onClick={() => navigate(`/products/${product.id}/manage-stock`)}
+                    >
+                        <RiEdit2Fill /> Kelola Stok
+                    </ButtonSmall>
+                    <ButtonSmall
                         className="bg-red-500 hover:bg-red-600 py-1 2xl:py-2 px-4"
                         onClick={() => handleDeleteConfirm(product.name)}
                     >

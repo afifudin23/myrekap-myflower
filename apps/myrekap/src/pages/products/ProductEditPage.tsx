@@ -25,7 +25,6 @@ function ProductEditPage() {
         defaultValues: {
             name: "",
             price: 0,
-            stock: 0,
             description: "",
             images: [],
             publicIdsToDelete: [],
@@ -43,6 +42,7 @@ function ProductEditPage() {
     }, [id]);
 
     const onSubmit = handleSubmit(async (data: any) => {
+        console.log(data)
         setIsLoading(true);
         try {
             const formData = new FormData();
@@ -73,6 +73,7 @@ function ProductEditPage() {
                 },
             });
         } catch (error: any) {
+            console.log(error.response.data);
             if (error.response.status === 500) {
                 navigate("/products", {
                     state: {
