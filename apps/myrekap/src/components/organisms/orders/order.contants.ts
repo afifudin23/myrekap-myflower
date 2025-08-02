@@ -51,7 +51,7 @@ export const ORDER_FORM_ITEMS = [
         label: "Metode Pembayaran",
         type: "dropdown",
         name: "paymentMethod",
-        options: PAYMENT_METHOD_ITEMS.filter((item) => item.label !== "Semua"),
+        options: PAYMENT_METHOD_ITEMS.filter((item) => ["BANK_TRANSFER", "CASH"].includes(item.value)),
         optionLabel: PAYMENT_METHOD_LABELS,
     },
     {

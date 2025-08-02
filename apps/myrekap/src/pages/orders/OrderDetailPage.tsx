@@ -53,6 +53,7 @@ function OrderDetailPage() {
                 ...order,
                 finishedProduct: resData.finishedProduct,
                 orderStatus: resData.orderStatus,
+                paymentStatus: resData.paymentStatus,
             };
 
             localStorage.setItem("orderDetail", JSON.stringify(updatedOrder));

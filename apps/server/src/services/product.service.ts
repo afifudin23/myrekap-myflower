@@ -120,6 +120,7 @@ export const update = async (id: string, body: productSchema.UpdateProductType, 
         });
     } catch (error) {
         // Rollback upload images
+        console.log(error)
         await Promise.all(
             uploadResults.map(async (result) => {
                 await cloudinary.uploader.destroy(result.publicId).catch((error) => {

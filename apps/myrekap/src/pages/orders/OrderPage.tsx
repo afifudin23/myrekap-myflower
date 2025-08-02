@@ -24,15 +24,9 @@ function OrderPage() {
         if (state?.message) {
             setMessage(state.message);
             setShowAlert(true);
-
-            const timer = setTimeout(() => {
-                setShowAlert(false);
-                window.history.replaceState({}, document.title);
-            }, 3000);
-
-            return () => clearTimeout(timer);
+            navigate("/orders", { state: {} });
         }
-    }, [location.key]);
+    }, []);
 
     // Filter
     const [searchTerm, setSearchTerm] = useState("");

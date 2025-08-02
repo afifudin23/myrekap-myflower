@@ -17,7 +17,7 @@ function ProductCard({ product }: any) {
         <Card className="group flex flex-col gap-3 cursor-default">
             <div className="overflow-hidden rounded-xl group">
                 <Image
-                    src={product.images[0].secureUrl}
+                    src={product.images[0]?.secureUrl}
                     alt={product.name}
                     className="w-full transition-all duration-300 ease-in-out group-hover:scale-110"
                 />

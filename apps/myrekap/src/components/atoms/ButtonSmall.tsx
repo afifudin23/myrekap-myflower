@@ -12,9 +12,12 @@ function ButtonSmall({ className, onClick, type = "button", children, disabled }
     return (
         <button
             type={type}
-            onClick={onClick}
+            onClick={() => {
+                if (disabled) return;
+                onClick?.();
+            }}
             className={`flex items-center justify-center gap-2 rounded-lg text-white text-base 2xl:text-lg ${className} ${
-                disabled ? "opacity-50 cursor-not-allowed" : ""
+                disabled ? "opacity-50 cursor-not-allowed " : ""
             } `}
         >
             {children}

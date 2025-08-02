@@ -51,11 +51,7 @@ export const getAllOrders = async (query: any) => {
 
 export const getOrderById = async (id: string) => {
     try {
-        const data = await prisma.order.findFirstOrThrow({
-            where: {
-                id,
-            },
-        });
+        const data = await prisma.order.findFirstOrThrow({ where: { id } });
         return data;
     } catch (_error) {
         throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
@@ -66,7 +62,7 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
     const products = await prisma.product.findMany();
     const productMap = new Map(products.map((product) => [product.id, product]));
     const orderItems = [];
-    const stockOperations = [];
+    const stockOperations: any[] = [];
     const orderCode = formatters.generateCode("order");
 
     for (const item of body.items) {
@@ -106,40 +102,42 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
     const totalPrice = orderItems.reduce((total: number, item: any) => total + item.totalPrice, 0);
     const shippingCost = body.deliveryOption === "DELIVERY" ? totalPrice * 0.1 : 0;
 
-    const createOrder = prisma.order.create({
-        data: {
-            ...body,
-            orderCode,
-            source: "MYREKAP",
-            userId,
-            totalPrice,
-            shippingCost,
-            paymentStatus: "PAID",
-            items: { create: orderItems },
-        },
-        include: { items: { include: { product: true } } },
-    });
-
     try {
-        const [_, __, order] = await prisma.$transaction([...stockOperations, createOrder]);
-
+        let uploadedFile;
         if (file && body.paymentMethod === "BANK_TRANSFER") {
-            const result = await uploadFile(file, "myflower-myrekap/bukti-transfer");
-            await prisma.paymentProof.create({
-                data: {
-                    fileName: file.originalname,
-                    size: file.size,
-                    orderId: order.id,
-                    secureUrl: result.secure_url,
-                    publicId: result.public_id,
-                },
-            });
+            uploadedFile = await uploadFile(file, "myflower-myrekap/bukti-transfer");
         }
+        const createOrder = prisma.order.create({
+            data: {
+                ...body,
+                orderCode,
+                source: "MYREKAP",
+                userId,
+                totalPrice,
+                shippingCost,
+                paymentStatus: "PAID",
+                items: { create: orderItems },
+                paymentProof: uploadedFile
+                    ? {
+                        create: {
+                            fileName: file.originalname,
+                            size: file.size,
+                            secureUrl: uploadedFile.secure_url,
+                            publicId: uploadedFile.public_id,
+                        },
+                    }
+                    : undefined,
+            },
+            include: { items: { include: { product: true } } },
+        });
+
+        const result = await prisma.$transaction([...stockOperations, createOrder]);
+
         // Send Notification to WhatsApp
         // const message = generatedTextLink(order);
         // enqueueWhatsAppMessage(message);
 
-        return order;
+        return result.at(-1);
     } catch (error) {
         console.log(error);
         throw new InternalException("Something went wrong", ErrorCode.INTERNAL_EXCEPTION, error);

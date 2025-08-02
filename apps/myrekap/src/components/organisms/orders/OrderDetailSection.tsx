@@ -24,7 +24,8 @@ function OrderDetailSection({
     handlePrintPdf,
 }: any) {
     const navigate = useNavigate();
-    const disabled = order.source === "MYFLOWER";
+    const disabled = order.source === "MYFLOWER" || order.orderStatus === "CANCELED";
+
     return (
         <div className="mb-44">
             <div className="space-y-5">
@@ -169,18 +170,32 @@ function OrderDetailSection({
                     Progress
                 </ButtonSmall>
 
-                <ButtonSmall className="bg-cyan-500 hover:bg-cyan-600 py-1 2xl:py-2 px-4 font-semibold">
-                    <PDFDownloadLink
-                        document={<OrderReceipt data={order} />}
-                        fileName={`receipt-order-${order.orderCode}.pdf`}
-                        className="flex items-center justify-center gap-1"
-                    >
-                        <MdOutlineDownloadForOffline size={20} /> Unduh Nota
-                    </PDFDownloadLink>
+                <ButtonSmall
+                    className={`${
+                        order.orderStatus === "CANCELED" ? "" : "hover:bg-cyan-600"
+                    } bg-cyan-500 py-1 2xl:py-2 px-4 font-semibold`}
+                    disabled={order.orderStatus === "CANCELED"}
+                >
+                    {order.orderStatus === "CANCELED" ? (
+                        <span className="flex items-center justify-center gap-1">
+                            <MdOutlineDownloadForOffline size={20} /> Unduh Nota
+                        </span>
+                    ) : (
+                        <PDFDownloadLink
+                            document={<OrderReceipt data={order} />}
+                            fileName={`receipt-order-${order.orderCode}.pdf`}
+                            className="flex items-center justify-center gap-1"
+                        >
+                            <MdOutlineDownloadForOffline size={20} /> Unduh Nota
+                        </PDFDownloadLink>
+                    )}
                 </ButtonSmall>
                 <ButtonSmall
-                    className="bg-purple-500 hover:bg-purple-600 py-1 2xl:py-2 px-4 font-semibold"
+                    className={`${
+                        order.orderStatus === "CANCELED" ? "" : "hover:bg-purple-600"
+                    } bg-purple-500  py-1 2xl:py-2 px-4 font-semibold`}
                     onClick={handlePrintPdf}
+                    disabled={order.orderStatus === "CANCELED"}
                 >
                     <IoReceiptSharp /> Cetak Nota
                 </ButtonSmall>

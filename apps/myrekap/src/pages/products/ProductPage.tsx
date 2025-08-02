@@ -6,28 +6,23 @@ import { useProducts } from "@/hooks";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { MdAddToPhotos } from "react-icons/md";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function ProductPage() {
     const { products } = useProducts();
     const location = useLocation();
     const [message, setMessage] = useState<string | null>(null);
     const [showAlert, setShowAlert] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const state = location.state as { message?: string };
         if (state?.message) {
             setMessage(state.message);
             setShowAlert(true);
-
-            const timer = setTimeout(() => {
-                setShowAlert(false);
-                window.history.replaceState({}, document.title);
-            }, 3000);
-
-            return () => clearTimeout(timer);
+            navigate("/products", { state: {} });
         }
-    }, [location.key]);
+    }, []);
 
     return (
         <MainLayout>

@@ -15,7 +15,6 @@ import AuthTemplate from "@/components/templates/AuthTemplate";
 function LoginPage() {
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    let loadingTimer: NodeJS.Timeout | null = null;
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const navigate = useNavigate();
 
@@ -29,14 +28,9 @@ function LoginPage() {
             setMessage(state.message);
             setShowAlert(true);
 
-            const timer = setTimeout(() => {
-                setShowAlert(false);
-                window.history.replaceState({}, document.title);
-            }, 3000);
-
-            return () => clearTimeout(timer);
+            navigate("/auth/login", { state: {} });
         }
-    }, [location.key]);
+    }, []);
 
     useEffect(() => {
         if (user?.username) {
@@ -53,18 +47,13 @@ function LoginPage() {
     });
 
     const onSubmit = async (data: LoginFormType) => {
-        loadingTimer = setTimeout(() => {
-            setIsLoading(true);
-        }, 500);
+        setIsLoading(true);
         try {
             const response = await axiosInstance.post("auth/login", {
                 username: data.username,
                 password: data.password,
             });
-            if (loadingTimer) {
-                clearTimeout(loadingTimer);
-                loadingTimer = null;
-            }
+
             setIsLoading(false);
             useAuthStore.getState().setUser(response.data);
             navigate("/dashboard");
@@ -78,10 +67,7 @@ function LoginPage() {
                 setMessage(error.response.data.message);
             }
         } finally {
-            if (loadingTimer) {
-                clearTimeout(loadingTimer);
-                loadingTimer = null;
-            }
+            setIsLoading(false);
             setTimeout(() => setShowAlert(false), 3000);
         }
     };

@@ -18,7 +18,7 @@ export const uploadFile = async (file: MulterFile, folder: string): Promise<Uplo
         if (!file || !file.buffer) {
             return reject(new Error("File buffer not available"));
         }
-        const nameWithoutExt = path.parse(file.originalname).name;
+        const nameWithoutExt = path.parse(file.originalname).name.slice(0, 50);
 
         const stream = cloudinary.uploader.upload_stream(
             {

@@ -1,8 +1,11 @@
+import { Loading } from "@/components/atoms";
+import { AlertInfo } from "@/components/molecules";
 import { RESET_PASSWORD_FIELDS } from "@/components/organisms/auth";
 import AuthForm from "@/components/organisms/auth/AuthForm";
 import AuthTemplate from "@/components/templates/AuthTemplate";
 import { axiosInstance } from "@/utils";
-import type { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -11,6 +14,9 @@ function ResetPasswordPage() {
     const [message, setMessage] = useState("");
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
+    const [isLoading, setIsLoading] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+
     const navigate = useNavigate();
     const {
         register,
@@ -22,6 +28,7 @@ function ResetPasswordPage() {
     });
 
     const onSubmit = handleSubmit(async (data) => {
+        setIsLoading(true);
         try {
             await axiosInstance.post("/auth/reset-password", { ...data, token });
             alert("Reset berhasil! Sekarang kamu bisa masuk dengan kata sandi baru.");
@@ -36,6 +43,8 @@ function ResetPasswordPage() {
             if (axiosError.response) {
                 setMessage(error.response.data.message);
             }
+        } finally {
+            setIsLoading(false);
         }
     });
     return (
@@ -48,6 +57,14 @@ function ResetPasswordPage() {
                 errors={errors}
                 buttonName="Update Password"
             />
+
+            {/* Custom Alert */}
+            <AnimatePresence>
+                {showAlert && <AlertInfo handleAlert={() => setShowAlert(false)} message={message} />}
+            </AnimatePresence>
+
+            {/* Loading */}
+            {isLoading && <Loading />}
         </AuthTemplate>
     );
 }
