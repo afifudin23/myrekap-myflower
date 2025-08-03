@@ -101,8 +101,31 @@ export const findByIdAndUser = async (userId: string, orderId: string) => {
     }
 };
 export const remove = async (orderCode: string) => {
+    const order = await prisma.order.findFirst({ where: { orderCode }, include: { items: true } });
+    if (!order) throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
+    const operations = [];
+
+    for (const item of order.items) {
+        operations.push(
+            prisma.product.update({ where: { id: item.productId }, data: { stock: { increment: item.quantity } } })
+        );
+
+        // Hapus productHistory terakhir (terkait item ini)
+        const latestHistory = await prisma.productHistory.findFirst({
+            where: {
+                productId: item.productId,
+                note: { contains: orderCode }, 
+            },
+            orderBy: { createdAt: "desc" }, 
+        });
+
+        if (latestHistory) operations.push(prisma.productHistory.delete({ where: { id: latestHistory.id } }));
+    }
+    operations.push(prisma.order.delete({ where: { orderCode } }));
+
     try {
-        return await prisma.order.delete({ where: { orderCode } });
+        const result = await prisma.$transaction(operations);
+        return result.at(-1);
     } catch (_error) {
         throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
     }
@@ -133,7 +156,7 @@ export const cancel = async (id: string) => {
         prisma.order.update({
             where: { id },
             include: { items: { include: { product: { include: { images: true } } } } },
-            data: { orderStatus: "CANCELED", paymentStatus: "REFUNDED" },
+            data: { orderStatus: "CANCELED", paymentStatus: "CANCELED" },
         })
     );
 

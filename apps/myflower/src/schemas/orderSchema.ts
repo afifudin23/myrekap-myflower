@@ -2,28 +2,14 @@ import { z } from "zod";
 
 export const orderFormSchema = z
     .object({
-        deliveryOption: z
-            .string({ required_error: "Opsi Pengiriman Harus Diisi" })
-            .nonempty({ message: "Opsi Pengiriman Harus Diisi" }),
+        deliveryOption: z.enum(["DELIVERY", "PICKUP"], {
+            required_error: "Harap pilih metode pengiriman terlebih dahulu.",
+        }),
         deliveryAddress: z.string().nullish(),
-        readyDate: z.date({ required_error: "Tanggal Siap Harus Diisi" }).refine(
-            (date) => {
-                const delivery = new Date(date);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0); // Reset to midnight
-
-                return delivery > today;
-            },
-            {
-                message: "Tanggal Produk Jadi Minimal Besok Hari",
-            }
-        ),
-        paymentMethod: z
-            .string({
-                invalid_type_error: "Metode Pembayaran Harus Diisi",
-                required_error: "Metode Pembayaran Harus Diisi",
-            })
-            .nonempty({ message: "Metode Pembayaran Harus Diisi" }),
+        readyDate: z.date({ required_error: "Harap isi tanggal produk jadi terlebih dahulu." }).transform((date) => date.toISOString()),
+        paymentMethod: z.enum(["COD", "OTHERS"],{
+            required_error: "Harap pilih metode pembayaran terlebih dahulu.",
+        }),
         items: z.array(
             z.object({
                 productId: z.string(),
@@ -34,11 +20,11 @@ export const orderFormSchema = z
     })
     .superRefine((data, ctx) => {
         // If delivery option is "Pickup", set delivery address, date, and shipping cost to null
-        if (data.deliveryOption === "Pickup") {
+        if (data.deliveryOption === "PICKUP") {
             data.deliveryAddress = null;
         }
 
-        if (data.deliveryOption === "Delivery") {
+        if (data.deliveryOption === "DELIVERY") {
             if (!data.deliveryAddress) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
@@ -47,4 +33,6 @@ export const orderFormSchema = z
                 });
             }
         }
+
+
     });

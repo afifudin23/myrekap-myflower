@@ -1,15 +1,15 @@
 // src/components/routes/ProtectedRoute.tsx
 import useAuthStore from "@/stores/useAuthStore";
 import { useEffect } from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
     const { isAuthenticated, loading, verifyToken } = useAuthStore();
-    const location = useLocation();
 
     useEffect(() => {
         verifyToken();
-    }, [location.pathname, verifyToken]);
+        // eslint-disable-next-line
+    }, []);
 
     if (loading) return <div className="p-10 text-center">Checking authentication...</div>;
 

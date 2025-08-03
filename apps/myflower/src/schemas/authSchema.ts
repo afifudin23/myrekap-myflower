@@ -17,7 +17,7 @@ export const registerFormSchema = z.object({
     phoneNumber: z
         .string({ required_error: "Nomor Telepon Harus Diisi" })
         .nonempty({ message: "Nomor Telepon Harus Diisi" }),
-    customerCategory: z.enum(["Umum", "Pemda", "Akademik", "Rumah Sakit", "Polisi/Militer", "Perbankan"], {
+    customerCategory: z.enum(["UMUM", "PEMDA"], {
         message: "Kategori Pelanggan Harus Diisi",
     }),
     password: z.string({ required_error: "Password Harus Diisi" }).nonempty({ message: "Password Harus Diisi" }),

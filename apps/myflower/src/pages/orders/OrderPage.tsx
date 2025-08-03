@@ -7,11 +7,11 @@ import OrderList from "@/components/organisms/orders/OrderList";
 function OrdersPage() {
     const { orders } = useOrders();
     return (
-        <MainLayout className="w-full space-y-6 max-w-4xl mx-auto">
+        <MainLayout className="w-full flex flex-col gap-3 max-w-4xl mx-auto">
             <BackButton to="/products">Kembali ke Produk</BackButton>
             <SectionTitle className="text-3xl font-bold">Pesanan Saya</SectionTitle>
 
-            <OrderList orders={orders} />
+            {orders.length > 0 ? <OrderList orders={orders} /> : <p className="text-center mt-40 text-2xl">Belum ada pesanan.</p>}
         </MainLayout>
     );
 }

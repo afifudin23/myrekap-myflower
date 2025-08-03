@@ -34,10 +34,10 @@ function OrderCheckoutPage() {
     } = useForm({
         resolver: zodResolver(orderFormSchema),
         defaultValues: {
-            deliveryOption: "",
+            deliveryOption: undefined,
             deliveryAddress: "",
             readyDate: undefined,
-            paymentMethod: "",
+            paymentMethod: undefined,
             items: cartItems.map((item: any) => ({
                 productId: item.product.id,
                 quantity: item.quantity,
@@ -46,11 +46,22 @@ function OrderCheckoutPage() {
         },
     });
 
-    const shippingCost = watch("deliveryOption") === "Delivery" ? totalPrice * 0.1 : 0;
+    const shippingCost = watch("deliveryOption") === "DELIVERY" ? totalPrice * 0.1 : 0;
     const { fields } = useFieldArray({
         control,
         name: "items",
     });
+
+    const handleBackButton = async () => {
+        const confirm = window.confirm(
+            "Apakah Anda yakin ingin meninggalkan halaman ini? Perubahan yang belum disimpan akan hilang."
+        );
+        if (confirm && order) {
+            await axiosInstance.delete(`/orders/customer/${order.orderCode}`);
+            alert("Pesanan berhasil dibatalkan.");
+        }
+        navigate("/products");
+    };
 
     const onSubmit = handleSubmit(async (data) => {
         try {
@@ -85,6 +96,7 @@ function OrderCheckoutPage() {
                     await axiosInstance.delete("/carts");
                     localStorage.setItem("snapToken", snapToken);
                     window.location.href = "/orders";
+                    alert("Anda belum melakukan pembayaran. Silahkan lakukan pembayaran sebelum jatuh tempo.");
                 },
                 onError: async (error: any) => {
                     console.error("Payment Failed:", error);
@@ -92,10 +104,7 @@ function OrderCheckoutPage() {
                     setOrder(null);
                     alert("Terjadi kesalahan saat pembayaran.");
                 },
-                onClose: async () => {
-                    await axiosInstance.delete("/orders/customer/" + currentOrderCode);
-                    setOrder(null);
-                },
+                onClose: async () => {},
             });
         } catch (error: any) {
             console.log(error);
@@ -110,7 +119,9 @@ function OrderCheckoutPage() {
 
     return (
         <MainLayout className="w-full space-y-6 max-w-7xl mx-auto mb-32">
-            <BackButton>Kembali ke Keranjang</BackButton>
+            <BackButton to="" onClick={handleBackButton}>
+                Kembali ke Keranjang
+            </BackButton>
             <SectionTitle className="text-3xl font-bold">Checkout</SectionTitle>
 
             <form className="grid md:grid-cols-2 gap-6" onSubmit={onSubmit}>
@@ -135,7 +146,7 @@ function OrderCheckoutPage() {
                                     </p>
                                     <InputText
                                         name={`items.${index}.message`}
-                                        label="Pesan Untuk Produk (Opsional)"
+                                        label="pesan untuk penjual (opsional)"
                                         formInput={false}
                                         control={control}
                                         error={errors.items?.[index]?.message}

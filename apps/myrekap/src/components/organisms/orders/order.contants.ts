@@ -63,7 +63,6 @@ export const ORDER_FORM_ITEMS = [
 
 export const defaultValuesAddOrderSummary = {
     customerName: "",
-    flowerCategory: "",
     quantity: 1,
     greetingMessage: "",
     deliveryDate: new Date(),

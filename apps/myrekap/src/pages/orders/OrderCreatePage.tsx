@@ -27,13 +27,13 @@ function OrderCreatePage() {
         resolver: zodResolver(orderSchema.create),
         defaultValues: {
             customerName: "",
-            customerCategory: "",
+            customerCategory: undefined,
             phoneNumber: "",
             items: [{ productId: "", quantity: 1, message: "", price: 0 }],
-            deliveryOption: "",
+            deliveryOption: undefined,
             deliveryAddress: "",
-            readyDate: "",
-            paymentMethod: "",
+            readyDate: undefined,
+            paymentMethod: undefined,
             paymentProof: [],
         },
     });

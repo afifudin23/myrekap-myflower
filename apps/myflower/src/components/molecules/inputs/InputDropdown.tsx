@@ -6,6 +6,7 @@ import { TiArrowSortedDown } from "react-icons/ti";
 const InputDropdown = ({
     label,
     options,
+    optionLabel,
     name,
     error,
     control,
@@ -46,7 +47,7 @@ const InputDropdown = ({
                                     {!value || disabled
                                         ? "- Pilih Salah Satu -"
                                         : typeof value === "string"
-                                        ? value
+                                        ? optionLabel[value]
                                         : value.toLocaleString()}
                                 </p>
                                 <TiArrowSortedDown
@@ -81,7 +82,7 @@ const InputDropdown = ({
                                             setIsOpen(false);
                                         }}
                                     >
-                                        {item}
+                                        {optionLabel[item]}
                                     </li>
                                 ))}
                             </ul>

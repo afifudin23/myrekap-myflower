@@ -45,7 +45,7 @@ export const DELIVERY_OPTION_ITEMS = [
     { label: "Kirim ke Alamat", value: "DELIVERY" },
     { label: "Ambil di Tempat", value: "PICKUP" },
 ];
-export const DELIVERY_OPTION_LABELS = {
+export const DELIVERY_OPTION_LABELS : any = {
     ALL: "Semua",
     DELIVERY: "Kirim ke Alamat",
     PICKUP: "Ambil di Tempat",

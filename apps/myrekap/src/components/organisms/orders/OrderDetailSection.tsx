@@ -4,6 +4,7 @@ import { IoReceiptSharp } from "react-icons/io5";
 import { Badge, ButtonSmall } from "@/components/atoms";
 import {
     CUSTOMER_CATEGORY_LABELS,
+    DELIVERY_OPTION_LABELS,
     ORDER_STATUS_LABELS,
     PAYMENT_METHOD_LABELS,
     PAYMENT_STATUS_LABELS,
@@ -114,13 +115,15 @@ function OrderDetailSection({
                                 {order.paymentMethod ? PAYMENT_METHOD_LABELS[order.paymentMethod] : "-"}
                             </span>
                         </p>
-                        <p className="flex items-center gap-1">
+                        <p className="flex flex-wrap items-center gap-1">
                             Provider :{" "}
-                            <span className="font-medium">
-                                {order.paymentProvider?.split("_").join(" ") || "-"}{" "}
+                            <span className="font-medium whitespace-nowrap">
+                                {order.paymentProof || order.paymentProvider
+                                    ? order.paymentProvider?.split("_").join(" ")
+                                    : "-"}{" "}
                                 {order.paymentMethod === "BANK_TRANSFER" && order.paymentProof && (
                                     <button
-                                        className="inline-flex text-blue-600 items-center gap-1 font-medium"
+                                        className="flex w-full text-blue-600 items-center gap-1 font-medium"
                                         onClick={() => setIsOpenPaymentProof(true)}
                                     >
                                         <TbReceiptFilled />
@@ -133,7 +136,8 @@ function OrderDetailSection({
                     <div>
                         <h1 className="text-lg font-semibold 2xl:text-xl">Detail Pengiriman</h1>
                         <p>
-                            Opsi Pengiriman : <span className="font-medium">{order.deliveryOption}</span>
+                            Opsi Pengiriman :{" "}
+                            <span className="font-medium">{DELIVERY_OPTION_LABELS[order.deliveryOption]}</span>
                         </p>
                         <p>
                             Alamat Pengiriman : <span className="font-medium">{order.deliveryAddress || "-"}</span>

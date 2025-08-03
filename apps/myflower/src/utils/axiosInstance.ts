@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Membuat instance axios dengan interceptor
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:5000/api",
+    baseURL: import.meta.env.VITE_BASE_API_URL,
     withCredentials: true,
 });
 

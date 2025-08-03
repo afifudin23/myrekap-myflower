@@ -1,9 +1,12 @@
+import { DELIVERY_OPTION_ITEMS, DELIVERY_OPTION_LABELS, PAYMENT_METHOD_ITEMS, PAYMENT_METHOD_LABELS } from "@/constants/category";
+
 export const ORDER_FORM_ITEMS = [
     {
         label: "Opsi Pengiriman",
         type: "dropdown",
         name: "deliveryOption",
-        options: ["Delivery", "Pickup"],
+        options: DELIVERY_OPTION_ITEMS,
+        optionLabel: DELIVERY_OPTION_LABELS,
     },
     {
         label: "Alamat Pengiriman",
@@ -19,6 +22,7 @@ export const ORDER_FORM_ITEMS = [
         label: "Metode Pembayaran",
         type: "dropdown",
         name: "paymentMethod",
-        options: ["COD", "Others"],
+        options: PAYMENT_METHOD_ITEMS,
+        optionLabel: PAYMENT_METHOD_LABELS,
     },
 ];

@@ -3,13 +3,13 @@ import axios from "axios";
 
 // Membuat instance axios dengan interceptor
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:5000/api",
+    baseURL: import.meta.env.VITE_BASE_API_URL,
     withCredentials: true,
 });
 
 // Interceptor untuk menambahkan header x-app-name
 axiosInstance.interceptors.request.use((config) => {
-    config.headers["x-app-name"] = "myrekap"; 
+    config.headers["x-app-name"] = "myrekap";
     return config;
 });
 

@@ -1,3 +1,5 @@
+import { CUSTOMER_CATEGORY_ITEMS, CUSTOMER_CATEGORY_LABELS } from "@/constants/category";
+
 export const LOGIN_FIELDS = [
     {
         name: "username",
@@ -36,7 +38,8 @@ export const REGISTER_FIELDS = [
         name: "customerCategory",
         placeholder: "Input Kategori Pelanggan",
         type: "dropdown",
-        options: ["Umum", "Pemda", "Akademik", "Rumah Sakit", "Polisi/Militer", "Perbankan"],
+        options: CUSTOMER_CATEGORY_ITEMS.filter((item) => ["UMUM", "PEMDA"].includes(item)),
+        optionLabel: CUSTOMER_CATEGORY_LABELS,
     },
     {
         name: "password",
@@ -49,6 +52,7 @@ export const REGISTER_FIELDS = [
         type: "password",
     },
 ];
+
 
 export const FORGOT_PASSWORD_FIELDS = [{ name: "email", placeholder: "Input Email", type: "email" }];
 

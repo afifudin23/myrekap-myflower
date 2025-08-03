@@ -3,7 +3,7 @@ import InputDropdown from "@/components/molecules/inputs/InputDropdown";
 import InputText from "@/components/molecules/inputs/InputText";
 import { ORDER_FORM_ITEMS } from "@/components/organisms/orders/order.constants";
 
-function OrderForm({ control, errors , watch }: any) {
+function OrderForm({ control, errors, watch }: any) {
     const deliveryOption = watch("deliveryOption");
     return (
         <div className="space-y-4">
@@ -18,7 +18,7 @@ function OrderForm({ control, errors , watch }: any) {
                                 type={item.type}
                                 control={control}
                                 error={errors[item.name]}
-                                disabled={deliveryOption !== "Delivery" && item.name === "deliveryAddress"}
+                                disabled={deliveryOption !== "DELIVERY" && item.name === "deliveryAddress"}
                             />
                         );
 
@@ -29,11 +29,12 @@ function OrderForm({ control, errors , watch }: any) {
                                 name={item.name}
                                 label={item.label}
                                 options={item.options}
+                                optionLabel={item.optionLabel}
                                 control={control}
                                 error={errors[item.name]}
                             />
                         );
-                    
+
                     case "date":
                         return (
                             <InputDate
@@ -44,7 +45,6 @@ function OrderForm({ control, errors , watch }: any) {
                                 error={errors[item.name]}
                             />
                         );
-                    
                 }
             })}
         </div>

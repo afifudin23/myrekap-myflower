@@ -7,7 +7,7 @@ function AuthForm({ fields, onSubmit, register, errors, buttonName, link, formTy
         <form className="flex flex-col px-7 2xl:px-10 gap-5 2xl:gap-5 w-full" onSubmit={onSubmit}>
             <div className="flex flex-col gap-3">
                 {fields.map((field: any) => {
-                    const { name, type, placeholder, options } = field;
+                    const { name, type, placeholder, options, optionLabel } = field;
 
                     return (
                         <div key={name}>
@@ -22,7 +22,7 @@ function AuthForm({ fields, onSubmit, register, errors, buttonName, link, formTy
                                                 <option value="">-- {placeholder || "Pilih"} --</option>
                                                 {options?.map((option: any) => (
                                                     <option key={option} value={option} className="">
-                                                        {option}
+                                                        {optionLabel[option]}
                                                     </option>
                                                 ))}
                                             </select>
