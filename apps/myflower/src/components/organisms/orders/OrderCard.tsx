@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/atoms/Button";
 import { formatters } from "@/utils";
+import { ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from "@/constants/category";
 
 // interface OrderCardProps {
 //     order: {
@@ -27,13 +28,13 @@ function OrderCard({ order }: any) {
             </div>
 
             <div className="flex justify-between text-sm">
-                <span>Pesanan:</span>
-                <span className="font-medium capitalize">{order.orderStatus.split("_").join(" ")}</span>
+                <span>Status Pesanan:</span>
+                <span className="font-medium capitalize">{ORDER_STATUS_LABELS[order.orderStatus]}</span>
             </div>
 
             <div className="flex justify-between text-sm">
                 <span>Pembayaran:</span>
-                <span className="font-medium capitalize">{order.paymentStatus.split("_").join(" ")}</span>
+                <span className="font-medium capitalize">{PAYMENT_STATUS_LABELS[order.paymentStatus]}</span>
             </div>
 
             <div className="flex justify-between text-sm">

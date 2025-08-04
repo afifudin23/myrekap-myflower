@@ -1,5 +1,5 @@
 import Button from "@/components/atoms/Button";
-import { COLORS } from "@/constants/colorConstant";
+import { COLORS } from "@/constants/colors";
 import { Link } from "react-router-dom";
 
 function AuthForm({ fields, onSubmit, register, errors, buttonName, link, formType }: any) {

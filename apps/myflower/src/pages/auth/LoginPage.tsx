@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { loginFormSchema, type LoginFormType } from "@/schemas/authSchema";
 import AuthTemplate from "@/components/templates/AuthTemplate";
 import AuthForm from "@/components/organisms/auth/AuthForm";
-import { COLORS } from "@/constants/colorConstant";
+import { COLORS } from "@/constants/colors";
 import axiosInstance from "@/utils/axiosInstance";
 import { LOGIN_FIELDS } from "@/components/organisms/auth/auth.constants";
 import useAuthStore from "@/stores/useAuthStore";

@@ -31,9 +31,9 @@ function OrderDetailSection({
         <div className="mb-44">
             <div className="space-y-5">
                 <div className="flex justify-between items-start">
-                    <p className="font-semibold text-base 2xl:text-xl px-4 py-1 rounded-md text-slate-50 bg-slate-800 bg-opacity-40">
-                        #{order.orderCode}
-                    </p>
+                    <Badge className="text-base font-semibold 2xl:text-xl px-3 py-1 bg-slate-800 bg-opacity-40 text-white">
+                        {"#" + order.orderCode}
+                    </Badge>
                     <div className="flex gap-2 text-sm">
                         <Badge
                             className={`${badgeColorPaymentStatus(
@@ -146,7 +146,7 @@ function OrderDetailSection({
                     <div>
                         <h1 className="text-lg font-semibold 2xl:text-xl">Waktu</h1>
                         <p>
-                            Tanggal Siap :{" "}
+                            Tanggal Produk Jadi :{" "}
                             <span className="font-medium">{formatters.isoDateToStringDateTime(order.readyDate)}</span>
                         </p>
                     </div>

@@ -5,7 +5,7 @@ import type { AxiosError } from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { registerFormSchema, type RegisterFormType } from "@/schemas/authSchema";
 import AuthTemplate from "@/components/templates/AuthTemplate";
-import { COLORS } from "@/constants/colorConstant";
+import { COLORS } from "@/constants/colors";
 import AuthForm from "@/components/organisms/auth/AuthForm";
 import { REGISTER_FIELDS } from "@/components/organisms/auth/auth.constants";
 import { axiosInstance } from "@/utils";

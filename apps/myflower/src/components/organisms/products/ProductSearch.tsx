@@ -1,5 +1,5 @@
 import SmallButton from "@/components/atoms/SmallButton";
-import { COLORS } from "@/constants/colorConstant";
+import { COLORS } from "@/constants/colors";
 import { IoFilterSharp } from "react-icons/io5";
 
 const ProductSearch = () => {

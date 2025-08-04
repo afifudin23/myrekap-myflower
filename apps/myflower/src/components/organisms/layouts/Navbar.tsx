@@ -1,6 +1,5 @@
 import SmallButton from "@/components/atoms/SmallButton";
-import { COLORS } from "@/constants/colorConstant";
-import { badgeColorUser } from "@/utils/colors";
+import { badgeColorUser, COLORS } from "@/constants/colors";
 import { memo } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { PiShoppingCartSimpleBold } from "react-icons/pi";
@@ -55,7 +54,7 @@ const Navbar = memo(function () {
                 <div className="flex flex-col items-center">
                     <div className="text-lg font-nunito leading-none">{user.username}</div>
                     <div
-                        className={`text-sm relative font-semibold capitalize tracking-wide px-3 rounded-lg bg-opacity-30 ${badgeColorUser(user.role)} `}
+                        className={`text-sm relative font-semibold capitalize tracking-wide px-3 rounded-lg bg-opacity-30 ${badgeColorUser[user.role]} `}
                     >
                         {user.role}
                     </div>

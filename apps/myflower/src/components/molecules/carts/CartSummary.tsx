@@ -1,6 +1,6 @@
 import BackButton from "@/components/atoms/BackButton";
 import Button from "@/components/atoms/Button";
-import { COLORS } from "@/constants/colorConstant";
+import { COLORS } from "@/constants/colors";
 
 interface CartSummaryProps {
     totalPrice: number;

@@ -22,3 +22,24 @@ export const PAYMENT_METHOD_LABELS: any = {
     COD: "Cash On Delivery (COD)",
     OTHERS: "Lainnya (Transfer Bank)",
 };
+
+// Payment Status
+export const PAYMENT_STATUS_LABELS: any = {
+    ALL: "Semua",
+    PAID: "Lunas",
+    PENDING: "Menunggu",
+    UNPAID: "Belum Lunas",
+    CANCELED: "Batal",
+    EXPIRED: "Expired",
+    REFUNDED: "Refund",
+    DENIED: "Ditolak",
+};
+
+// Order Status
+export const ORDER_STATUS_LABELS: any = {
+    ALL: "Semua",
+    IN_PROCESS: "Diproses",
+    DELIVERY: "Dalam Pengiriman",
+    CANCELED: "Dibatalkan",
+    COMPLETED: "Selesai",
+};

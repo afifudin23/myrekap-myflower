@@ -1,7 +1,7 @@
 import { FORGOT_PASSWORD_FIELDS } from "@/components/organisms/auth/auth.constants";
 import AuthForm from "@/components/organisms/auth/AuthForm";
 import AuthTemplate from "@/components/templates/AuthTemplate";
-import { COLORS } from "@/constants/colorConstant";
+import { COLORS } from "@/constants/colors";
 import { axiosInstance } from "@/utils";
 import type { AxiosError } from "axios";
 import { useState } from "react";

@@ -1,7 +1,7 @@
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import Button from "@/components/atoms/Button";
 import MainLayout from "@/components/templates/MainLayout";
-import { COLORS } from "@/constants/colorConstant";
+import { COLORS } from "@/constants/colors";
 
 function PaymentFailedPage() {
     return (

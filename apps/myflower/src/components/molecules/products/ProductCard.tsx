@@ -1,7 +1,7 @@
 import Card from "@/components/atoms/Card";
 import Image from "@/components/atoms/Image";
 import SmallButton from "@/components/atoms/SmallButton";
-import { COLORS } from "@/constants/colorConstant";
+import { COLORS } from "@/constants/colors";
 import { PiShoppingCartSimpleBold } from "react-icons/pi";
 
 function ProductCard({ product, handleAddToCart }: any) {
