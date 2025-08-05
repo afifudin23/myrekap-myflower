@@ -1,7 +1,7 @@
 import { FORGOT_PASSWORD_FIELDS } from "@/components/organisms/auth/auth.constants";
 import AuthForm from "@/components/organisms/auth/AuthForm";
 import AuthTemplate from "@/components/templates/AuthTemplate";
-import { COLORS } from "@/constants/colors";
+import { TEXT_COLORS } from "@/constants/colors";
 import { axiosInstance } from "@/utils";
 import type { AxiosError } from "axios";
 import { useState } from "react";
@@ -47,13 +47,7 @@ function ForgotPasswordPage() {
                 link={
                     <p className="text-center">
                         Sudah ingat kata sandi?{" "}
-                        <Link
-                            to="/auth/login"
-                            className={`font-bold`}
-                            style={{ color: COLORS.primary }}
-                            onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.hover)}
-                            onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.primary)}
-                        >
+                        <Link to="/auth/login" className={`font-bold hover:underline ${TEXT_COLORS.primary}`}>
                             Masuk sekarang.
                         </Link>
                     </p>

@@ -119,13 +119,13 @@ export const create = async (userId: string, body: any, file: Express.Multer.Fil
                 items: { create: orderItems },
                 paymentProof: uploadedFile
                     ? {
-                        create: {
-                            fileName: file.originalname,
-                            size: file.size,
-                            secureUrl: uploadedFile.secure_url,
-                            publicId: uploadedFile.public_id,
-                        },
-                    }
+                          create: {
+                              fileName: file.originalname,
+                              size: file.size,
+                              secureUrl: uploadedFile.secure_url,
+                              publicId: uploadedFile.public_id,
+                          },
+                      }
                     : undefined,
             },
             include: { items: { include: { product: true } } },
@@ -357,19 +357,16 @@ export const updateProgress = async (
     if (!order) throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
 
     // Update order status
-    let dataOrderStatus: any = { orderStatus };
-    const stockOperations = [];
+    const dataOrderStatus: any = { orderStatus };
+    const transactionOps = [];
 
     if (orderStatus === "CANCELED") {
-        dataOrderStatus = {
-            orderStatus,
-            paymentStatus: "CANCELED",
-            previousPaymentStatus: order.paymentStatus,
-        };
+        dataOrderStatus.paymentStatus = "CANCELED";
+        dataOrderStatus.previousPaymentStatus = order.paymentStatus;
 
         // Create STOCK_IN history for cancellation
         for (const item of order.items) {
-            stockOperations.push(
+            transactionOps.push(
                 prisma.product.update({
                     where: { id: item.productId },
                     data: { stock: { increment: item.quantity } },
@@ -389,15 +386,17 @@ export const updateProgress = async (
         order.paymentStatus === "CANCELED" &&
         order.previousPaymentStatus
     ) {
-        dataOrderStatus = {
-            orderStatus,
-            paymentStatus: order.previousPaymentStatus,
-            previousPaymentStatus: null,
-        };
+        if (orderStatus === "COMPLETED") {
+            dataOrderStatus.paymentStatus = "PAID";
+            dataOrderStatus.previousPaymentStatus = null;
+        } else {
+            dataOrderStatus.paymentStatus = order.previousPaymentStatus;
+            dataOrderStatus.previousPaymentStatus = null;
+        }
 
         // Create STOCK_OUT history for reactivation
         for (const item of order.items) {
-            stockOperations.push(
+            transactionOps.push(
                 prisma.product.update({
                     where: { id: item.productId },
                     data: { stock: { decrement: item.quantity } },
@@ -412,13 +411,12 @@ export const updateProgress = async (
                 })
             );
         }
+    } else if (orderStatus === "COMPLETED") {
+        dataOrderStatus.paymentStatus = "PAID";
     }
 
-    // Update order
-    try {
-        if (stockOperations.length > 0) await prisma.$transaction(stockOperations);
-
-        const orderUpdated = await prisma.order.update({
+    transactionOps.push(
+        prisma.order.update({
             where: { id: orderId },
             data: dataOrderStatus,
             include: {
@@ -426,9 +424,15 @@ export const updateProgress = async (
                 items: { include: { product: { include: { images: true } } } },
                 finishedProduct: true,
             },
-        });
-        if (order.source === "MYFLOWER") mailerService.sendUpdateOrderStatusEmail(orderUpdated);
-        return orderUpdated;
+        })
+    );
+
+    // Update order
+    try {
+        const result = await prisma.$transaction(transactionOps);
+        const updatedOrder = result.at(-1);
+        if (order.source === "MYFLOWER") mailerService.sendUpdateOrderStatusEmail(updatedOrder);
+        return updatedOrder;
     } catch (_error) {
         throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
     }

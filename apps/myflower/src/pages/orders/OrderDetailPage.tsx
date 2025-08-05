@@ -1,12 +1,16 @@
 import BackButton from "@/components/atoms/BackButton";
 import OrderDetailSection from "@/components/organisms/orders/OrderDetailSection";
+import OrderReceipt from "@/components/organisms/orders/OrderReceipt";
 import MainLayout from "@/components/templates/MainLayout";
 import { axiosInstance } from "@/utils";
+import { pdf } from "@react-pdf/renderer";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function OrderDetailPage() {
     const [order, setOrder] = useState<any>({});
     const [snapToken, setSnapToken] = useState<string | null>("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const storedOrder = JSON.parse(localStorage.getItem("orderDetail") || "{}");
@@ -29,6 +33,7 @@ function OrderDetailPage() {
             const data = response.data.data;
             setOrder(data);
             localStorage.setItem("orderDetail", JSON.stringify(data));
+            await axiosInstance.post("/orders/customer/mailer/cancel", data);
             alert("Pesanan berhasil dibatalkan.");
         } catch (error: any) {
             console.log(error.response.data);
@@ -43,6 +48,7 @@ function OrderDetailPage() {
             const data = response.data.data;
             setOrder(data);
             localStorage.setItem("orderDetail", JSON.stringify(data));
+            await axiosInstance.post("/orders/customer/mailer/confirm", data);
             alert("Pesanan berhasil diterima.");
         } catch (error: any) {
             console.log(error.response.data);
@@ -56,6 +62,7 @@ function OrderDetailPage() {
                 onSuccess: async () => {
                     await axiosInstance.delete("/carts");
                     localStorage.removeItem("snapToken");
+                    await axiosInstance.post("/orders/customer/mailer/create", order);
                     await axiosInstance.post("/orders/customer/notification", order);
                 },
                 onPending: () => {
@@ -70,14 +77,26 @@ function OrderDetailPage() {
             });
         }
     };
+    const handlePrintPdf = async () => {
+        const blob = await pdf(<OrderReceipt data={order} />).toBlob();
+        const url = URL.createObjectURL(blob);
+
+        const newWindow = window.open(url);
+        if (newWindow) {
+            newWindow.onload = function () {
+                newWindow.focus();
+                newWindow.print();
+            };
+        }
+    };
 
     const handleClickReview = (index: number) => {
         localStorage.setItem("productDetail", JSON.stringify(order.items[index].product));
     };
 
     return (
-        <MainLayout className="w-full max-w-4xl space-y-3 2xl:max-w-7xl mx-auto">
-            <BackButton to="/orders">Kembali ke Pesanan</BackButton>
+        <MainLayout className="w-full max-w-5xl space-y-6 xl:max-w-7xl mx-auto">
+            <BackButton onClick={() => navigate("/orders")}>Kembali ke Pesanan</BackButton>
 
             <OrderDetailSection
                 order={order}
@@ -86,6 +105,7 @@ function OrderDetailPage() {
                 handleConfirmOrder={handleConfirmOrder}
                 handlePay={handlePay}
                 handleClickReview={handleClickReview}
+                handlePrintPdf={handlePrintPdf}
             />
         </MainLayout>
     );

@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { loginFormSchema, type LoginFormType } from "@/schemas/authSchema";
 import AuthTemplate from "@/components/templates/AuthTemplate";
 import AuthForm from "@/components/organisms/auth/AuthForm";
-import { COLORS } from "@/constants/colors";
+import { TEXT_COLORS } from "@/constants/colors";
 import axiosInstance from "@/utils/axiosInstance";
 import { LOGIN_FIELDS } from "@/components/organisms/auth/auth.constants";
 import useAuthStore from "@/stores/useAuthStore";
@@ -53,13 +53,7 @@ function Login() {
                 link={
                     <p className="text-center">
                         Belum memiliki akun?{" "}
-                        <Link
-                            to="/auth/register"
-                            className={`font-bold`}
-                            style={{ color: COLORS.primary }}
-                            onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.hover)}
-                            onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.primary)}
-                        >
+                        <Link to="/auth/register" className={`font-bold hover:underline ${TEXT_COLORS.primary}`}>
                             Buat akun baru sekarang.
                         </Link>
                     </p>

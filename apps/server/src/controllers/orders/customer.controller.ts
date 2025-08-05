@@ -1,5 +1,5 @@
 import { ordersCustomerSchema } from "@/schemas";
-import { ordersCustomerService } from "@/services";
+import { mailerService, ordersCustomerService } from "@/services";
 import { Request, Response, NextFunction } from "express";
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
@@ -59,6 +59,16 @@ export const confirmOrder = async (req: Request, res: Response, next: NextFuncti
 export const notification = async (req: Request, res: Response, next: NextFunction) => {
     try {
         await ordersCustomerService.notification(req.body);
+        res.status(200).send("OK");
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const mailer = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user = (req as any).user;
+        await mailerService.sendCustomerOrderStatusEmail(user, req.params.method, req.body);
         res.status(200).send("OK");
     } catch (error) {
         next(error);

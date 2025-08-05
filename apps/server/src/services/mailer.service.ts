@@ -1,4 +1,5 @@
 import { brevo, env } from "@/config";
+import { ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS } from "@/constants/category";
 import { tokenService } from "@/services";
 import { formatters } from "@/utils";
 
@@ -64,8 +65,28 @@ export const sendUpdateOrderStatusEmail = async (data: any) => {
         params: {
             customerName,
             orderCode,
-            orderStatus,
-            paymentMethod,
+            orderStatus: ORDER_STATUS_LABELS[orderStatus],
+            paymentMethod: PAYMENT_METHOD_LABELS[paymentMethod],
+            paymentProvider: paymentProvider ? paymentProvider : "-",
+            totalPrice: formatters.formatRupiah(totalPrice),
+            items: formatters.formatItemsAsList(items),
+        },
+    });
+};
+
+export const sendCustomerOrderStatusEmail = async (user: any, method: string, data: any) => {
+    const { customerName, orderCode, orderStatus, paymentMethod, paymentProvider, totalPrice, items } = data;
+
+    await sendTemplateEmail({
+        to: user.email,
+        name: user.fullName,
+        templateId: 6,
+        params: {
+            method,
+            customerName,
+            orderCode,
+            orderStatus: ORDER_STATUS_LABELS[orderStatus],
+            paymentMethod: PAYMENT_METHOD_LABELS[paymentMethod],
             paymentProvider: paymentProvider ? paymentProvider : "-",
             totalPrice: formatters.formatRupiah(totalPrice),
             items: formatters.formatItemsAsList(items),

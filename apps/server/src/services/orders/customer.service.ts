@@ -73,10 +73,9 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
 
     try {
         const result = await prisma.$transaction(transactionOps);
-        // Off during testing
-        // await prisma.cartItem.deleteMany({ where: { userId: user.id } });
+        const order = result.at(-1);
 
-        return result.at(-1);
+        return order;
     } catch (error: any) {
         console.log(error.message);
         throw new InternalException("Failed to create order", ErrorCode.FAILED_TO_CREATE_ORDER, error);
@@ -114,9 +113,9 @@ export const remove = async (orderCode: string) => {
         const latestHistory = await prisma.productHistory.findFirst({
             where: {
                 productId: item.productId,
-                note: { contains: orderCode }, 
+                note: { contains: orderCode },
             },
-            orderBy: { createdAt: "desc" }, 
+            orderBy: { createdAt: "desc" },
         });
 
         if (latestHistory) operations.push(prisma.productHistory.delete({ where: { id: latestHistory.id } }));
@@ -191,3 +190,4 @@ export const notification = async (order: any) => {
     // enqueueWhatsAppMessage(message);
     console.log(order);
 };
+

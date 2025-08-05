@@ -31,9 +31,9 @@ export const formatRupiah = (data: number) => {
 };
 
 export const formatCustomerNameReceipt = (data: string) => {
-    const words = data.trim().split(/\s+/);
-    const first = words.slice(0, 2).join(" ");
-    const twoInitial = words.length > 2 ? words[2].charAt(0).toUpperCase() + "." : "";
+    const words = data?.trim().split(/\s+/);
+    const first = words?.slice(0, 2).join(" ");
+    const twoInitial = words?.length > 2 ? words[2].charAt(0).toUpperCase() + "." : "";
     return twoInitial ? `${first} ${twoInitial}` : first;
 };
 

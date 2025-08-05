@@ -154,6 +154,7 @@ function OrderDetailSection({
             </div>
             <div className="flex items-start mt-5 gap-4">
                 <ButtonSmall
+                    disabled={disabled}
                     className={`${
                         disabled ? "bg-orange-400" : "bg-orange-400 hover:bg-orange-500"
                     } px-5 py-1 2xl:py-2 font-semibold`}
@@ -161,7 +162,6 @@ function OrderDetailSection({
                         if (disabled) return;
                         navigate(`/orders/${order.id}/edit`);
                     }}
-                    disabled={disabled}
                 >
                     <RiEdit2Fill />
                     Edit

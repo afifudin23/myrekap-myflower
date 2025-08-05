@@ -1,5 +1,5 @@
 // Receipt.jsx
-import { formatters } from "@/utils/";
+import { formatters } from "@/utils";
 import { Document, Page, Text, View, StyleSheet, Font, Image } from "@react-pdf/renderer";
 
 Font.register({
@@ -112,7 +112,7 @@ const OrderReceipt = ({ data }: any) => {
                             <Text style={styles.textRow}>{formatters.formatRupiah(item.totalPrice)}</Text>
                         </View>
                     ))}
-                    {data.shippingCost !== 0 && (
+                    {data.shippingCost > 0 && (
                         <View style={styles.viewRow}>
                             <Text style={styles.textRow}>Pengiriman</Text>
                             <Text style={styles.textRow}>1</Text>
@@ -132,7 +132,7 @@ const OrderReceipt = ({ data }: any) => {
                     </View>
                     <View style={styles.viewBottom}>
                         <Text style={styles.textBottom}>Payment Status</Text>
-                        <Text style={{ ...styles.textBottomItem }}>{data.paymentStatus}</Text>
+                        <Text style={{ ...styles.textBottomItem }}>{data.paymentStatus || "-"}</Text>
                     </View>
                     <View style={styles.viewBottom}>
                         <Text style={styles.textBottom}>Payment Method</Text>
@@ -160,15 +160,23 @@ const OrderReceipt = ({ data }: any) => {
                         fontSize: 15,
                     }}
                 >
-                    <View style={{ flexDirection: "column", gap: 10, alignItems: "center" }}>
+                    <View style={{ flexDirection: "column", gap: 6, alignItems: "center" }}>
                         <Text>Owner,</Text>
                         <Image src="/assets/images/ttd-owner.png" style={{ width: 60, height: 60 }} />
+                        <View style={{ width: 110, borderBottomWidth: 1, borderColor: "#ccc" }} />
                         <Text>Fahri Septa M.</Text>
                     </View>
-                    <View style={{ flexDirection: "column", gap: 10, alignItems: "center" }}>
+                    <View style={{ flexDirection: "column", gap: 5, alignItems: "center" }}>
                         <Text>Customer,</Text>
-                        <Image src="/assets/images/ttd-customer.png" style={{ width: 60, height: 60 }} />
-                        <Text>{formatters.formatCustomerNameReceipt(data.customerName || "")}</Text>
+                        <View
+                            style={{
+                                width: 110,
+                                height: 70,
+                                borderBottomWidth: 1,
+                                borderColor: "#ccc",
+                            }}
+                        />
+                        <Text>{formatters.formatCustomerNameReceipt(data.customerName)}</Text>
                     </View>
                 </View>
 

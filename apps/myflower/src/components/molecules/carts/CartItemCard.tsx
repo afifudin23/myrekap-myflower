@@ -3,14 +3,6 @@ import QuantityButton from "@/components/atoms/QuantityButton";
 import { axiosInstance } from "@/utils";
 import { FaTrashCan } from "react-icons/fa6";
 
-// export interface CartItemProps {
-//     id: string;
-//     name: string;
-//     price: number;
-//     quantity: number;
-//     imageUrl: string;
-// }
-
 function CartItemCard({ cartItem, setCartItems }: any) {
     const handleIncrementQuantity = async () => {
         await axiosInstance.patch(`/carts/${cartItem.productId}/increment`);

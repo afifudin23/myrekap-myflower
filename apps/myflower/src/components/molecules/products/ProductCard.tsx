@@ -1,12 +1,12 @@
 import Card from "@/components/atoms/Card";
 import Image from "@/components/atoms/Image";
-import SmallButton from "@/components/atoms/SmallButton";
-import { COLORS } from "@/constants/colors";
-import { PiShoppingCartSimpleBold } from "react-icons/pi";
+import ButtonSmall from "@/components/atoms/ButtonSmall";
+import { BG_COLORS } from "@/constants/colors";
+import { HiOutlineShoppingCart } from "react-icons/hi";
 
-function ProductCard({ product, handleAddToCart }: any) {
+function ProductCard({ product, handleClick, handleAddToCart }: any) {
     return (
-        <Card className="group flex flex-col gap-3 cursor-default">
+        <Card className="group flex flex-col gap-3 cursor-pointer" onClick={handleClick}>
             <div className="overflow-hidden rounded-xl group">
                 <Image
                     src={product.images[0].secureUrl}
@@ -21,9 +21,13 @@ function ProductCard({ product, handleAddToCart }: any) {
                     <p>Rp {product.price.toLocaleString()}</p>
                 </div>
                 <div>
-                    <SmallButton type="button" colors={COLORS} onClick={handleAddToCart}>
-                        <PiShoppingCartSimpleBold />
-                    </SmallButton>
+                    <ButtonSmall
+                        type="button"
+                        className={`${BG_COLORS.primary} py-2 px-4 font-semibold rounded-md`}
+                        onClick={handleAddToCart}
+                    >
+                        <HiOutlineShoppingCart size={20} />
+                    </ButtonSmall>
                 </div>
             </div>
         </Card>

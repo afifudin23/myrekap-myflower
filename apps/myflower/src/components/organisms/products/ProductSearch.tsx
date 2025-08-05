@@ -1,5 +1,5 @@
-import SmallButton from "@/components/atoms/SmallButton";
-import { COLORS } from "@/constants/colors";
+import ButtonSmall from "@/components/atoms/ButtonSmall";
+import { BG_COLORS } from "@/constants/colors";
 import { IoFilterSharp } from "react-icons/io5";
 
 const ProductSearch = () => {
@@ -11,12 +11,11 @@ const ProductSearch = () => {
                     placeholder="Cari berdasarkan nama produk dan deskripsi..."
                     className="border border-gray-300 px-5 py-1 rounded-lg text-base w-full 2xl:py-2"
                 />
-                <SmallButton
-                    className={`text-white py-1 px-1 rounded-lg transitiontext-sm 2xl:text-base`}
-                    colors={COLORS}
+                <ButtonSmall
+                    className={`text-white py-1 px-1 rounded-lg transitiontext-sm 2xl:text-base ${BG_COLORS.primary}`}
                 >
                     <IoFilterSharp />
-                </SmallButton>
+                </ButtonSmall>
             </div>
         </div>
     );

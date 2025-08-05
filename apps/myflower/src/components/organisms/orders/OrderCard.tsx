@@ -2,15 +2,8 @@ import { useNavigate } from "react-router-dom";
 import Button from "@/components/atoms/Button";
 import { formatters } from "@/utils";
 import { ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from "@/constants/category";
+import { BG_COLORS, TEXT_COLORS } from "@/constants/colors";
 
-// interface OrderCardProps {
-//     order: {
-//         id: string;
-//         date: string;
-//         total: number;
-//         status: string;
-//     };
-// }
 
 function OrderCard({ order }: any) {
     const navigate = useNavigate();
@@ -45,8 +38,7 @@ function OrderCard({ order }: any) {
             <div className="pt-2">
                 <Button
                     type="button"
-                    className="w-full py-1 mx-auto"
-                    colors={{ primary: "#b086e7", hover: "#7856a3" }}
+                    className={`w-full py-1 mx-auto rounded-lg text-[#8f40f6] border-2 border-[#8f40f6] ${BG_COLORS.primary2} ${TEXT_COLORS.primary}`}
                     onClick={handleDetailClick}
                 >
                     Lihat Detail

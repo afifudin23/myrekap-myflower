@@ -87,13 +87,13 @@ export const PAYMENT_METHOD_ITEMS = [
 ];
 export const PAYMENT_METHOD_LABELS: any = {
     ALL: "Semua",
-    BANK_TRANSFER: "Transfer Bank",
-    CASH: "Tunai",
-    CREDIT_CARD: "Credit Card",
-    QRIS: "Qris",
-    EWALLET: "E-Wallet",
-    CSTORE: "Cstore",
-    COD: "COD",
+    BANK_TRANSFER: "TRANSFER BANK",
+    CASH: "TUNAI",
+    CREDIT_CARD: "KARTU KREDIT",
+    QRIS: "QRIS",
+    EWALLET: "E-WALLET",
+    CSTORE: "CSTORE",
+    COD: "Cash On Delivery (COD)",
 };
 
 // Payment Status

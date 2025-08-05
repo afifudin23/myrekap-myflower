@@ -19,8 +19,15 @@ export const DELIVERY_OPTION_LABELS: any = {
 // Payment Method
 export const PAYMENT_METHOD_ITEMS = ["COD", "OTHERS"];
 export const PAYMENT_METHOD_LABELS: any = {
-    COD: "Cash On Delivery (COD)",
     OTHERS: "Lainnya (Transfer Bank)",
+    COD: "Cash On Delivery (COD)",
+    ALL: "Semua",
+    BANK_TRANSFER: "TRANSFER BANK",
+    CASH: "TUNAI",
+    CREDIT_CARD: "KARTU KREDIT",
+    QRIS: "QRIS",
+    EWALLET: "E-WALLET",
+    CSTORE: "CSTORE",
 };
 
 // Payment Status

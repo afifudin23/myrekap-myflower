@@ -1,5 +1,5 @@
 import Button from "@/components/atoms/Button";
-import { COLORS } from "@/constants/colors";
+import { BG_COLORS, TEXT_COLORS } from "@/constants/colors";
 import { Link } from "react-router-dom";
 
 function AuthForm({ fields, onSubmit, register, errors, buttonName, link, formType }: any) {
@@ -47,20 +47,14 @@ function AuthForm({ fields, onSubmit, register, errors, buttonName, link, formTy
                     );
                 })}
                 {formType === "login" && (
-                    <Link
-                        to="/auth/forgot-password"
-                        className={`pl-3 text-sm  font-medium hover:underline w-fit`}
-                        style={{ color: COLORS.primary }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = COLORS.hover)}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = COLORS.primary)}
-                    >
+                    <Link to="/auth/forgot-password" className={`pl-3 text-sm font-medium hover:underline w-fit ${TEXT_COLORS.primary} `}>
                         Lupa Password?
                     </Link>
                 )}
             </div>
 
             <p className="border border-slate-300"></p>
-            <Button type="submit" className="w-full p-1" colors={COLORS}>
+            <Button type="submit" className={`w-full p-1 rounded-lg text-white ${BG_COLORS.primary}`}>
                 {buttonName}
             </Button>
             {link}

@@ -1,7 +1,10 @@
-export const COLORS = {
-    primary: "#8f40f6",
-    hover: "#773dc4",
+export const BG_COLORS = {
+    primary: "bg-[#8f40f6] hover:bg-[#773dc4]",
+    primary2: "bg-[#ceb9e948] hover:bg-[#8655c54c]",
 };
+export const TEXT_COLORS = {
+    primary: "text-[#8f40f6]",
+}
 
 export const badgeColorPaymentStatus: any = {
     PAID: "bg-[#13D51B]",
@@ -19,7 +22,6 @@ export const badgeColorOrderStatus: any = {
     IN_PROCESS: "bg-[#707070]",
     CANCELED: "bg-[#984141]",
 };
-
 
 export const badgeColorUser: any = {
     SUPERADMIN: "text-yellow-700 bg-yellow-200",

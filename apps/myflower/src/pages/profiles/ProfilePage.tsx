@@ -3,6 +3,7 @@ import Button from "@/components/atoms/Button";
 import SectionTitle from "@/components/atoms/SectionTitle";
 import ProfileForm from "@/components/organisms/profiles/ProfileForm";
 import MainLayout from "@/components/templates/MainLayout";
+import { BG_COLORS } from "@/constants/colors";
 import { profileFormSchema } from "@/schemas/profileSchema";
 import useAuthStore from "@/stores/useAuthStore";
 import { axiosInstance, formatters } from "@/utils";
@@ -54,22 +55,20 @@ function ProfilePage() {
     };
     return (
         <MainLayout className="w-full max-w-3xl space-y-6">
-            <BackButton>Kembali ke Produk</BackButton>
+            <BackButton onClick={() => navigate("/products")}>Kembali ke Produk</BackButton>
             <SectionTitle className="text-3xl font-bold md:text-4xl">Profile Saya</SectionTitle>
             <form className="space-y-7 w-full" onSubmit={onSubmit}>
                 <ProfileForm control={control} errors={errors} />
                 <div className="flex flex-col lg:flex-row gap-5">
                     <Button
                         type="submit"
-                        colors={{ primary: "#8f40f6", hover: "#773dc4" }}
-                        className="sm:w-[15rem] w-full p-2"
+                        className={`sm:w-[15rem] w-full p-2 rounded-md text-white ${BG_COLORS.primary}`}
                     >
                         Edit Profile
                     </Button>
                     <Button
                         type="button"
-                        colors={{ primary: "#8f40f6", hover: "#773dc4" }}
-                        className="sm:w-[15rem] w-full p-2"
+                        className={`sm:w-[15rem] w-full p-2 rounded-md text-white ${BG_COLORS.primary}`}
                         onClick={handleLogout}
                     >
                         Logout

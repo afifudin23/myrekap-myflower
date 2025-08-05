@@ -1,0 +1,16 @@
+export const PAYMENT_METHOD_LABELS: any = {
+    BANK_TRANSFER: "TRANSFER BANK",
+    CASH: "TUNAI",
+    CREDIT_CARD: "KARTU KREDIT",
+    QRIS: "QRIS",
+    EWALLET: "E-WALLET",
+    CSTORE: "CSTORE",
+    COD: "Cash On Delivery (COD)",
+};
+
+export const ORDER_STATUS_LABELS: any = {
+    IN_PROCESS: "DIPROSES",
+    DELIVERY: "PENGIRIMAN",
+    CANCELED: "BATAL",
+    COMPLETED: "SELESAI",
+};

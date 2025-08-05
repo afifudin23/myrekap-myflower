@@ -4,6 +4,7 @@ import SectionTitle from "@/components/atoms/SectionTitle";
 import InputText from "@/components/molecules/inputs/InputText";
 import OrderForm from "@/components/organisms/orders/OrderForm";
 import MainLayout from "@/components/templates/MainLayout";
+import { BG_COLORS } from "@/constants/colors";
 import { orderFormSchema } from "@/schemas/orderSchema";
 import { axiosInstance, formatters } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -56,6 +57,7 @@ function OrderCheckoutPage() {
         const confirm = window.confirm(
             "Apakah Anda yakin ingin meninggalkan halaman ini? Perubahan yang belum disimpan akan hilang."
         );
+        if (confirm === false) return;
         if (confirm && order) {
             await axiosInstance.delete(`/orders/customer/${order.orderCode}`);
             alert("Pesanan berhasil dibatalkan.");
@@ -73,8 +75,10 @@ function OrderCheckoutPage() {
             }
 
             if (data.paymentMethod === "COD") {
-                await axiosInstance.delete("/carts");
+                // Send notification email to customer
+                await axiosInstance.post("/orders/customer/mailer/create", createOrder);
                 await axiosInstance.post("/orders/customer/notification", createOrder);
+                await axiosInstance.delete("/carts");
                 alert("Pesanan berhasil dibuat. Silahkan melakukan pembayaran melalui metode COD.");
                 navigate("/products");
                 return true;
@@ -86,7 +90,7 @@ function OrderCheckoutPage() {
 
             window.snap.pay(snapToken, {
                 onSuccess: async () => {
-                    // Send WhatsApp message
+                    // Send notification email to customer
                     await axiosInstance.post("/orders/customer/notification", createOrder);
                     await axiosInstance.delete("/carts");
                     localStorage.removeItem("snapToken");
@@ -119,9 +123,7 @@ function OrderCheckoutPage() {
 
     return (
         <MainLayout className="w-full space-y-6 max-w-7xl mx-auto mb-32">
-            <BackButton to="" onClick={handleBackButton}>
-                Kembali ke Keranjang
-            </BackButton>
+            <BackButton onClick={handleBackButton}>Kembali ke Keranjang</BackButton>
             <SectionTitle className="text-3xl font-bold">Checkout</SectionTitle>
 
             <form className="grid md:grid-cols-2 gap-6" onSubmit={onSubmit}>
@@ -168,7 +170,7 @@ function OrderCheckoutPage() {
                         </div>
                     </div>
 
-                    <Button type="submit" colors={{ primary: "#8f40f6", hover: "#773dc4" }} className="w-full p-2">
+                    <Button type="submit" className={`w-full p-2 text-white rounded-lg ${BG_COLORS.primary}`}>
                         Bayar Sekarang
                     </Button>
                 </div>

@@ -2,20 +2,10 @@ import ProductCard from "@/components/molecules/products/ProductCard";
 import { axiosInstance } from "@/utils";
 import { useNavigate } from "react-router-dom";
 
-// interface Product {
-//     id: string;
-//     name: string;
-//     images: any[];
-//     price: number;
-//     stock: number;
-// }
-
-// interface ProductListProps {
-//     products: Product[];
-// }
 function ProductList({ products }: any) {
     const navigate = useNavigate();
     const handleClick = (product: any) => {
+        console.log(product)
         localStorage.setItem("productDetail", JSON.stringify(product));
         navigate(`/products/${product.id}`);
     };
@@ -31,12 +21,12 @@ function ProductList({ products }: any) {
     return (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {products.map((product: any) => (
-                <div className="cursor-pointer" key={product.id} onClick={() => handleClick(product)}>
-                    <ProductCard
-                        product={product}
-                        handleAddToCart={(e: React.MouseEvent) => handleAddToCart(product.id, e)}
-                    />
-                </div>
+                <ProductCard
+                    key={product.id}
+                    product={product}
+                    handleClick={() => handleClick(product)}
+                    handleAddToCart={(e: React.MouseEvent) => handleAddToCart(product.id, e)}
+                />
             ))}
         </div>
     );

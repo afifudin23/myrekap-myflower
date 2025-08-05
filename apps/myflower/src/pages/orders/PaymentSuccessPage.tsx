@@ -1,7 +1,7 @@
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import Button from "@/components/atoms/Button";
 import MainLayout from "@/components/templates/MainLayout";
-import { COLORS } from "@/constants/colors";
+import { BG_COLORS } from "@/constants/colors";
 
 function PaymentSuccessPage() {
     return (
@@ -13,7 +13,7 @@ function PaymentSuccessPage() {
             </p>
             <Button
                 type="button"
-                colors={COLORS}
+                colors={BG_COLORS}
                 onClick={() => (window.location.href = "http://localhost:5174/products")}
                 className="mt-4 px-6 py-2 text-white"
             >

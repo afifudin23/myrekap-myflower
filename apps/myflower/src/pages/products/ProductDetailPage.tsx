@@ -7,6 +7,7 @@ import { useOrders, useReviews } from "@/hooks";
 import { axiosInstance } from "@/utils";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 function ProductDetailPage() {
     const [product, setProduct] = useState({ id: "", name: "", images: [], price: 0, stock: 0 });
@@ -14,6 +15,7 @@ function ProductDetailPage() {
     const [myReview, setMyReview] = useState<any>(null);
     const { orders } = useOrders();
     const [hasPurchased, setHasPurchased] = useState(false);
+    const navigate = useNavigate();
 
     const { handleSubmit, control, reset } = useForm({
         defaultValues: {
@@ -80,7 +82,7 @@ function ProductDetailPage() {
     return (
         <MainLayout>
             <div className="max-w-5xl space-y-10 mx-auto">
-                <BackButton>Kembali ke Produk</BackButton>
+                <BackButton onClick={() => navigate("/products")}>Kembali ke Produk</BackButton>
                 <ProductDetailSection product={product} />
                 <ReviewForm
                     onSubmit={myReview ? onUpdate : onCreate}

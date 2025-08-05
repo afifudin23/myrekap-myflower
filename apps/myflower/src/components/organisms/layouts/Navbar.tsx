@@ -1,8 +1,8 @@
-import SmallButton from "@/components/atoms/SmallButton";
-import { badgeColorUser, COLORS } from "@/constants/colors";
+import ButtonSmall from "@/components/atoms/ButtonSmall";
+import { badgeColorUser, BG_COLORS } from "@/constants/colors";
 import { memo } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
-import { PiShoppingCartSimpleBold } from "react-icons/pi";
+import { HiOutlineShoppingCart } from "react-icons/hi";
 import { RiFlowerLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
@@ -10,15 +10,13 @@ const Navbar = memo(function () {
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-    const handleOrderClick = (e?: React.MouseEvent) => {
-        e?.stopPropagation();
+    const handleOrderClick = () => {
         navigate("/orders");
     };
     const handleProfileClick = () => {
         navigate("/profile");
     };
-    const handleCartClick = (e?: React.MouseEvent) => {
-        e?.stopPropagation();
+    const handleCartClick = () => {
         navigate("/carts");
     };
     return (
@@ -31,35 +29,34 @@ const Navbar = memo(function () {
                 </b>
             </div>
 
-            <div onClick={handleProfileClick} className="flex gap-3 items-center cursor-pointer">
-                <SmallButton
+            <div className="flex gap-3 items-center cursor-pointer">
+                <ButtonSmall
                     type="button"
-                    colors={COLORS}
-                    className="text-lg rounded-lg py-1"
+                    className={`text-lg rounded-md px-4 py-1 ${BG_COLORS.primary}`}
                     onClick={handleOrderClick}
                 >
                     Pesanan
-                </SmallButton>
-                <SmallButton
+                </ButtonSmall>
+                <ButtonSmall
                     type="button"
-                    colors={COLORS}
-                    className="py-2 text-lg rounded-lg relative"
+                    className={`text-lg rounded-md px-4 py-2 ${BG_COLORS.primary}`}
                     onClick={handleCartClick}
                 >
-                    <PiShoppingCartSimpleBold />
-                    {/* <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center font-nunito font-bold rounded-full">
-                        {cartItems.length}
-                    </span> */}
-                </SmallButton>
-                <div className="flex flex-col items-center">
-                    <div className="text-lg font-nunito leading-none">{user.username}</div>
-                    <div
-                        className={`text-sm relative font-semibold capitalize tracking-wide px-3 rounded-lg bg-opacity-30 ${badgeColorUser[user.role]} `}
-                    >
-                        {user.role}
+                    <HiOutlineShoppingCart size={20} />
+                </ButtonSmall>
+                <div className="flex gap-2 items-center" onClick={handleProfileClick}>
+                    <div className="flex flex-col items-center">
+                        <div className="text-lg font-nunito leading-none">{user.username}</div>
+                        <div
+                            className={`text-sm relative font-semibold capitalize tracking-wide px-3 rounded-md bg-opacity-30 ${
+                                badgeColorUser[user.role]
+                            } `}
+                        >
+                            {user.role}
+                        </div>
                     </div>
+                    <FaRegUserCircle size={35} />
                 </div>
-                <FaRegUserCircle size={35} />
             </div>
         </nav>
     );
