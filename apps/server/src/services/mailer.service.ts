@@ -86,7 +86,7 @@ export const sendCustomerOrderStatusEmail = async (user: any, method: string, da
             customerName,
             orderCode,
             orderStatus: ORDER_STATUS_LABELS[orderStatus],
-            paymentMethod: PAYMENT_METHOD_LABELS[paymentMethod],
+            paymentMethod: paymentMethod ? PAYMENT_METHOD_LABELS[paymentMethod] : "-",
             paymentProvider: paymentProvider ? paymentProvider : "-",
             totalPrice: formatters.formatRupiah(totalPrice),
             items: formatters.formatItemsAsList(items),

@@ -4,7 +4,7 @@ import { formatters } from "@/utils";
 import { InternalException, MidtransException, NotFoundException } from "@/exceptions";
 import ErrorCode from "@/constants/error-code";
 import prisma from "@/config/database";
-import { mailerService } from "@/services";
+import { mailerService, ordersCustomerService } from "@/services";
 
 const snap = new midtransClient.Snap({
     isProduction: false,
@@ -51,8 +51,9 @@ export const notification = async (data: any) => {
                     },
                     include: { user: true, items: { include: { product: true } } },
                 });
-                if (updatedOrder.source === "MYFLOWER")
-                    await mailerService.sendCustomerOrderStatusEmail(updatedOrder.user, "create", updatedOrder);
+                await mailerService.sendCustomerOrderStatusEmail(updatedOrder.user, "create", updatedOrder);
+                await ordersCustomerService.notification(updatedOrder);
+                await prisma.cartItem.deleteMany({ where: { userId: updatedOrder.userId } });
                 break;
             }
             case "cancel": {

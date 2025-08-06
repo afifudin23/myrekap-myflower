@@ -90,9 +90,6 @@ function OrderCheckoutPage() {
 
             window.snap.pay(snapToken, {
                 onSuccess: async () => {
-                    // Send notification email to customer
-                    await axiosInstance.post("/orders/customer/notification", createOrder);
-                    await axiosInstance.delete("/carts");
                     localStorage.removeItem("snapToken");
                     setOrder(null);
                 },

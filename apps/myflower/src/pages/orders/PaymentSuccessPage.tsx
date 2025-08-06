@@ -13,9 +13,8 @@ function PaymentSuccessPage() {
             </p>
             <Button
                 type="button"
-                colors={BG_COLORS}
                 onClick={() => (window.location.href = "http://localhost:5174/products")}
-                className="mt-4 px-6 py-2 text-white"
+                className={`mt-4 px-6 py-2 text-white rounded-md ${BG_COLORS.primary}`}
             >
                 Kembali Belanja
             </Button>
