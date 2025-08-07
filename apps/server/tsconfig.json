@@ -3,6 +3,8 @@
     "compilerOptions": {
         "target": "ES2017",
         "lib": ["ES2017", "ESNext.AsyncIterable"],
+        "rootDir": "./src",
+        "outDir": "./dist",
         "typeRoots": ["node_modules/@types", "./types"],
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,

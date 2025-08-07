@@ -46,8 +46,10 @@
         "typescript-eslint": "^8.25.0"
     },
     "scripts": {
-        "test": "",
-        "dev": "nodemon --exec \"clear && ts-node\" src/server.ts"
+        "dev": "nodemon --exec \"clear && ts-node\" src/server.ts",
+        "build": "tsc",
+        "start": "node dist/server.js",
+        "clean": "rm -rf dist"
     },
     "keywords": [],
     "author": "",
