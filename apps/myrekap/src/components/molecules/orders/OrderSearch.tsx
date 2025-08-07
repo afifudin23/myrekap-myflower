@@ -1,14 +1,12 @@
 import { ButtonSmall } from "@/components/atoms";
 import { InputFilter } from "@/components/molecules/inputs";
-import { CUSTOMER_CATEGORY_ITEMS, ORDER_STATUS_ITEMS, PAYMENT_STATUS_ITEMS } from "@/constants/category";
+import {  ORDER_STATUS_ITEMS, ORDER_STATUS_LABELS, PAYMENT_STATUS_ITEMS, PAYMENT_STATUS_LABELS } from "@/constants/category";
 import { useState } from "react";
 import { IoFilterSharp } from "react-icons/io5";
 
 const Search = ({
     searchTerm,
     setSearchTerm,
-    filterCustomer,
-    setFilterCustomer,
     filterPayment,
     setFilterPayment,
     filterOrder,
@@ -35,10 +33,9 @@ const Search = ({
             </div>
             {isOpenFilter && (
                 <div className="grid grid-cols-2 gap-2 mt-3 2xl:grid-cols-3">
-                    <InputFilter options={CUSTOMER_CATEGORY_ITEMS} value={filterCustomer} onChange={setFilterCustomer} />
-                    {/* <InputFilter options={} value={filterFlower} onChange={setFilterFlower} /> */}
-                    <InputFilter options={PAYMENT_STATUS_ITEMS} value={filterPayment} onChange={setFilterPayment} />
-                    <InputFilter options={ORDER_STATUS_ITEMS} value={filterOrder} onChange={setFilterOrder} />
+                    {/* <InputFilter options={CUSTOMER_CATEGORY_ITEMS} value={filterCustomer} onChange={setFilterCustomer} /> */}
+                    <InputFilter options={PAYMENT_STATUS_ITEMS} optionLabel={PAYMENT_STATUS_LABELS} name="Pembayaran" value={filterPayment} onChange={setFilterPayment} />
+                    <InputFilter options={ORDER_STATUS_ITEMS} optionLabel={ORDER_STATUS_LABELS} name="Pesanan" value={filterOrder} onChange={setFilterOrder} />
                 </div>
             )}
         </div>

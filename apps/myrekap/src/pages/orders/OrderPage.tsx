@@ -3,7 +3,7 @@ import { AlertInfo, InputMonthYear, OrderPagination, TitlePage } from "@/compone
 import Search from "@/components/molecules/orders/OrderSearch";
 import MainLayout from "@/components/templates/MainLayout";
 import { useOrders } from "@/hooks";
-import { axiosInstance, filterCustomerCategory, filterOrderStatus, filterPaymenrtStatus, filterSearch } from "@/utils";
+import { axiosInstance, filterOrderStatus, filterPaymentStatus, filterSearch } from "@/utils";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -30,14 +30,14 @@ function OrderPage() {
 
     // Filter
     const [searchTerm, setSearchTerm] = useState("");
-    const [filterCustomer, setFilterCustomer] = useState("Customer");
+    // const [filterCustomer, setFilterCustomer] = useState("Customer");
     const [filterPayment, setFilterPayment] = useState("Pembayaran");
     const [filterOrder, setFilterOrder] = useState("Pesanan");
     const filteredOrders = orders.filter(
         (order: any) =>
             filterSearch(order, searchTerm) &&
-            filterCustomerCategory(order, filterCustomer) &&
-            filterPaymenrtStatus(order, filterPayment) &&
+            // filterCustomerCategory(order, filterCustomer) &&
+            filterPaymentStatus(order, filterPayment) &&
             filterOrderStatus(order, filterOrder)
     );
 
@@ -63,8 +63,8 @@ function OrderPage() {
             <Search
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
-                filterCustomer={filterCustomer}
-                setFilterCustomer={setFilterCustomer}
+                // filterCustomer={filterCustomer}
+                // setFilterCustomer={setFilterCustomer}
                 filterPayment={filterPayment}
                 setFilterPayment={setFilterPayment}
                 filterOrder={filterOrder}

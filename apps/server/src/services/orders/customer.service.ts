@@ -48,7 +48,7 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
         totalPrice += orderItemPrice;
     }
     const shippingCost = data.deliveryOption === "DELIVERY" ? totalPrice * 0.1 : 0;
-    const customerCategory = user.customerCategory ?? undefined;
+    // const customerCategory = user.customerCategory ?? undefined;
     const paymentStatus = data.paymentMethod === "COD" ? "UNPAID" : undefined;
     const { items, ...orderData } = data;
 
@@ -63,7 +63,7 @@ export const create = async (user: any, data: ordersCustomerSchema.CreateType) =
                 orderCode,
                 totalPrice,
                 shippingCost,
-                customerCategory,
+                // customerCategory,
                 paymentStatus,
                 items: { create: orderItems },
             },

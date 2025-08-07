@@ -1,4 +1,4 @@
-import { CUSTOMER_CATEGORY_ITEMS, CUSTOMER_CATEGORY_LABELS } from "@/constants/category";
+// import { CUSTOMER_CATEGORY_ITEMS, CUSTOMER_CATEGORY_LABELS } from "@/constants/category";
 
 export const LOGIN_FIELDS = [
     {
@@ -34,13 +34,13 @@ export const REGISTER_FIELDS = [
         placeholder: "Input Nomor Telepon",
         type: "text",
     },
-    {
-        name: "customerCategory",
-        placeholder: "Input Kategori Pelanggan",
-        type: "dropdown",
-        options: CUSTOMER_CATEGORY_ITEMS.filter((item) => ["UMUM", "PEMDA"].includes(item)),
-        optionLabel: CUSTOMER_CATEGORY_LABELS,
-    },
+    // {
+    //     name: "customerCategory",
+    //     placeholder: "Input Kategori Pelanggan",
+    //     type: "dropdown",
+    //     options: CUSTOMER_CATEGORY_ITEMS.filter((item) => ["UMUM", "PEMDA"].includes(item)),
+    //     optionLabel: CUSTOMER_CATEGORY_LABELS,
+    // },
     {
         name: "password",
         placeholder: "Input Password",

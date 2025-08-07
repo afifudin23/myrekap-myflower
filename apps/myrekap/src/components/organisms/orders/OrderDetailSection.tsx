@@ -3,7 +3,6 @@ import OrderReceipt from "@/components/organisms/orders/OrderReceipt";
 import { IoReceiptSharp } from "react-icons/io5";
 import { Badge, ButtonSmall } from "@/components/atoms";
 import {
-    CUSTOMER_CATEGORY_LABELS,
     DELIVERY_OPTION_LABELS,
     ORDER_STATUS_LABELS,
     PAYMENT_METHOD_LABELS,
@@ -50,9 +49,9 @@ function OrderDetailSection({
                         >
                             {ORDER_STATUS_LABELS[order.orderStatus]}
                         </Badge>
-                        <Badge className="bg-[#609393] w-[120px] py-1 text-sm text-white font-semibold">
+                        {/* <Badge className="bg-[#609393] w-[120px] py-1 text-sm text-white font-semibold">
                             {CUSTOMER_CATEGORY_LABELS[order.customerCategory]}
-                        </Badge>
+                        </Badge> */}
                     </div>
                 </div>
                 <div className="flex gap-2 items-center">

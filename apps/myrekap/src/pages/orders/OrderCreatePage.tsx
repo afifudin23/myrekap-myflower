@@ -27,7 +27,7 @@ function OrderCreatePage() {
         resolver: zodResolver(orderSchema.create),
         defaultValues: {
             customerName: "",
-            customerCategory: undefined,
+            // customerCategory: undefined,
             phoneNumber: "",
             items: [{ productId: "", quantity: 1, message: "", price: 0 }],
             deliveryOption: undefined,

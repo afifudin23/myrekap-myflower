@@ -24,7 +24,7 @@ export const filterCustomerCategory = ({ customerCategory }: { customerCategory:
 export const filterFlowerCategory = ({ flowerCategory }: { flowerCategory: string }, flower: string) =>
     flower === "Bunga" || flowerCategory === formatters.parseCapital(flower);
 
-export const filterPaymenrtStatus = ({ paymentStatus }: { paymentStatus: string }, payment: string) =>
+export const filterPaymentStatus = ({ paymentStatus }: { paymentStatus: string }, payment: string) =>
     payment === "Pembayaran" || paymentStatus === formatters.parseCapital(payment);
 export const filterOrderStatus = ({ orderStatus }: { orderStatus: string }, order: string) =>
     order === "Pesanan" || orderStatus === formatters.parseCapital(order);

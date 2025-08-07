@@ -90,11 +90,11 @@ const InputDropdown = React.forwardRef<HTMLDivElement, InputDropdownProps>(
                                             }`}
                                             key={index}
                                             onClick={() => {
-                                                onChange(item.value);
+                                                onChange(item);
                                                 setIsOpen(false);
                                             }}
                                         >
-                                            {item.label}
+                                            {optionLabel[item]}
                                         </li>
                                     ))}
                                 </ul>

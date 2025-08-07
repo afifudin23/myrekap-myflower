@@ -1,5 +1,5 @@
 import { Badge } from "@/components/atoms";
-import { CUSTOMER_CATEGORY_LABELS, ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from "@/constants/category";
+import { ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from "@/constants/category";
 import { badgeColorOrderStatus, badgeColorPaymentStatus, bgColorOrderCard, formatters } from "@/utils";
 
 const OrderCard = ({ order }: any) => {
@@ -37,7 +37,7 @@ const OrderCard = ({ order }: any) => {
                 <p className="w-fit text-xs font-semibold px-2 py-1 rounded-md bg-slate-800 bg-opacity-40 text-white">
                     #{order.orderCode}
                 </p>
-                <div className="flex gap-2 justify-end">
+                <div className="flex gap-2">
                     <Badge
                         className={`${badgeColorPaymentStatus(
                             order.paymentStatus
@@ -52,9 +52,9 @@ const OrderCard = ({ order }: any) => {
                     >
                         {ORDER_STATUS_LABELS[order.orderStatus]}
                     </Badge>
-                    <Badge className="bg-[#609393] w-[100px] py-1 text-white text-xs font-semibold">
+                    {/* <Badge className="bg-[#609393] w-[100px] py-1 text-white text-xs font-semibold">
                         {CUSTOMER_CATEGORY_LABELS[order.customerCategory]}
-                    </Badge>
+                    </Badge> */}
                 </div>
             </div>
 
@@ -95,9 +95,9 @@ const OrderCard = ({ order }: any) => {
                         Dikirim: {formatters.isoDateToStringDateTime(order.readyDate)}
                     </p>
                 </div>
-                <Badge className="bg-[#609393] w-[100px] py-1 text-white text-xs font-semibold hidden 2xl:flex">
+                {/* <Badge className="bg-[#609393] w-[100px] py-1 text-white text-xs font-semibold hidden 2xl:flex">
                     {CUSTOMER_CATEGORY_LABELS[order.customerCategory]}
-                </Badge>
+                </Badge> */}
             </div>
         </div>
     );

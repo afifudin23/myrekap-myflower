@@ -1,33 +1,12 @@
 // Customer Category
 export const CUSTOMER_CATEGORY_ITEMS = [
-    {
-        label: "Semua",
-        value: "ALL",
-    },
-    {
-        label: "Umum",
-        value: "UMUM",
-    },
-    {
-        label: "Pemda",
-        value: "PEMDA",
-    },
-    {
-        label: "Akademik",
-        value: "AKADEMIK",
-    },
-    {
-        label: "Rumah Sakit",
-        value: "RUMAH_SAKIT",
-    },
-    {
-        label: "Polisi/Militer",
-        value: "POLISI_MILITER",
-    },
-    {
-        label: "Perbankan",
-        value: "PERBANKAN",
-    },
+    "ALL",
+    "UMUM",
+    "PEMDA",
+    "AKADEMIK",
+    "RUMAH_SAKIT",
+    "POLISI_MILITER",
+    "PERBANKAN",
 ];
 export const CUSTOMER_CATEGORY_LABELS: any = {
     ALL: "Semua",
@@ -40,51 +19,14 @@ export const CUSTOMER_CATEGORY_LABELS: any = {
 };
 
 // Delivery Option
-export const DELIVERY_OPTION_ITEMS = [
-    { label: "Semua", value: "ALL" },
-    { label: "Kirim ke Alamat", value: "DELIVERY" },
-    { label: "Ambil di Tempat", value: "PICKUP" },
-];
-export const DELIVERY_OPTION_LABELS : any = {
+export const DELIVERY_OPTION_ITEMS = ["ALL", "DELIVERY", "PICKUP"];
+export const DELIVERY_OPTION_LABELS: any = {
     ALL: "Semua",
     DELIVERY: "Kirim ke Alamat",
     PICKUP: "Ambil di Tempat",
 };
 
-export const PAYMENT_METHOD_ITEMS = [
-    {
-        label: "Semua",
-        value: "ALL",
-    },
-    {
-        label: "Transfer Bank",
-        value: "BANK_TRANSFER",
-    },
-    {
-        label: "Tunai",
-        value: "CASH",
-    },
-    {
-        label: "Credit Card",
-        value: "CREDIT_CARD",
-    },
-    {
-        label: "Qris",
-        value: "QRIS",
-    },
-    {
-        label: "E-Wallet",
-        value: "EWALLET",
-    },
-    {
-        label: "Cstore",
-        value: "CSTORE",
-    },
-    {
-        label: "COD",
-        value: "COD",
-    },
-];
+export const PAYMENT_METHOD_ITEMS = ["ALL", "BANK_TRANSFER", "CASH", "CREDIT_CARD", "QRIS", "EWALLET", "CSTORE", "COD"];
 export const PAYMENT_METHOD_LABELS: any = {
     ALL: "Semua",
     BANK_TRANSFER: "TRANSFER BANK",
@@ -97,16 +39,7 @@ export const PAYMENT_METHOD_LABELS: any = {
 };
 
 // Payment Status
-export const PAYMENT_STATUS_ITEMS = [
-    { label: "Semua", value: "ALL" },
-    { label: "Lunas", value: "PAID" },
-    { label: "Pending", value: "PENDING" },
-    { label: "Belum Lunas", value: "UNPAID" },
-    { label: "Batal", value: "CANCELED" },
-    { label: "Expired", value: "EXPIRED" },
-    { label: "Refund", value: "REFUNDED" },
-    { label: "Ditolak", value: "DENIED" },
-];
+export const PAYMENT_STATUS_ITEMS = ["ALL", "PAID", "PENDING", "UNPAID", "CANCELED", "EXPIRED", "REFUNDED", "DENIED"];
 export const PAYMENT_STATUS_LABELS: any = {
     ALL: "Semua",
     PAID: "Lunas",
@@ -119,13 +52,7 @@ export const PAYMENT_STATUS_LABELS: any = {
 };
 
 // Order Status
-export const ORDER_STATUS_ITEMS = [
-    { label: "Semua", value: "ALL" },
-    { label: "Diproses", value: "IN_PROCESS" },
-    { label: "Pengiriman", value: "DELIVERY" },
-    { label: "Batal", value: "CANCELED" },
-    { label: "Selesai", value: "COMPLETED" },
-];
+export const ORDER_STATUS_ITEMS = ["ALL", "IN_PROCESS", "DELIVERY", "CANCELED", "COMPLETED"];
 export const ORDER_STATUS_LABELS: any = {
     ALL: "Semua",
     IN_PROCESS: "Diproses",
@@ -135,11 +62,7 @@ export const ORDER_STATUS_LABELS: any = {
 };
 
 // Type Stock Report
-export const TYPE_STOCK_REPORT_ITEMS = [
-    { label: "General", value: "summary" },
-    { label: "Stok Masuk", value: "stock_in" },
-    { label: "Stok Keluar", value: "stock_out" },
-];
+export const TYPE_STOCK_REPORT_ITEMS = ["summary", "stock_in", "stock_out"];
 export const TYPE_STOCK_REPORT_LABELS: any = {
     summary: "General",
     stock_in: "Stok Masuk",

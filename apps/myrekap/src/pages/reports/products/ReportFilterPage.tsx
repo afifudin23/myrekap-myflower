@@ -52,7 +52,7 @@ function ReportProductStockFilterPage() {
     return (
         <MainLayout>
             <div className="flex justify-between items-center">
-                <TitlePage title="Laporan Penjualan" subtitle="Mencetak Rekap Penjualan Sesuai Kebutuhan" />
+                <TitlePage title="Laporan Stok Produk" subtitle="Mencetak Rekap Stok Produk Sesuai Kebutuhan" />
                 <button onClick={() => navigate("/reports")}>
                     <TbLogout2 className="text-5xl 2xl:text-6xl" />
                 </button>

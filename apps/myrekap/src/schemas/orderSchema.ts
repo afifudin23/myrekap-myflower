@@ -3,10 +3,10 @@ import { z } from "zod";
 export const create = z
     .object({
         customerName: z.string().nonempty("Harap isi nama terlebih dahulu."),
-        customerCategory: z.enum(["UMUM", "PEMDA", "AKADEMIK", "RUMAH_SAKIT", "POLISI_MILITER", "PERBANKAN"], {
-            required_error: "Harap pilih kategori terlebih dahulu.",
-            invalid_type_error: "Kategori tidak valid.",
-        }),
+        // customerCategory: z.enum(["UMUM", "PEMDA", "AKADEMIK", "RUMAH_SAKIT", "POLISI_MILITER", "PERBANKAN"], {
+        //     required_error: "Harap pilih kategori terlebih dahulu.",
+        //     invalid_type_error: "Kategori tidak valid.",
+        // }),
         phoneNumber: z.string().nonempty("Harap isi nomor telepon terlebih dahulu."),
         items: z.array(
             z.object({
@@ -75,10 +75,10 @@ const existingFile = z.object({
 export const update = z
     .object({
         customerName: z.string().nonempty("Harap isi nama terlebih dahulu."),
-        customerCategory: z.enum(["UMUM", "PEMDA", "AKADEMIK", "RUMAH_SAKIT", "POLISI_MILITER", "PERBANKAN"], {
-            required_error: "Harap pilih kategori terlebih dahulu.",
-            invalid_type_error: "Kategori tidak valid.",
-        }),
+        // customerCategory: z.enum(["UMUM", "PEMDA", "AKADEMIK", "RUMAH_SAKIT", "POLISI_MILITER", "PERBANKAN"], {
+        //     required_error: "Harap pilih kategori terlebih dahulu.",
+        //     invalid_type_error: "Kategori tidak valid.",
+        // }),
         phoneNumber: z.string().nonempty("Harap isi nomor telepon terlebih dahulu."),
         items: z.array(
             z.object({

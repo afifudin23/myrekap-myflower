@@ -1,6 +1,4 @@
 import {
-    CUSTOMER_CATEGORY_ITEMS,
-    CUSTOMER_CATEGORY_LABELS,
     ORDER_STATUS_ITEMS,
     ORDER_STATUS_LABELS,
     PAYMENT_METHOD_ITEMS,
@@ -12,12 +10,12 @@ import {
 } from "@/constants/category";
 
 export const REPORT_ORDER_FORM_FIELDS = [
-    {
-        label: "Kategori Customer",
-        name: "customerCategory",
-        options: CUSTOMER_CATEGORY_ITEMS,
-        optionLabel: CUSTOMER_CATEGORY_LABELS,
-    },
+    // {
+    //     label: "Kategori Customer",
+    //     name: "customerCategory",
+    //     options: CUSTOMER_CATEGORY_ITEMS,
+    //     optionLabel: CUSTOMER_CATEGORY_LABELS,
+    // },
     {
         label: "Metode Pembayaran",
         name: "paymentMethod",

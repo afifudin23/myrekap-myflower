@@ -6,7 +6,7 @@ import MainLayout from "@/components/templates/MainLayout";
 import { BG_COLORS } from "@/constants/colors";
 import { profileFormSchema } from "@/schemas/profileSchema";
 import useAuthStore from "@/stores/useAuthStore";
-import { axiosInstance, formatters } from "@/utils";
+import { axiosInstance } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
@@ -26,7 +26,7 @@ function ProfilePage() {
             username: user.username,
             email: user.email,
             phoneNumber: user.phoneNumber,
-            customerCategory: formatters.formatCapital(user.customerCategory || ""),
+            // customerCategory: formatters.formatCapital(user.customerCategory || ""),
             oldPassword: "",
             newPassword: "",
             confPassword: "",

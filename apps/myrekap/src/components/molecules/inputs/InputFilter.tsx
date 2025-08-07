@@ -3,10 +3,14 @@ import { AiFillCloseCircle } from "react-icons/ai";
 
 function InputFilter({
     options,
+    optionLabel,
+    name,
     value,
     onChange,
 }: {
     options: string[];
+    optionLabel: any;
+    name: string;
     value: string;
     onChange: (value: string) => void;
 }) {
@@ -42,7 +46,7 @@ function InputFilter({
                     setIsOpen(!isOpen);
                 }}
             >
-                <p className="mx-auto">{value}</p>
+                <p className="mx-auto">{value === name ? name : optionLabel[value]}</p>
             </div>
             <ul
                 className={`w-full z-10 absolute left-0 bg-sky-950 text-white mt-1 rounded-lg overflow-y-scroll scrollbar-hide text-base 2xl:text-lg ${
@@ -50,7 +54,7 @@ function InputFilter({
                 }`}
             >
                 {options
-                    .filter((item) => item !== "Semua")
+                    .filter((item) => item !== "ALL")
                     .map((item, index) => (
                         <li
                             className={`py-2 px-6 hover:bg-sky-700 rounded-lg cursor-pointer text-center ${
@@ -62,7 +66,7 @@ function InputFilter({
                                 setIsOpen(false);
                             }}
                         >
-                            {item}
+                            {optionLabel[item]}
                         </li>
                     ))}
             </ul>

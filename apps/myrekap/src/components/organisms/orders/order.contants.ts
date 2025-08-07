@@ -1,6 +1,4 @@
 import {
-    CUSTOMER_CATEGORY_ITEMS,
-    CUSTOMER_CATEGORY_LABELS,
     DELIVERY_OPTION_ITEMS,
     DELIVERY_OPTION_LABELS,
     PAYMENT_METHOD_ITEMS,
@@ -13,13 +11,13 @@ export const ORDER_FORM_ITEMS = [
         type: "text",
         name: "customerName",
     },
-    {
-        label: "Kategori Pelanggan",
-        type: "dropdown",
-        name: "customerCategory",
-        options: CUSTOMER_CATEGORY_ITEMS.filter((item) => item.label !== "Semua"),
-        optionLabel: CUSTOMER_CATEGORY_LABELS,
-    },
+    // {
+    //     label: "Kategori Pelanggan",
+    //     type: "dropdown",
+    //     name: "customerCategory",
+    //     options: CUSTOMER_CATEGORY_ITEMS.filter((item) => item.label !== "Semua"),
+    //     optionLabel: CUSTOMER_CATEGORY_LABELS,
+    // },
     {
         label: "Nomor Telepon",
         type: "text",
@@ -34,7 +32,7 @@ export const ORDER_FORM_ITEMS = [
         label: "Opsi Pengiriman",
         type: "dropdown",
         name: "deliveryOption",
-        options: DELIVERY_OPTION_ITEMS.filter((item) => item.label !== "Semua"),
+        options: DELIVERY_OPTION_ITEMS.filter((item) => item !== "ALL"),
         optionLabel: DELIVERY_OPTION_LABELS,
     },
     {
@@ -51,7 +49,7 @@ export const ORDER_FORM_ITEMS = [
         label: "Metode Pembayaran",
         type: "dropdown",
         name: "paymentMethod",
-        options: PAYMENT_METHOD_ITEMS.filter((item) => ["BANK_TRANSFER", "CASH"].includes(item.value)),
+        options: PAYMENT_METHOD_ITEMS.filter((item) => ["BANK_TRANSFER", "CASH"].includes(item)),
         optionLabel: PAYMENT_METHOD_LABELS,
     },
     {
@@ -67,7 +65,7 @@ export const defaultValuesAddOrderSummary = {
     greetingMessage: "",
     deliveryDate: new Date(),
     deliveryAddress: "",
-    customerCategory: "",
+    // customerCategory: "",
     price: 10000,
     shippingCost: 10000,
     isPaid: false,
