@@ -2,7 +2,7 @@
     "compileOnSave": false,
     "compilerOptions": {
         "target": "ES2017",
-        "lib": ["ES2017", "ESNext.AsyncIterable"],
+        "lib": ["ES2017", "ESNext.AsyncIterable", "DOM"],
         "rootDir": "./src",
         "outDir": "./dist",
         "typeRoots": ["node_modules/@types", "./types"],
