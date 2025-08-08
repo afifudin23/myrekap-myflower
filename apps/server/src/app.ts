@@ -6,13 +6,13 @@ import { InternalException } from "./exceptions";
 import ErrorCode from "./constants/error-code";
 import cookieParser from "cookie-parser";
 import path from "path";
-const allowedOrigins = env.CLIENT_ORIGINS.split(",") || [];
 import { env } from "@/config";
 import express from "express";
 const app = express();
 
 // middlewares
 app.use(helmet()); // for security
+const allowedOrigins = env.CLIENT_ORIGINS.split(",") || [];
 app.use(
     cors({
         origin: (origin, callback) => {
@@ -26,6 +26,7 @@ app.use(
         exposedHeaders: ["Content-Disposition"], // Expose Content-Disposition header for file downloads
     })
 ); // for cross-origin requests
+
 app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(express.json()); // for parsing json
 app.use(attachLogger); // for logging requests with request id

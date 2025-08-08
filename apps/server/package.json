@@ -54,6 +54,6 @@
     "author": "",
     "license": "ISC",
     "_moduleAliases": {
-        "@": "./src"
+        "@": "dist"
     }
 }
