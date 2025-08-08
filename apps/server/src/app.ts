@@ -31,6 +31,9 @@ const app = express();
 // app.use(httpLogger); // for logging http requests
 // app.use(cookieParser());
 
+app.get("/", (_req, res) => {
+    res.send("Haiiii");
+});
 app.get("/hello", (_req, res) => {
     res.send("Hello World");
 });
