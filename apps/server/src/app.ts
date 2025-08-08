@@ -1,4 +1,3 @@
-
 import express from "express";
 import cors from "cors";
 import rootRouter from "./routes";
@@ -29,10 +28,10 @@ app.use(
 app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(express.json()); // for parsing json
 app.use(attachLogger); // for logging requests with request id
-app.use(httpLogger); // for logging http requests   
+app.use(httpLogger); // for logging http requests
 app.use(cookieParser());
 
-app.get("/hello", (_req, res) => {
+app.use("/hello", (_req, res) => {
     res.send("Hello World");
 });
 
