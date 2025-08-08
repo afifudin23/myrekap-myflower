@@ -1,6 +1,6 @@
-import { ordersAdminController } from "@/controllers";
-import { authMiddleware } from "@/middlewares";
-import { errorHandler, upload } from "@/utils";
+import { ordersAdminController } from "../../controllers";
+import { authMiddleware } from "../../middlewares";
+import { errorHandler, upload } from "../../utils";
 import { Router } from "express";
 
 const ordersAdminRouter: Router = Router();

@@ -1,9 +1,9 @@
 import "module-alias/register";
 import app from "./app";
 import prisma from "./config/database";
-import seedSuperadmin from "@/seeds/seed-superadmin";
-import { logger } from "@/utils";
-import { env } from "@/config";
+import seedSuperadmin from "./seeds/seed-superadmin";
+import { logger } from "./utils";
+import { env } from "./config";
 
 async function startServer() {
     try {

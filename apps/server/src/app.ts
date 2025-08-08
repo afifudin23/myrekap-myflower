@@ -6,7 +6,7 @@ import { InternalException } from "./exceptions";
 import ErrorCode from "./constants/error-code";
 import cookieParser from "cookie-parser";
 import path from "path";
-import { env } from "@/config";
+import { env } from "./config";
 import express from "express";
 const app = express();
 

@@ -1,5 +1,5 @@
-import { transactionSchema } from "@/schemas";
-import { transactionService } from "@/services";
+import { transactionSchema } from "../schemas";
+import { transactionService } from "../services";
 import { Request, Response, NextFunction } from "express";
 
 export const handlePaymentNotification = async (req: Request, res: Response, next: NextFunction) => {

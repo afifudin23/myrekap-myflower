@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { userService } from "@/services";
-import { userSchema } from "@/schemas";
+import { userService } from "../services";
+import { userSchema } from "../schemas";
 
 export const getAllAdmins = async (_req: Request, res: Response) => {
     const data = await userService.findAllAdmins();

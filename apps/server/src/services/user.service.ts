@@ -1,8 +1,8 @@
 import argon2 from "argon2";
-import prisma from "@/config/database";
-import ErrorCode from "@/constants/error-code";
-import { BadRequestException, InternalException, NotFoundException, UnauthorizedException } from "@/exceptions";
-import { mailerService } from "@/services";
+import prisma from "../config/database";
+import ErrorCode from "../constants/error-code";
+import { BadRequestException, InternalException, NotFoundException, UnauthorizedException } from "../exceptions";
+import { mailerService } from "../services";
 
 export const findAllAdmins = async () => {
     const user = await prisma.user.findMany({ where: { role: { in: ["ADMIN", "SUPERADMIN"] } } });

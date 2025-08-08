@@ -1,10 +1,10 @@
-import { User } from "@prisma/client";
+import { User } from ".prisma/client";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { UnauthorizedException } from "@/exceptions";
-import prisma from "@/config/database";
-import env from "@/config/env";
-import ErrorCode from "@/constants/error-code";
+import { UnauthorizedException } from "../exceptions";
+import prisma from "../config/database";
+import env from "../config/env";
+import ErrorCode from "../constants/error-code";
 
 export interface AuthReq extends Request {
     user: User;

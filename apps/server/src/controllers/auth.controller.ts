@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { authService } from "@/services";
-import { authSchema } from "@/schemas";
+import { authService } from "../services";
+import { authSchema } from "../schemas";
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     const appName = req.headers["x-app-name"];

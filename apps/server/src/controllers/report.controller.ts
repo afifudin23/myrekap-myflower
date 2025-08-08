@@ -1,4 +1,4 @@
-import { reportService } from "@/services";
+import { reportService } from "../services";
 import { Request, Response, NextFunction } from "express";
 
 export const printReport = async (req: Request, res: Response, next: NextFunction) => {

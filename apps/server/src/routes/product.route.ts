@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { productController } from "@/controllers";
-import { errorHandler, upload } from "@/utils";
-import { authMiddleware } from "@/middlewares";
+import { productController } from "../controllers";
+import { errorHandler, upload } from "../utils";
+import { authMiddleware } from "../middlewares";
 
 const productRouter: Router = Router();
 

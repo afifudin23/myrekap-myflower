@@ -1,8 +1,8 @@
-import ErrorCode from "@/constants/error-code";
-import { UnprocessableUntityException } from "@/exceptions";
-import { AuthReq } from "@/middlewares/auth.middleware";
-import { ordersAdminSchema } from "@/schemas";
-import { ordersAdminService } from "@/services";
+import ErrorCode from "../../constants/error-code";
+import { UnprocessableUntityException } from "../../exceptions";
+import { AuthReq } from "../../middlewares/auth.middleware";
+import { ordersAdminSchema } from "../../schemas";
+import { ordersAdminService } from "../../services";
 import { Request, Response, NextFunction } from "express";
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {

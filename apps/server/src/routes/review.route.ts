@@ -1,6 +1,6 @@
-import { reviewController } from "@/controllers";
-import { authMiddleware } from "@/middlewares";
-import { errorHandler } from "@/utils";
+import { reviewController } from "../controllers";
+import { authMiddleware } from "../middlewares";
+import { errorHandler } from "../utils";
 import { Router } from "express";
 
 const reviewRouter: Router = Router({ mergeParams: true });

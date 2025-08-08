@@ -1,7 +1,7 @@
-import prisma from "@/config/database";
-import ErrorCode from "@/constants/error-code";
-import { BadRequestException, NotFoundException } from "@/exceptions";
-import { cartItemSchema } from "@/schemas";
+import prisma from "../config/database";
+import ErrorCode from "../constants/error-code";
+import { BadRequestException, NotFoundException } from "../exceptions";
+import { cartItemSchema } from "../schemas";
 
 export const findAll = async (userId: string) => {
     return await prisma.cartItem.findMany({
@@ -15,7 +15,7 @@ export const upsertItem = async (userId: string, data: cartItemSchema.AddToCartT
     const product = await prisma.product.findUnique({ where: { id: data.productId } });
     if (product?.isActive === false)
         throw new BadRequestException("Product is not active", ErrorCode.PRODUCT_NOT_ACTIVE);
-    
+
     const existingItem = await prisma.cartItem.findFirst({
         where: { userId, productId: data.productId },
     });

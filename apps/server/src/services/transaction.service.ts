@@ -1,10 +1,10 @@
 import midtransClient from "midtrans-client";
 import crypto from "crypto";
-import { formatters } from "@/utils";
-import { InternalException, MidtransException, NotFoundException } from "@/exceptions";
-import ErrorCode from "@/constants/error-code";
-import prisma from "@/config/database";
-import { mailerService, ordersCustomerService } from "@/services";
+import { formatters } from "../utils";
+import { InternalException, MidtransException, NotFoundException } from "../exceptions";
+import ErrorCode from "../constants/error-code";
+import prisma from "../config/database";
+import { mailerService, ordersCustomerService } from "../services";
 
 const snap = new midtransClient.Snap({
     isProduction: false,

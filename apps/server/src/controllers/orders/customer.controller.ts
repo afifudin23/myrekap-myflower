@@ -1,5 +1,5 @@
-import { ordersCustomerSchema } from "@/schemas";
-import { mailerService, ordersCustomerService } from "@/services";
+import { ordersCustomerSchema } from "../../schemas";
+import { mailerService, ordersCustomerService } from "../../services";
 import { Request, Response, NextFunction } from "express";
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {

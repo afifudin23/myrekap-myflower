@@ -1,5 +1,5 @@
-import ErrorCode from "@/constants/error-code";
-import { BadRequestException, InternalException } from "@/exceptions";
+import ErrorCode from "../constants/error-code";
+import { BadRequestException, InternalException } from "../exceptions";
 import puppeteer from "puppeteer";
 
 export const printReport = async (html: string) => {

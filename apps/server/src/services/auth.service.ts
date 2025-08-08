@@ -1,10 +1,10 @@
 import argon2 from "argon2";
-import prisma from "@/config/database";
-import ErrorCode from "@/constants/error-code";
-import { BadRequestException, ForbiddenException, NotFoundException, UnauthorizedException } from "@/exceptions";
+import prisma from "../config/database";
+import ErrorCode from "../constants/error-code";
+import { BadRequestException, ForbiddenException, NotFoundException, UnauthorizedException } from "../exceptions";
 import * as jwt from "jsonwebtoken";
-import { env } from "@/config";
-import { mailerService } from "@/services";
+import { env } from "../config";
+import { mailerService } from "../services";
 
 export const loginUser = async (body: any) => {
     // check if the user exists

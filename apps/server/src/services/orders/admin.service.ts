@@ -1,8 +1,8 @@
-import ErrorCode from "@/constants/error-code";
-import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
-import { cloudinary, prisma, uploadFile } from "@/config";
-import { formatters } from "@/utils";
-import { mailerService } from "@/services";
+import ErrorCode from "../../constants/error-code";
+import { BadRequestException, InternalException, NotFoundException } from "../../exceptions";
+import { cloudinary, prisma, uploadFile } from "../../config";
+import { formatters } from "../../utils";
+import { mailerService } from "../../services";
 
 export const getAllOrders = async (query: any) => {
     const { month, year, from_date, to_date, customer_category, payment_method, payment_status, order_status } = query;

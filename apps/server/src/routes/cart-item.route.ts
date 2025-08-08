@@ -1,6 +1,6 @@
-import { cartItemController } from "@/controllers";
-import { authMiddleware } from "@/middlewares";
-import { errorHandler } from "@/utils";
+import { cartItemController } from "../controllers";
+import { authMiddleware } from "../middlewares";
+import { errorHandler } from "../utils";
 import { Router } from "express";
 
 const cartItemRouter: Router = Router();

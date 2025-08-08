@@ -1,5 +1,5 @@
-import prisma from "@/config/database";
-import env from "@/config/env";
+import prisma from "../config/database";
+import env from "../config/env";
 import argon2 from "argon2";
 
 async function seedSuperadmin() {

@@ -1,6 +1,6 @@
-import { AuthReq } from "@/middlewares/auth.middleware";
-import { cartItemSchema } from "@/schemas";
-import { cartItemService } from "@/services";
+import { AuthReq } from "../middlewares/auth.middleware";
+import { cartItemSchema } from "../schemas";
+import { cartItemService } from "../services";
 import { Request, Response, NextFunction } from "express";
 
 export const getUserCartItems = async (req: Request, res: Response, next: NextFunction) => {
@@ -49,7 +49,7 @@ export const decrementCartItem = async (req: Request, res: Response, next: NextF
 export const deleteCartItem = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = (req as AuthReq).user.id;
-        const data = await cartItemService.removeItem(userId,req.params.productId);
+        const data = await cartItemService.removeItem(userId, req.params.productId);
         res.json({ message: "Cart item deleted successfully", data });
     } catch (error) {
         return next(error);

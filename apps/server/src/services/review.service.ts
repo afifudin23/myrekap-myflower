@@ -1,6 +1,6 @@
-import { prisma } from "@/config";
-import ErrorCode from "@/constants/error-code";
-import { BadRequestException, NotFoundException, UnauthorizedException } from "@/exceptions";
+import { prisma } from "../config";
+import ErrorCode from "../constants/error-code";
+import { BadRequestException, NotFoundException, UnauthorizedException } from "../exceptions";
 
 export const findAll = async (productId: string) => {
     const product = await prisma.product.findUnique({ where: { id: productId } });
@@ -35,7 +35,7 @@ export const update = async (reviewId: string, userId: string, productId: string
     // check if user is the owner of the review
     if (review.userId !== userId) throw new UnauthorizedException("Unauthorized", ErrorCode.UNAUTHORIZED);
 
-    return await prisma.review.update({ where: { id: reviewId , userId }, data, include: { user: true } });
+    return await prisma.review.update({ where: { id: reviewId, userId }, data, include: { user: true } });
 };
 
 export const remove = async (reviewId: string, userId: string, productId: string) => {

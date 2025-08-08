@@ -1,5 +1,5 @@
-import ErrorCode from "@/constants/error-code";
-import { UnprocessableUntityException } from "@/exceptions";
+import ErrorCode from "../constants/error-code";
+import { UnprocessableUntityException } from "../exceptions";
 import { Request, Response, NextFunction } from "express";
 import multer, { FileFilterCallback } from "multer";
 const storage = multer.memoryStorage();
@@ -49,7 +49,11 @@ export const multiple = (field: string) => {
                 );
             } else if (error?.code === "LIMIT_UNEXPECTED_FILE") {
                 return next(
-                    new UnprocessableUntityException("Too many files, max 5 files", ErrorCode.UNPROCESSABLE_ENTITY, error)
+                    new UnprocessableUntityException(
+                        "Too many files, max 5 files",
+                        ErrorCode.UNPROCESSABLE_ENTITY,
+                        error
+                    )
                 );
             } else if (error?.message.includes("Only image")) {
                 return next(error);

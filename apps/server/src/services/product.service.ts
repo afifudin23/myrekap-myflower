@@ -1,9 +1,9 @@
-import prisma from "@/config/database";
-import ErrorCode from "@/constants/error-code";
-import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
-import { productSchema } from "@/schemas";
-import { cloudinary, uploadFile } from "@/config";
-import { formatters } from "@/utils";
+import prisma from "../config/database";
+import ErrorCode from "../constants/error-code";
+import { BadRequestException, InternalException, NotFoundException } from "../exceptions";
+import { productSchema } from "../schemas";
+import { cloudinary, uploadFile } from "../config";
+import { formatters } from "../utils";
 
 type UploadResultsType = {
     fileName: string;
@@ -120,7 +120,7 @@ export const update = async (id: string, body: productSchema.UpdateProductType, 
         });
     } catch (error) {
         // Rollback upload images
-        console.log(error)
+        console.log(error);
         await Promise.all(
             uploadResults.map(async (result) => {
                 await cloudinary.uploader.destroy(result.publicId).catch((error) => {

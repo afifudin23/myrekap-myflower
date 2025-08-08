@@ -1,7 +1,7 @@
-import { brevo, env } from "@/config";
-import { ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS } from "@/constants/category";
-import { tokenService } from "@/services";
-import { formatters } from "@/utils";
+import { brevo, env } from "../config";
+import { ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS } from "../constants/category";
+import { tokenService } from "../services";
+import { formatters } from "../utils";
 
 interface SendTemplateEmailProps {
     to: string;

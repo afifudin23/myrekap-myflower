@@ -1,8 +1,8 @@
-import prisma from "@/config/database";
-import ErrorCode from "@/constants/error-code";
-import { BadRequestException, InternalException, NotFoundException } from "@/exceptions";
-import { ordersCustomerSchema } from "@/schemas";
-import { formatters } from "@/utils";
+import prisma from "../../config/database";
+import ErrorCode from "../../constants/error-code";
+import { BadRequestException, InternalException, NotFoundException } from "../../exceptions";
+import { ordersCustomerSchema } from "../../schemas";
+import { formatters } from "../../utils";
 
 export const create = async (user: any, data: ordersCustomerSchema.CreateType) => {
     const cartItems = await prisma.cartItem.findMany({ where: { userId: user.id }, include: { product: true } });
@@ -190,4 +190,3 @@ export const notification = async (order: any) => {
     // enqueueWhatsAppMessage(message);
     console.log(order);
 };
-

@@ -1,4 +1,4 @@
-import { formatters } from "@/utils";
+import { formatters } from "../../utils";
 import { z } from "zod";
 
 const itemSchema = z.object({
@@ -108,9 +108,7 @@ export const update = z
             .string({ invalid_type_error: "Delivery address must be a string" })
             .transform((val) => (val === "" ? null : val))
             .nullish(),
-        readyDate: z.coerce
-            .date()
-            .nullish(),
+        readyDate: z.coerce.date().nullish(),
         paymentMethod: z
             .preprocess(
                 (val) => (typeof val === "string" ? val.toUpperCase() : val),

@@ -1,5 +1,5 @@
-import { reviewSchema } from "@/schemas";
-import { reviewService } from "@/services";
+import { reviewSchema } from "../schemas";
+import { reviewService } from "../services";
 import { Request, Response, NextFunction } from "express";
 
 export const getReviewsByProductId = async (req: Request, res: Response, next: NextFunction) => {

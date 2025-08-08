@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
-import { HttpException, InternalException, UnprocessableUntityException } from "@/exceptions";
-import { ErrorCode } from "@/constants/error-code";
+import { HttpException, InternalException, UnprocessableUntityException } from "../exceptions";
+import { ErrorCode } from "../constants/error-code";
 import multer from "multer";
 
 const errorHandler = (method: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {

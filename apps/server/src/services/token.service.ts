@@ -1,4 +1,4 @@
-import { prisma } from "@/config";
+import { prisma } from "../config";
 import { addMinutes } from "date-fns";
 import crypto from "crypto";
 
@@ -15,7 +15,7 @@ export const generateToken = async ({ userId, type, expiresInMinutes = 30 }: Gen
     });
     if (existingToken) return existingToken.token;
 
-    // delete old tokens and generate new tokend 
+    // delete old tokens and generate new tokend
     const token = crypto.randomBytes(32).toString("hex");
     const expiresAt = addMinutes(new Date(), expiresInMinutes);
 
