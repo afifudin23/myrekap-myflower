@@ -32,6 +32,10 @@ app.use(attachLogger); // for logging requests with request id
 app.use(httpLogger); // for logging http requests   
 app.use(cookieParser());
 
+app.get("/hello", (_req, res) => {
+    res.send("Hello World");
+});
+
 app.get("/test-error", async (_req, _res, next) => {
     next(new InternalException("Something went wrong", ErrorCode.INTERNAL_EXCEPTION, null));
 });
