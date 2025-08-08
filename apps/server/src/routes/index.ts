@@ -1,5 +1,5 @@
 import { Router } from "express";
-import authRouter from "@/routes/auth.route";
+import authRouter from "./auth.route";
 import paymentProofRouter from "@/routes/payment-proof.route";
 import productRouter from "@/routes/product.route";
 import cartItemRouter from "@/routes/cart-item.route";
