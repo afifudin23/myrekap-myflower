@@ -46,7 +46,7 @@
     },
     "scripts": {
         "dev": "nodemon --exec \"clear && ts-node\" src/server.ts",
-        "build": "prisma generate --schema=./prisma/schema.prisma && tsc",
+        "build": "npx prisma generate && tsc",
         "start": "ts-node src/server.ts",
         "clean": "rm -rf dist"
     },
