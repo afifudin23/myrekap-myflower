@@ -45,7 +45,8 @@
         "typescript-eslint": "^8.25.0"
     },
     "scripts": {
-        "dev": "nodemon --exec \"clear && ts-node\" src/server.ts",
+        "dev": "ts-node-dev src/index.ts",
+        "postinstall": "prisma generate",
         "build": "npx prisma generate && tsc",
         "start": "ts-node src/server.ts",
         "clean": "rm -rf dist"
