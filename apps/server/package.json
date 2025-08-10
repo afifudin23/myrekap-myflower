@@ -46,7 +46,8 @@
     },
     "scripts": {
         "dev": "ts-node-dev src/index.ts",
-        "build": "npx prisma generate && tsc",
+        "postinstall": "prisma generate",
+        "build": "tsc",
         "start": "ts-node src/server.ts",
         "clean": "rm -rf dist"
     },
