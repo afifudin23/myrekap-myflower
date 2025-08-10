@@ -1,7 +1,7 @@
 import app from "../src/app";
 import "module-alias/register";
-import { prisma } from "@/config";
-import seedSuperadmin from "@/seeds/seed-superadmin";
+import { prisma } from "../src/config";
+import seedSuperadmin from "../src/seeds/seed-superadmin";
 
 (async () => {
     await prisma.$connect();
