@@ -10,7 +10,7 @@ import { useSearchParams } from "react-router-dom";
 
 function DashboardPage() {
     const [monthYear, setMonthYear] = useState<Date>(new Date());
-    const { orders, setOrders } = useOrders(monthYear);
+    const { orders, setOrders } = useOrders();
     const [_, setSearchParams] = useSearchParams();
 
     // Get 6 Orders, Refac Next Project
