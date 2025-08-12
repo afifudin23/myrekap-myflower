@@ -154,7 +154,7 @@ function OrderDetailPage() {
                             options={ORDER_STATUS_ITEMS.filter((item) => {
                                 const excludedLabels = ["Semua"];
                                 if (order.deliveryOption === "PICKUP") excludedLabels.push("Pengiriman");
-                                return !excludedLabels.includes(item.label);
+                                return !excludedLabels.includes(item);
                             })}
                             optionLabel={ORDER_STATUS_LABELS}
                         />
