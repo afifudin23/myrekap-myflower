@@ -14,7 +14,7 @@ const ProtectedRoute = () => {
     // if (loading) return <Loading />;
 
     // return isAuthenticated ? (
-        <Outlet />
+    return <Outlet />;
     // ) : (
     // <Navigate to="/auth/login" state={{ message: "Sesi Anda Telah Habis, Silahkan Login Kembali" }} replace />;
     // );
