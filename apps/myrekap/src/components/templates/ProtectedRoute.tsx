@@ -1,8 +1,8 @@
 // src/components/routes/ProtectedRoute.tsx
-import { Navigate, Outlet } from "react-router-dom";
-import { useEffect } from "react";
-import { useAuthStore } from "@/stores/useAuthStore";
-import { Loading } from "@/components/atoms";
+import { Outlet } from "react-router-dom";
+// import { useEffect } from "react";
+// import { useAuthStore } from "@/stores/useAuthStore";
+// import { Loading } from "@/components/atoms";
 
 const ProtectedRoute = () => {
     // const { isAuthenticated, loading, verifyToken } = useAuthStore();
