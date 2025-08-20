@@ -4,6 +4,7 @@ import { authSchema } from "../schemas";
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     const appName = req.headers["x-app-name"];
+console.log(appName);
     const body = authSchema.loginUserSchema.parse(req.body);
     try {
         const { data, token } = await authService.loginUser(body);
