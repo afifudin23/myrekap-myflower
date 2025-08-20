@@ -11,8 +11,10 @@ export default defineConfig(({ mode }) => {
             alias: {
                 "@": path.resolve(__dirname, "src"),
             },
-        },
+        }, 
         server: {
+	    host: '0.0.0.0', // biar bisa diakses dari IP/VPS lain
+            port: 4000,
             allowedHosts: [env.VITE_ALLOWED_HOST],
         },
     };
