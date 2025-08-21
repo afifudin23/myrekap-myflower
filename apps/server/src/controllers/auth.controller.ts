@@ -9,10 +9,9 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         const { data, token } = await authService.loginUser(body);
         res.cookie(`token_${appName}`, token, {
             httpOnly: true, // Tidak dapat diakses oleh JavaScript
-            secure: false, // Hanya dikirim melalui HTTPS (penting untuk production)
+            secure: false, // True = Hanya dikirim melalui HTTPS (penting untuk production)
             sameSite: "strict", // Tidak terkirim di request pihak ketiga
             maxAge: 60 * 60 * 24 * 1000,
-	    // domain: "andevstudio.my.id",
             path: "/", // Hanya untuk path ini
         }); 
         res.status(200).json(data);

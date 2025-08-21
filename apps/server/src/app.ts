@@ -12,7 +12,7 @@ const app = express();
 
 // middlewares
 app.use(helmet()); // for security
-const allowedOrigins = env.CLIENT_ORIGINS.split(",") || [];
+const allowedOrigins = [env.MYREKAP_URL, env.MYFLOWER_URL];
 app.use(
     cors({
         origin: (origin, callback) => {
@@ -32,25 +32,10 @@ app.use(express.json()); // for parsing json
 app.use(attachLogger); // for logging requests with request id
 app.use(httpLogger); // for logging http requests
 app.use(cookieParser());
-const data = [
-    {
-        name: "John Doe",
-        age: 30,
-    },
-    {
-        name: "Jane Smith",
-        age: 25,
-    },
-    {
-        name: "Alice Johnson",
-        age: 28,
-    },
-];
 app.get("/", (_req, res) => {
-    res.send("Haiiii");
-});
-app.get("/data", (_req, res) => {
-    res.json({ message: "Get Data Success", data });
+    res.status(200).json({
+        message: "API ready to serve",
+    });
 });
 
 app.get("/test-error", async (_req, _res, next) => {
