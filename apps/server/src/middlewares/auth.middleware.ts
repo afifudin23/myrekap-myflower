@@ -22,7 +22,8 @@ const authMiddleware = async (req: Request, _res: Response, next: NextFunction) 
     const appName = req.headers["x-app-name"];
     const tokenKey = appName === "default" ? "token" : `token_${appName}`;
     const token = req.cookies[tokenKey];
-    
+    console.log(appName, token);    
+
     if (!token) {
         return next(new UnauthorizedException("1Your session has expired. Please log in again", ErrorCode.UNAUTHORIZED));
     }
