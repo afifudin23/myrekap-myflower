@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
         }, 
         server: {
             host: '0.0.0.0', // biar bisa diakses dari IP/VPS lain
-            port: 4000,
+            port: 5002,
             allowedHosts: [env.VITE_ALLOWED_HOST],
         },
     };
